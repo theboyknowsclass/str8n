@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { Icon, IconButton, Text } from '@atoms';
 import { useTheme } from '@react-navigation/native';
-import { useSessionStateStore, usePersistedSettingsStore } from '@stores';
+import { usePersistedSettingsStore } from '@stores';
 import { SettingsToggle } from '@molecules';
 import { IconType } from '@types';
 
