@@ -19,3 +19,4 @@ export {
   isMaterialCommunityIcon,
 } from './IconType';
 export { Vector } from './Vector';
+export { PersistedSettings } from './PersistedSettings';

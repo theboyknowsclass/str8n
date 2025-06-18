@@ -3,7 +3,7 @@ import { PageTemplate } from '@templates';
 import { View, StyleSheet } from 'react-native';
 import { usePageTemplateContext, useScreenDimensions } from '@hooks';
 import { Instructions } from '@components/molecules/Instructions';
-import { useSessionStateStore, useSettingsStore } from '@stores';
+import { useSessionStateStore, usePersistedSettingsStore } from '@stores';
 import { useEffect } from 'react';
 
 const ImportContent: React.FC = () => {
@@ -22,13 +22,13 @@ const ModalContent: React.FC = () => {
   const { setIsModalVisible } = usePageTemplateContext();
   const { hasDismissedInstructions, setHasDismissedInstructions } =
     useSessionStateStore();
-  const { alwaysShowInstructions: showInstructions } = useSettingsStore();
+  const { alwaysShowInstructions } = usePersistedSettingsStore();
 
   useEffect(() => {
-    if (showInstructions && !hasDismissedInstructions) {
+    if (alwaysShowInstructions && !hasDismissedInstructions) {
       setIsModalVisible(true);
     }
-  }, [showInstructions, hasDismissedInstructions, setIsModalVisible]);
+  }, [alwaysShowInstructions, hasDismissedInstructions, setIsModalVisible]);
 
   const onClosePress = () => {
     setIsModalVisible(false);

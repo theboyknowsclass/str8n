@@ -1,9 +1,9 @@
 import { CloseButton, SettingsToggle } from '@molecules';
-import { useSettingsStore } from '@stores';
+import { usePersistedSettingsStore } from '@stores';
 import { View, StyleSheet } from 'react-native';
 
 export const Settings: React.FC = () => {
-  const { cropToOverlay, setCropToOverlay } = useSettingsStore();
+  const { cropToOverlay, setCropToOverlay } = usePersistedSettingsStore();
 
   return (
     <View>

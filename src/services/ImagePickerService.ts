@@ -3,7 +3,7 @@ import {
   launchImageLibraryAsync,
 } from 'expo-image-picker';
 import { ImageSource, Result } from '@types';
-import { readAsync } from '@lodev09/react-native-exify';
+import { getTags } from './ImageMetadataService';
 
 /**
  * Image picker service following the Single Responsibility Principle
@@ -53,7 +53,7 @@ export class ImagePickerService {
         };
       }
 
-      const tags = await readAsync(result.assets[0].uri);
+      const tags = await getTags(result.assets[0].uri);
 
       // Return the selected image URI
       return {

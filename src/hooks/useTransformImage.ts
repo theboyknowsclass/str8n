@@ -2,7 +2,7 @@ import {
   useSourceImageStore,
   useTransformedImageStore,
   useOverlayStore,
-  useSettingsStore,
+  usePersistedSettingsStore,
 } from '@stores';
 import {
   getAbsolutePoints,
@@ -26,7 +26,7 @@ export const useTransformImage: TransformImageHook = () => {
   const { setDestinationUri, setLoading, setError, isLoading, error } =
     useTransformedImageStore();
   const { points: selectedOverlay } = useOverlayStore();
-  const { cropToOverlay } = useSettingsStore();
+  const { cropToOverlay } = usePersistedSettingsStore();
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const cancel = useCallback(() => {

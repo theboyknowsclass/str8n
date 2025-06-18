@@ -1,4 +1,9 @@
-import { BackButton, SettingsButton, ThemeToggle } from '@molecules';
+import {
+  BackButton,
+  SettingsButton,
+  ShowInstructionsButton,
+  ThemeToggle,
+} from '@molecules';
 import { useScreenDimensions } from '@hooks';
 import { View, StyleSheet, ViewStyle } from 'react-native';
 
@@ -26,6 +31,7 @@ export const NavigationBar: React.FC = () => {
         <BackButton />
       </View>
       <View style={navigationBarSecondaryStyles}>
+        <ShowInstructionsButton />
         <ThemeToggle />
         <SettingsButton />
       </View>

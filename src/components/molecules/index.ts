@@ -14,3 +14,4 @@ export { CheckerBoardBackground } from './CheckerBoardBackground';
 export { AnimatedBlurBackground } from './AnimatedBlurBackground';
 export { ModalDialog } from './ModalDialog';
 export { Instructions } from './Instructions';
+export { ShowInstructionsButton } from './ShowInstructionsButton';

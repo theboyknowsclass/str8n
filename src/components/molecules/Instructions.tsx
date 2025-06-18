@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { Icon, IconButton, Text } from '@atoms';
 import { useTheme } from '@react-navigation/native';
-import { useSessionStateStore, useSettingsStore } from '@stores';
+import { useSessionStateStore, usePersistedSettingsStore } from '@stores';
 import { SettingsToggle } from '@molecules';
 import { IconType } from '@types';
 
@@ -43,7 +43,7 @@ export const Instructions: React.FC<InstructionsProps> = ({
 }) => {
   const { colors } = useTheme();
   const { alwaysShowInstructions, setAlwaysShowInstructions } =
-    useSettingsStore();
+    usePersistedSettingsStore();
   const showChooseImage = mode === 'import';
 
   return (
