@@ -11,3 +11,6 @@ export { ZoomButton } from './ZoomButton';
 export { SettingsToggle } from './SettingsToggle';
 export { TouchPoint } from './TouchPoint';
 export { CheckerBoardBackground } from './CheckerBoardBackground';
+export { AnimatedBlurBackground } from './AnimatedBlurBackground';
+export { ModalDialog } from './ModalDialog';
+export { Instructions } from './Instructions';

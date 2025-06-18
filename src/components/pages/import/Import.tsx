@@ -1,18 +1,50 @@
 import { ImagePickerButton, Logo } from '@molecules';
 import { PageTemplate } from '@templates';
 import { View, StyleSheet } from 'react-native';
-import { useScreenDimensions } from '@hooks';
+import { usePageTemplateContext, useScreenDimensions } from '@hooks';
+import { Instructions } from '@components/molecules/Instructions';
+import { useSessionStateStore, useSettingsStore } from '@stores';
+import { useEffect } from 'react';
 
-export const Import: React.FC = () => {
+const ImportContent: React.FC = () => {
   const { width, height } = useScreenDimensions();
   const logoSize = Math.min(width, height) * 0.6;
 
   return (
+    <View style={styles.container}>
+      <Logo size={logoSize} />
+      <ImagePickerButton />
+    </View>
+  );
+};
+
+const ModalContent: React.FC = () => {
+  const { setIsModalVisible } = usePageTemplateContext();
+  const { hasDismissedInstructions, setHasDismissedInstructions } =
+    useSessionStateStore();
+  const { alwaysShowInstructions: showInstructions } = useSettingsStore();
+
+  useEffect(() => {
+    if (showInstructions && !hasDismissedInstructions) {
+      setIsModalVisible(true);
+    }
+  }, [showInstructions, hasDismissedInstructions, setIsModalVisible]);
+
+  const onClosePress = () => {
+    setIsModalVisible(false);
+    setHasDismissedInstructions(true);
+  };
+
+  return <Instructions mode="import" onClosePress={onClosePress} />;
+};
+
+export const Import: React.FC = () => {
+  return (
     <PageTemplate>
-      <View style={styles.container}>
-        <Logo size={logoSize} />
-        <ImagePickerButton />
-      </View>
+      <PageTemplate.ModalContent>
+        <ModalContent />
+      </PageTemplate.ModalContent>
+      <ImportContent />
     </PageTemplate>
   );
 };

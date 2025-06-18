@@ -1,2 +1,2 @@
-export { ContentMeasurementsProvider } from './ContentMeasurementsContext';
+export { PageTemplateContextProvider } from './PageTemplateContext';
 export { PanZoomProvider } from './PanZoomContext';

@@ -1,23 +1,18 @@
-import { useContentMeasurements, useScreenDimensions } from '@hooks';
+import { usePageTemplateContext, useScreenDimensions } from '@hooks';
+import { StyleSheet, View, LayoutChangeEvent, ViewStyle } from 'react-native';
 import {
-  StyleSheet,
-  View,
-  LayoutChangeEvent,
-  ViewStyle,
-  Text,
-} from 'react-native';
-import { LoadingContainer } from '@molecules';
+  LoadingContainer,
+  AnimatedBlurBackground,
+  ModalDialog,
+} from '@molecules';
 import React, { ReactNode } from 'react';
-import { ContentMeasurementsProvider } from '@contexts';
+import { PageTemplateContextProvider } from '@contexts';
 import { NavigationBar } from '@organisms';
-import { BlurView } from 'expo-blur';
-import { useTheme } from '@react-navigation/native';
 
 interface PageTemplateProps {
   children?: React.ReactNode | React.ReactNode[];
   isLoading?: boolean;
   loadingText?: string;
-  isModalVisible?: boolean;
 }
 
 interface ActionItemsProps {
@@ -26,7 +21,6 @@ interface ActionItemsProps {
 
 interface ModalContentProps {
   children?: React.ReactNode;
-  isModalVisible?: boolean;
 }
 
 // ActionItems component that will be used as a compound component
@@ -40,17 +34,15 @@ interface PageTemplateComponent extends React.FC<PageTemplateProps> {
   ModalContent: React.FC<ModalContentProps>;
 }
 
-const text = 'Hello, my container is blurring contents underneath!';
-
 // Create the Page component
 const Page: React.FC<PageTemplateProps> = ({ children }) => {
   const { isLandscape } = useScreenDimensions();
-  const { setIsReady, setDimensions, isReady } = useContentMeasurements();
-  const { dark } = useTheme();
-  const blurTint = dark ? 'dark' : 'light';
+  const { setIsReady, setDimensions, isReady, isModalVisible } =
+    usePageTemplateContext();
 
-  // Extract action items from children
-  const { otherChildren, actionItems } = separateChildren(children);
+  // Extract action items and modal content from children
+  const { otherChildren, actionItems, modalContent } =
+    separateChildren(children);
 
   // responsive styles for orientation
   const contentContainerStyles = [
@@ -78,21 +70,21 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
         </View>
         <View style={actionBarStyles}>{actionItems}</View>
       </View>
-      <BlurView intensity={70} tint={blurTint} style={styles.blurContainer}>
-        <View style={styles.blurContent}>
-          <Text style={styles.text}>{text}</Text>
-        </View>
-      </BlurView>
+      {modalContent.length && (
+        <AnimatedBlurBackground isVisible={isModalVisible}>
+          <ModalDialog isVisible={isModalVisible}>{modalContent}</ModalDialog>
+        </AnimatedBlurBackground>
+      )}
     </View>
   );
 };
 
-// Export a wrapped version of AppShellLayout with ContentMeasurementsProvider
+// Export a wrapped version of Page with PageTemplateContextProvider
 export const PageTemplate: PageTemplateComponent = (props) => {
   return (
-    <ContentMeasurementsProvider>
+    <PageTemplateContextProvider>
       <Page {...props} />
-    </ContentMeasurementsProvider>
+    </PageTemplateContextProvider>
   );
 };
 
@@ -109,24 +101,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     display: 'flex',
-  },
-  blurContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    zIndex: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  blurContent: {
-    width: 'auto',
-    height: 'auto',
-    display: 'flex',
-    backgroundColor: 'rgba(50, 50, 50, 0.7)',
-    padding: 16,
-    borderRadius: 16,
   },
   text: {
     fontSize: 24,
@@ -148,7 +122,11 @@ const styles = StyleSheet.create({
 // Separate children into action items and other children
 const separateChildren = (
   children: React.ReactNode
-): { actionItems: ReactNode[]; otherChildren: ReactNode[] } => {
+): {
+  actionItems: ReactNode[];
+  otherChildren: ReactNode[];
+  modalContent: ReactNode[];
+} => {
   const actionItems: ReactNode[] = [];
   const otherChildren: ReactNode[] = [];
   const modalContent: ReactNode[] = [];
@@ -159,49 +137,34 @@ const separateChildren = (
       return;
     }
 
-    const actionItem = getActionItem(child);
-    const modalContent = getModalContent(child);
+    const actionItem = getComponentChildren(child, ActionItems);
+    const modalContentItem = getComponentChildren(child, ModalContent);
 
     if (actionItem) {
       actionItems.push(...React.Children.toArray(actionItem));
-    } else if (modalContent) {
-      modalContent.push(...React.Children.toArray(modalContent));
+    } else if (modalContentItem) {
+      modalContent.push(...React.Children.toArray(modalContentItem));
     } else {
       otherChildren.push(child);
     }
   });
 
-  return { otherChildren, actionItems };
+  return { otherChildren, actionItems, modalContent };
 };
 
-const getActionItem = (
+const getComponentChildren = <
+  T extends React.ComponentType<{ children?: React.ReactNode }>,
+>(
   child:
     | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
-    | React.ReactPortal
+    | React.ReactPortal,
+  Component: T
 ) => {
-  const isActionItem =
-    child.type === ActionItems ||
-    (typeof child.type === 'function' && child.type.name === 'ActionItems');
+  const isComponent =
+    child.type === Component ||
+    (typeof child.type === 'function' && child.type.name === Component.name);
 
-  if (isActionItem) {
-    const element = child as React.ReactElement<{
-      children?: React.ReactNode;
-    }>;
-    return element.props.children;
-  }
-  return null;
-};
-
-const getModalContent = (
-  child:
-    | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
-    | React.ReactPortal
-) => {
-  const isModalContent =
-    child.type === ModalContent ||
-    (typeof child.type === 'function' && child.type.name === 'ModalContent');
-
-  if (isModalContent) {
+  if (isComponent) {
     const element = child as React.ReactElement<{
       children?: React.ReactNode;
     }>;

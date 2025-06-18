@@ -1,0 +1,122 @@
+import { StyleSheet, View } from 'react-native';
+import { Icon, IconButton, Text } from '@atoms';
+import { useTheme } from '@react-navigation/native';
+import { useSessionStateStore, useSettingsStore } from '@stores';
+import { SettingsToggle } from '@molecules';
+import { IconType } from '@types';
+
+interface InstructionsProps {
+  mode: 'import' | 'edit';
+  onClosePress: () => void;
+}
+
+interface InstructionRowProps {
+  icon: IconType;
+  text: string;
+}
+
+export const InstructionRow: React.FC<InstructionRowProps> = ({
+  icon,
+  text,
+}) => {
+  const { colors } = useTheme();
+
+  const iconStyle = {
+    borderColor: colors.primary,
+  };
+
+  return (
+    <View style={styles.contentRow}>
+      <View style={[styles.iconContainer, iconStyle]}>
+        <Icon name={icon} size={36} />
+      </View>
+      <Text size="medium" color={colors.primary}>
+        {text}
+      </Text>
+    </View>
+  );
+};
+
+export const Instructions: React.FC<InstructionsProps> = ({
+  mode = 'import',
+  onClosePress,
+}) => {
+  const { colors } = useTheme();
+  const { alwaysShowInstructions, setAlwaysShowInstructions } =
+    useSettingsStore();
+  const showChooseImage = mode === 'import';
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text size="x-large" color={colors.primary}>
+          Instructions
+        </Text>
+        <IconButton
+          icon="close"
+          size="small"
+          accessibilityLabel="Close"
+          onPress={onClosePress}
+        />
+      </View>
+      {showChooseImage && (
+        <InstructionRow
+          icon="photo-library"
+          text="press to choose an image from your library"
+        />
+      )}
+      <InstructionRow
+        icon="gesture-tap-hold"
+        text="tap and hold on the point to move it"
+      />
+      <InstructionRow icon="gesture-swipe" text="swipe to pan the view" />
+      <InstructionRow icon="gesture-spread" text="pinch to zoom in and out" />
+      <View style={styles.footerRow}>
+        <SettingsToggle
+          title="show instructions every time"
+          isEnabled={alwaysShowInstructions}
+          onToggle={setAlwaysShowInstructions}
+        />
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: 16,
+    gap: 16,
+  },
+  header: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  contentRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 16,
+    alignItems: 'center',
+  },
+  footerRow: {
+    flex: 1,
+    gap: 16,
+    marginTop: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    borderRadius: 9999,
+    alignSelf: 'flex-start',
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    borderWidth: 2,
+  },
+});

@@ -1,6 +1,6 @@
-import { MaterialIcons } from '@expo/vector-icons';
-import { IconType } from '@types';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
+import { IconType, isMaterialIcon, isMaterialCommunityIcon } from '@types';
 
 interface IconProps {
   name: IconType;
@@ -9,5 +9,16 @@ interface IconProps {
 
 export const Icon: React.FC<IconProps> = ({ name, size = 32 }) => {
   const { colors } = useTheme();
-  return <MaterialIcons name={name} size={size} color={colors.primary} />;
+
+  if (isMaterialIcon(name)) {
+    return <MaterialIcons name={name} size={size} color={colors.primary} />;
+  }
+
+  if (isMaterialCommunityIcon(name)) {
+    return (
+      <MaterialCommunityIcons name={name} size={size} color={colors.primary} />
+    );
+  }
+
+  return null;
 };
