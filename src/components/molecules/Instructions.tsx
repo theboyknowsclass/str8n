@@ -4,6 +4,7 @@ import { useTheme } from '@react-navigation/native';
 import { usePersistedSettingsStore } from '@stores';
 import { SettingsToggle } from '@molecules';
 import { IconType } from '@types';
+import { useScreenDimensions } from '@hooks';
 
 interface InstructionsProps {
   mode: 'import' | 'edit';
@@ -44,6 +45,7 @@ export const Instructions: React.FC<InstructionsProps> = ({
   const { colors } = useTheme();
   const { alwaysShowInstructions, setAlwaysShowInstructions } =
     usePersistedSettingsStore();
+  const { isMobile } = useScreenDimensions();
   const showChooseImage = mode === 'import';
 
   return (
@@ -67,10 +69,20 @@ export const Instructions: React.FC<InstructionsProps> = ({
       )}
       <InstructionRow
         icon="gesture-tap-hold"
-        text="tap and hold on the point to move it"
+        text="tap and hold on a point to move it"
       />
-      <InstructionRow icon="gesture-swipe" text="swipe to pan the view" />
-      <InstructionRow icon="gesture-spread" text="pinch to zoom in and out" />
+      <InstructionRow
+        icon="gesture-swipe"
+        text={isMobile ? 'swipe to pan the view' : 'drag to pan the view'}
+      />
+
+      <InstructionRow
+        icon={isMobile ? 'gesture-spread' : 'mouse-scroll'}
+        text={
+          isMobile ? 'pinch to zoom in and out' : 'scroll to zoom in and out'
+        }
+      />
+
       <View style={styles.footerRow}>
         <SettingsToggle
           title="show instructions every time"
