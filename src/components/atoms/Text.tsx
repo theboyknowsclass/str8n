@@ -10,7 +10,7 @@ interface TextProps extends RNTextProps {
   /** The color of the text */
   color?: string;
   /** The size of the text */
-  size?: 'small' | 'medium' | 'large' | 'x-large';
+  size?: 'small' | 'medium' | 'large' | 'larger';
 }
 
 /**
@@ -35,7 +35,7 @@ export const Text: React.FC<TextProps> = ({
       small: { fontSize: 12 },
       medium: { fontSize: 16 },
       large: { fontSize: 18 },
-      'x-large': { fontSize: 24 },
+      larger: { fontSize: 24 },
     };
 
     return {

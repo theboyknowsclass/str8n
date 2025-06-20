@@ -1,5 +1,4 @@
-import { TextButton } from '@atoms';
-import { StyleSheet } from 'react-native';
+import { CircleTextButton } from '@atoms';
 import { router } from 'expo-router';
 
 export const TransformImageButton: React.FC = () => {
@@ -8,33 +7,13 @@ export const TransformImageButton: React.FC = () => {
   };
 
   return (
-    <TextButton
+    <CircleTextButton
       key={'transform-image'}
       accessibilityLabel={'Go'}
       onPress={onTransformImagePress}
       disabled={false}
       title={'Go'}
-      variant="outline"
-      style={styles.button}
-      size="medium"
-      textStyle={styles.text}
+      fontSize={22}
     />
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    width: 56,
-    height: 56,
-    paddingVertical: 0,
-    paddingHorizontal: 0,
-    borderWidth: 2,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    fontSize: 22,
-    fontFamily: 'Orbitron_700Bold',
-  },
-});

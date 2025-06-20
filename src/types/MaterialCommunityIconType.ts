@@ -4,7 +4,6 @@ const materialCommunityIconNameArray = [
   'gesture-tap-hold',
   'gesture-spread',
   'gesture-swipe',
-  'information-variant',
 ] as const;
 
 // Set for O(1) lookup performance when checking if a string is a valid Material Community Icon

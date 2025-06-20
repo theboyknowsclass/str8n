@@ -55,7 +55,7 @@ export const Instructions: React.FC<InstructionsProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text size="x-large" color={colors.primary}>
+        <Text size="larger" color={colors.primary}>
           Instructions
         </Text>
         <IconButton

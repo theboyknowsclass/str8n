@@ -1,4 +1,4 @@
-import { IconButton } from '@atoms';
+import { CircleTextButton } from '@atoms';
 import { usePageModalContext } from '@hooks';
 
 export const ShowInstructionsButton: React.FC = () => {
@@ -8,11 +8,12 @@ export const ShowInstructionsButton: React.FC = () => {
   };
 
   return (
-    <IconButton
-      icon="information-variant"
+    <CircleTextButton
+      key={'show-help'}
+      accessibilityLabel={'Show instructions'}
       onPress={onShowInstructionsPress}
-      accessibilityLabel="Show instructions"
-      title=""
+      disabled={false}
+      title={'?'}
     />
   );
 };
