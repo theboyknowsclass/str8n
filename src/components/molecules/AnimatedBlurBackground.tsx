@@ -9,7 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Platform, StyleSheet } from 'react-native';
 import { useEffect } from 'react';
-import { useAnimatedBlurBackground } from '@molecules';
+import { useAnimatedBlurBackground } from './useAnimatedBlurBackground';
 
 const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
 
@@ -32,7 +32,7 @@ export const AnimatedBlurBackground: React.FC<AnimatedBlurBackgroundProps> = ({
   isVisible,
 }) => {
   const { dark } = useTheme();
-  const blurTint = dark ? 'dark' : 'light';
+  const blurTint = dark ? 'default' : 'regular';
 
   // Use the shared AnimatedBlurBackground hook
   const { shouldRender, zIndex, opacity } = useAnimatedBlurBackground({

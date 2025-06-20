@@ -12,7 +12,7 @@ import {
 export const Switch: React.FC<RNSwitchProps> = ({ value, ...props }) => {
   const {
     dark,
-    colors: { primary },
+    colors: { primary, card },
   } = useTheme();
 
   return (
@@ -21,12 +21,15 @@ export const Switch: React.FC<RNSwitchProps> = ({ value, ...props }) => {
         false: primary + (dark ? '70' : '30'),
         true: primary + (dark ? 'CC' : '70'),
       }}
-      // thumbColor={value ? primary : primary}
+      thumbColor={value ? primary : card}
       value={value}
       {...props}
       // ...your other switch props
       {...Platform.select({
         web: {
+          activeThumbColor: primary,
+        },
+        android: {
           activeThumbColor: primary,
         },
       })}

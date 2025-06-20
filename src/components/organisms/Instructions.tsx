@@ -31,7 +31,11 @@ export const InstructionRow: React.FC<InstructionRowProps> = ({
       <View style={[styles.iconContainer, iconStyle]}>
         <Icon name={icon} size={36} />
       </View>
-      <Text size="medium" color={colors.primary} numberOfLines={2}>
+      <Text
+        size="medium"
+        color={colors.primary}
+        style={{ flexShrink: 1, textAlign: 'left' }}
+      >
         {text}
       </Text>
     </View>
@@ -120,11 +124,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerRow: {
-    flex: 1,
-    gap: 16,
     marginTop: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   iconContainer: {
     alignItems: 'center',
