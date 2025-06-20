@@ -4,10 +4,8 @@ import { Dimensions } from '@types';
 interface PageTemplateContextType {
   dimensions: Dimensions;
   isReady: boolean;
-  isModalVisible: boolean;
   setDimensions: (dimensions: Dimensions) => void;
   setIsReady: (isReady: boolean) => void;
-  setIsModalVisible: (isModalVisible: boolean) => void;
 }
 
 export const PageTemplateContext = createContext<PageTemplateContextType>({
@@ -15,8 +13,6 @@ export const PageTemplateContext = createContext<PageTemplateContextType>({
   setDimensions: () => {},
   isReady: false,
   setIsReady: () => {},
-  isModalVisible: false,
-  setIsModalVisible: () => {},
 });
 
 interface PageTemplateProviderProps {
@@ -31,15 +27,12 @@ export const PageTemplateContextProvider: React.FC<
     height: 0,
   });
   const [isReady, setIsReady] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const value = {
     dimensions,
     isReady,
     setDimensions,
     setIsReady,
-    isModalVisible,
-    setIsModalVisible,
   };
 
   return (

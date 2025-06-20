@@ -1,4 +1,8 @@
-import { usePageTemplateContext, useScreenDimensions } from '@hooks';
+import {
+  usePageTemplateContext,
+  usePageModalContext,
+  useScreenDimensions,
+} from '@hooks';
 import { StyleSheet, View, LayoutChangeEvent, ViewStyle } from 'react-native';
 import {
   LoadingContainer,
@@ -6,8 +10,12 @@ import {
   ModalDialog,
 } from '@molecules';
 import React, { ReactNode } from 'react';
-import { PageTemplateContextProvider } from '@contexts';
+import {
+  PageTemplateContextProvider,
+  PageModalContextProvider,
+} from '@contexts';
 import { NavigationBar } from '@organisms';
+import { useTheme } from '@react-navigation/native';
 
 interface PageTemplateProps {
   children?: React.ReactNode | React.ReactNode[];
@@ -37,8 +45,7 @@ interface PageTemplateComponent extends React.FC<PageTemplateProps> {
 // Create the Page component
 const Page: React.FC<PageTemplateProps> = ({ children }) => {
   const { isLandscape } = useScreenDimensions();
-  const { setIsReady, setDimensions, isReady, isModalVisible } =
-    usePageTemplateContext();
+  const { setIsReady, setDimensions, isReady } = usePageTemplateContext();
 
   // Extract action items and modal content from children
   const { otherChildren, actionItems, modalContent } =
@@ -70,12 +77,22 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
         </View>
         <View style={actionBarStyles}>{actionItems}</View>
       </View>
-      {modalContent.length && (
-        <AnimatedBlurBackground isVisible={isModalVisible}>
-          <ModalDialog isVisible={isModalVisible}>{modalContent}</ModalDialog>
-        </AnimatedBlurBackground>
-      )}
+      <Modal>{modalContent.length ? modalContent[0] : null}</Modal>
     </View>
+  );
+};
+
+const Modal: React.FC<ModalContentProps> = ({ children }) => {
+  const { isModalVisible } = usePageModalContext();
+
+  if (!children) {
+    return null;
+  }
+
+  return (
+    <AnimatedBlurBackground isVisible={isModalVisible}>
+      <ModalDialog isVisible={isModalVisible}>{children}</ModalDialog>
+    </AnimatedBlurBackground>
   );
 };
 
@@ -83,7 +100,9 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
 export const PageTemplate: PageTemplateComponent = (props) => {
   return (
     <PageTemplateContextProvider>
-      <Page {...props} />
+      <PageModalContextProvider>
+        <Page {...props} />
+      </PageModalContextProvider>
     </PageTemplateContextProvider>
   );
 };

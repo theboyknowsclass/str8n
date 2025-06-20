@@ -1,8 +1,8 @@
 import { IconButton } from '@atoms';
-import { usePageTemplateContext } from '@hooks';
+import { usePageModalContext } from '@hooks';
 
 export const ShowInstructionsButton: React.FC = () => {
-  const { setIsModalVisible } = usePageTemplateContext();
+  const { setIsModalVisible } = usePageModalContext();
   const onShowInstructionsPress = async () => {
     setIsModalVisible(true);
   };

@@ -31,7 +31,7 @@ export const InstructionRow: React.FC<InstructionRowProps> = ({
       <View style={[styles.iconContainer, iconStyle]}>
         <Icon name={icon} size={36} />
       </View>
-      <Text size="medium" color={colors.primary}>
+      <Text size="medium" color={colors.primary} numberOfLines={2}>
         {text}
       </Text>
     </View>
@@ -96,10 +96,15 @@ export const Instructions: React.FC<InstructionsProps> = ({
 
 const styles = StyleSheet.create({
   container: {
+    position: 'relative',
+    width: '100%',
+    maxWidth: '100%',
+    maxHeight: '100%',
     display: 'flex',
     flexDirection: 'column',
     padding: 16,
     gap: 16,
+    overflow: 'hidden',
   },
   header: {
     display: 'flex',

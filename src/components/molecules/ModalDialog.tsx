@@ -1,7 +1,8 @@
 import { useTheme } from '@react-navigation/native';
-import { useEffect } from 'react';
-import { Easing, StyleSheet } from 'react-native';
+import { useEffect, useMemo } from 'react';
+import { StyleSheet } from 'react-native';
 import Animated, {
+  Easing,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -16,15 +17,21 @@ export const ModalDialog: React.FC<ModalDialogProps> = ({
   children,
   isVisible,
 }) => {
-  const { dark } = useTheme();
+  const {
+    colors: { background },
+  } = useTheme();
 
   const opacity = useSharedValue(isVisible ? 1 : 0);
+
+  const themedStyle = useMemo(() => {
+    return {
+      backgroundColor: background,
+    };
+  }, [background]);
+
   const animatedStyle = useAnimatedStyle(() => {
     return {
       opacity: opacity.value,
-      backgroundColor: dark
-        ? 'rgba(50, 50, 50, 0.7)'
-        : 'rgba(210, 210, 210, 0.7)',
     };
   });
 
@@ -36,7 +43,7 @@ export const ModalDialog: React.FC<ModalDialogProps> = ({
   }, [isVisible, opacity]);
 
   return (
-    <Animated.View style={[styles.modalContainer, animatedStyle]}>
+    <Animated.View style={[styles.modalContainer, themedStyle, animatedStyle]}>
       {children}
     </Animated.View>
   );
@@ -44,16 +51,16 @@ export const ModalDialog: React.FC<ModalDialogProps> = ({
 
 const styles = StyleSheet.create({
   modalContainer: {
+    position: 'relative',
     minWidth: '30%',
     minHeight: '30%',
-    width: 'auto',
-    height: 'auto',
-    display: 'flex',
+    maxWidth: '90%',
+    maxHeight: '90%',
     padding: 16,
     borderRadius: 16,
-    shadowColor: '#000',
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 8,
+    boxShadow: '0px 0px 8px 4px rgba(0, 0, 0, 0.20)',
+    zIndex: 1000,
+    borderWidth: 0,
+    backgroundColor: 'red',
   },
 });

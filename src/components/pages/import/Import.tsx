@@ -1,8 +1,8 @@
 import { ImagePickerButton, Logo } from '@molecules';
 import { PageTemplate } from '@templates';
 import { View, StyleSheet } from 'react-native';
-import { usePageTemplateContext, useScreenDimensions } from '@hooks';
-import { Instructions } from '@components/molecules/Instructions';
+import { usePageModalContext, useScreenDimensions } from '@hooks';
+import { Instructions } from '@components/organisms/Instructions';
 import { useSessionStateStore, usePersistedSettingsStore } from '@stores';
 import { useEffect } from 'react';
 
@@ -19,14 +19,14 @@ const ImportContent: React.FC = () => {
 };
 
 const ModalContent: React.FC = () => {
-  const { setIsModalVisible } = usePageTemplateContext();
+  const { setIsModalVisible } = usePageModalContext();
   const { hasDismissedInstructions, setHasDismissedInstructions } =
     useSessionStateStore();
   const { alwaysShowInstructions } = usePersistedSettingsStore();
 
   useEffect(() => {
     if (alwaysShowInstructions && !hasDismissedInstructions) {
-      setIsModalVisible(true);
+      //setIsModalVisible(true);
     }
   }, [alwaysShowInstructions, hasDismissedInstructions, setIsModalVisible]);
 
