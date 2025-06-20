@@ -1,6 +1,7 @@
 // Map of SVG Icon names to their corresponding URLs
 export const SvgIconMap = {
   'mouse-scroll': '@assets/mouse-scroll-wheel.svg',
+  transformed: '@assets/transformed.svg',
 } as const;
 
 // Array of SVG Icons supported in the application
