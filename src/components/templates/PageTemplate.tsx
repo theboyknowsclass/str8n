@@ -67,6 +67,9 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
     setIsReady(true);
   };
 
+  // child will only ever be one element
+  const modalChild = modalContent.length ? modalContent[0] : null;
+
   return (
     <View style={styles.rootContainer}>
       <View style={contentContainerStyles}>
@@ -76,7 +79,7 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
         </View>
         <View style={actionBarStyles}>{actionItems}</View>
       </View>
-      <Modal>{modalContent.length ? modalContent[0] : null}</Modal>
+      <Modal>{modalChild}</Modal>
     </View>
   );
 };

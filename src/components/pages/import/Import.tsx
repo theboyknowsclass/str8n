@@ -27,7 +27,7 @@ const ModalContent: React.FC = () => {
 
   useEffect(() => {
     if (alwaysShowInstructions && !hasDismissedInstructions) {
-      //setIsModalVisible(true);
+      setIsModalVisible(true);
     }
   }, [alwaysShowInstructions, hasDismissedInstructions, setIsModalVisible]);
 
