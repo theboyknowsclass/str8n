@@ -15,7 +15,6 @@ import {
   PageModalContextProvider,
 } from '@contexts';
 import { NavigationBar } from '@organisms';
-import { useTheme } from '@react-navigation/native';
 
 interface PageTemplateProps {
   children?: React.ReactNode | React.ReactNode[];

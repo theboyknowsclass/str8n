@@ -1,12 +1,6 @@
-// Map of SVG Icon names to their corresponding URLs
-export const SvgIconMap = {
-  'mouse-scroll': '@assets/mouse-scroll-wheel.svg',
-  transformed: '@assets/transformed.svg',
-} as const;
-
 // Array of SVG Icons supported in the application
 // Using 'as const' to make the array readonly and enable literal type inference
-const svgIconNameArray = Object.keys(SvgIconMap);
+const svgIconNameArray = ['mouse-scroll', 'transform'] as const;
 
 // Set for O(1) lookup performance when checking if a string is a valid SVG Icon
 export const SvgIconNames = new Set(svgIconNameArray);

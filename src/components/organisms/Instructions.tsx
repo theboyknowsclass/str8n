@@ -87,6 +87,8 @@ export const Instructions: React.FC<InstructionsProps> = ({
         }
       />
 
+      <InstructionRow icon="transform" text="tap to transform the image" />
+
       <View style={styles.footerRow}>
         <SettingsToggle
           title="show instructions every time"

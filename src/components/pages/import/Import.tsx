@@ -1,10 +1,11 @@
-import { ImagePickerButton, Logo } from '@molecules';
+import { ImagePickerButton } from '@molecules';
 import { PageTemplate } from '@templates';
 import { View, StyleSheet } from 'react-native';
 import { usePageModalContext, useScreenDimensions } from '@hooks';
 import { Instructions } from '@components/organisms/Instructions';
 import { useSessionStateStore, usePersistedSettingsStore } from '@stores';
 import { useEffect } from 'react';
+import { Logo } from '@atoms';
 
 const ImportContent: React.FC = () => {
   const { width, height } = useScreenDimensions();

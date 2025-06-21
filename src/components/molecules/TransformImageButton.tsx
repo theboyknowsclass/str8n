@@ -1,4 +1,4 @@
-import { CircleTextButton, IconButton } from '@atoms';
+import { IconButton } from '@atoms';
 import { router } from 'expo-router';
 
 export const TransformImageButton: React.FC = () => {
@@ -8,21 +8,10 @@ export const TransformImageButton: React.FC = () => {
 
   return (
     <IconButton
-      icon="transformed"
+      icon="transform"
       onPress={onTransformImagePress}
       accessibilityLabel={'Transform Image'}
       title=""
-    />
-  );
-
-  return (
-    <CircleTextButton
-      key={'transform-image'}
-      accessibilityLabel={'Go'}
-      onPress={onTransformImagePress}
-      disabled={false}
-      title={'Go'}
-      fontSize={22}
     />
   );
 };
