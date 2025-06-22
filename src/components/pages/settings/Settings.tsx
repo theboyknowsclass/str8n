@@ -27,7 +27,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: 16,
     alignItems: 'center',
-    marginTop: 40,
+    paddingTop: 80,
+    width: '100%',
+    height: '100%',
   },
   closeButtonContainer: {
     position: 'absolute',

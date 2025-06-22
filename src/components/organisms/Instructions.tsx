@@ -91,7 +91,7 @@ export const Instructions: React.FC<InstructionsProps> = ({
 
       <View style={styles.footerRow}>
         <SettingsToggle
-          title="show instructions every time"
+          title="show every time"
           isEnabled={alwaysShowInstructions}
           onToggle={setAlwaysShowInstructions}
         />

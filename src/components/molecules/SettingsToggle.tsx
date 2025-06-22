@@ -1,6 +1,6 @@
 import { AnimatedSwitch, Text } from '@atoms';
 import { useTheme } from '@react-navigation/native';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 
 interface SettingsToggleProps {
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   toggleText: {
-    flex: 1,
+    flexShrink: 0,
     textAlign: 'left',
     position: 'relative',
     top: -0.5,
