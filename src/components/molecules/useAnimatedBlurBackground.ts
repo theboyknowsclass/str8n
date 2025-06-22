@@ -53,7 +53,7 @@ export const useAnimatedBlurBackground = ({
         if (skipDelay) {
           setZIndex(-1000);
         } else {
-          setTimeout(() => setZIndex(-1000), fadeOutDelay);
+          timeoutRef.current = setTimeout(() => setZIndex(-1000), fadeOutDelay);
         }
       }
     },
