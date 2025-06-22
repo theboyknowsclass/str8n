@@ -21,7 +21,6 @@ export const SettingsToggle: React.FC<SettingsToggleProps> = ({
   const value = useSharedValue(isEnabled);
 
   const onPress = () => {
-    value.value = !value.value;
     onToggle(value.value);
   };
 
