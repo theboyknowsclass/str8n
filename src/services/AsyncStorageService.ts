@@ -25,6 +25,7 @@ export class AsyncStorageService {
       const jsonValue = await AsyncStorage.getItem(THEME_KEY);
       return jsonValue != null ? JSON.parse(jsonValue) : undefined;
     } catch (e) {
+      // swallow error, but log it for debugging
       console.error(e);
       // error reading value
       return undefined;
@@ -39,6 +40,7 @@ export class AsyncStorageService {
     try {
       await AsyncStorage.setItem(THEME_KEY, JSON.stringify(theme));
     } catch (e) {
+      // swallow error, but log it for debugging
       console.error(e);
     }
   };
@@ -54,6 +56,7 @@ export class AsyncStorageService {
       const jsonValue = await AsyncStorage.getItem(SETTINGS_KEY);
       return jsonValue != null ? JSON.parse(jsonValue) : undefined;
     } catch (e) {
+      // swallow error, but log it for debugging
       console.error(e);
       // error reading value
       return undefined;
@@ -68,6 +71,7 @@ export class AsyncStorageService {
     try {
       await AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
     } catch (e) {
+      // swallow error, but log it for debugging
       console.error(e);
     }
   };
