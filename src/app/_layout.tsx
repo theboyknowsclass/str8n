@@ -1,7 +1,7 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
 import { ThemeProvider } from '@react-navigation/native';
-import { useSavedTheme } from '@hooks/useSavedTheme';
+import { useSavedTheme, useSavedSettings } from '@hooks';
 
 import {
   Orbitron_400Regular,
@@ -32,6 +32,7 @@ export const RootLayout = () => {
     Orbitron_900Black,
   });
   const theme = useSavedTheme();
+  useSavedSettings();
 
   useEffect(() => {
     if (loaded || error) {

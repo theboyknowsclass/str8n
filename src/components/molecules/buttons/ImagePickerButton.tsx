@@ -1,8 +1,7 @@
-import { TextButton } from '@atoms';
+import { IconButton } from '@atoms';
 import { ImagePickerService } from '@services';
 import { useOverlayStore, useSourceImageStore } from '@stores';
 import { router } from 'expo-router';
-import { StyleSheet } from 'react-native';
 
 export const ImagePickerButton: React.FC = () => {
   const { isLoading, setLoading, setSourceImage } = useSourceImageStore();
@@ -25,20 +24,11 @@ export const ImagePickerButton: React.FC = () => {
   };
 
   return (
-    <TextButton
-      size="large"
-      variant="outline"
-      title="Start"
-      loading={isLoading}
-      disabled={isLoading}
+    <IconButton
+      accessibilityLabel="Pick an image from the library"
+      icon="photo-library"
       onPress={onStartPress}
-      style={styles.button}
+      loading={isLoading}
     />
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    width: 120,
-  },
-});

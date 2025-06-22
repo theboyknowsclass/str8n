@@ -19,7 +19,7 @@ interface TextButtonProps extends TouchableOpacityProps {
   /** The visual style variant of the button */
   variant?: 'primary' | 'secondary' | 'outline';
   /** The size of the button */
-  size?: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium' | 'large' | 'larger';
   /** The size of the text */
   textStyle?: StyleProp<TextStyle>;
   /** Whether the button is disabled */
@@ -130,8 +130,50 @@ export const TextButton: React.FC<TextButtonProps> = ({
   );
 };
 
+export type CircleTextButtonProps = TextButtonProps & {
+  fontSize?: number;
+};
+
+export const CircleTextButton: React.FC<CircleTextButtonProps> = ({
+  title,
+  loading = false,
+  disabled = false,
+  fontSize = 32,
+  ...rest
+}) => {
+  const textStyle = {
+    fontSize: fontSize,
+  };
+
+  return (
+    <TextButton
+      title={title}
+      loading={loading}
+      disabled={disabled}
+      variant="outline"
+      style={styles.roundButton}
+      size="medium"
+      textStyle={[textStyle, styles.text]}
+      {...rest}
+    />
+  );
+};
+
 const styles = StyleSheet.create({
   button: {
     minWidth: 50,
+  },
+  roundButton: {
+    width: 56,
+    height: 56,
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    borderWidth: 2,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  text: {
+    fontFamily: 'Orbitron_700Bold',
   },
 });

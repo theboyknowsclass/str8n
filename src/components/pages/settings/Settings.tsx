@@ -1,9 +1,9 @@
 import { CloseButton, SettingsToggle } from '@molecules';
-import { useSettingsStore } from '@stores';
+import { usePersistedSettingsStore } from '@stores';
 import { View, StyleSheet } from 'react-native';
 
 export const Settings: React.FC = () => {
-  const { cropToOverlay, setCropToOverlay } = useSettingsStore();
+  const { cropToOverlay, setCropToOverlay } = usePersistedSettingsStore();
 
   return (
     <View>
@@ -27,7 +27,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: 16,
     alignItems: 'center',
-    marginTop: 40,
+    paddingTop: 80,
+    width: '100%',
+    height: '100%',
   },
   closeButtonContainer: {
     position: 'absolute',

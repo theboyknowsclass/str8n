@@ -1,27 +1,26 @@
 import React, { createContext, useState, ReactNode } from 'react';
 import { Dimensions } from '@types';
 
-interface ContentMeasurementsContextType {
+interface PageTemplateContextType {
   dimensions: Dimensions;
   isReady: boolean;
   setDimensions: (dimensions: Dimensions) => void;
   setIsReady: (isReady: boolean) => void;
 }
 
-export const ContentMeasurementsContext =
-  createContext<ContentMeasurementsContextType>({
-    dimensions: { width: 0, height: 0 },
-    setDimensions: () => {},
-    isReady: false,
-    setIsReady: () => {},
-  });
+export const PageTemplateContext = createContext<PageTemplateContextType>({
+  dimensions: { width: 0, height: 0 },
+  setDimensions: () => {},
+  isReady: false,
+  setIsReady: () => {},
+});
 
-interface ContentMeasurementsProviderProps {
+interface PageTemplateProviderProps {
   children: ReactNode;
 }
 
-export const ContentMeasurementsProvider: React.FC<
-  ContentMeasurementsProviderProps
+export const PageTemplateContextProvider: React.FC<
+  PageTemplateProviderProps
 > = ({ children }) => {
   const [dimensions, setDimensions] = useState<Dimensions>({
     width: 0,
@@ -37,8 +36,8 @@ export const ContentMeasurementsProvider: React.FC<
   };
 
   return (
-    <ContentMeasurementsContext.Provider value={value}>
+    <PageTemplateContext.Provider value={value}>
       {children}
-    </ContentMeasurementsContext.Provider>
+    </PageTemplateContext.Provider>
   );
 };

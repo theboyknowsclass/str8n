@@ -11,5 +11,15 @@ export { ThemeFonts } from './ThemeFonts';
 export { ThemeFontStyle } from './ThemeFontStyle';
 export { ThemeType } from './ThemeType';
 export { Result } from './Result';
-export { IconType } from './IconType';
+export {
+  IconType,
+  MaterialIconType,
+  MaterialCommunityIconType,
+  isMaterialIcon,
+  isMaterialCommunityIcon,
+  SvgIconType,
+  isSvgIcon,
+} from './IconType';
 export { Vector } from './Vector';
+export { PersistedSettings } from './PersistedSettings';
+export { ScreenSize } from './ScreenSize';

@@ -1,13 +1,14 @@
+import { MaterialIconType } from './MaterialIconType';
+import { MaterialCommunityIconType } from './MaterialCommunityIconType';
+import { SvgIconType } from './SvgIconType';
+
+// Union type that represents all possible icon types in the application
 export type IconType =
-  | 'file-download'
-  | 'arrow-back'
-  | 'arrow-forward'
-  | 'done'
-  | 'share'
-  | 'light-mode'
-  | 'dark-mode'
-  | 'settings'
-  | 'home'
-  | 'close'
-  | 'zoom-in'
-  | 'zoom-out';
+  | MaterialIconType
+  | MaterialCommunityIconType
+  | SvgIconType;
+
+// Re-export all icon types and utilities for convenience
+export * from './MaterialIconType';
+export * from './MaterialCommunityIconType';
+export * from './SvgIconType';

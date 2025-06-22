@@ -1,6 +1,7 @@
-import { Switch, Text } from '@atoms';
+import { AnimatedSwitch, Text } from '@atoms';
 import { useTheme } from '@react-navigation/native';
 import { View, StyleSheet } from 'react-native';
+import { useSharedValue } from 'react-native-reanimated';
 
 interface SettingsToggleProps {
   title: string;
@@ -17,9 +18,15 @@ export const SettingsToggle: React.FC<SettingsToggleProps> = ({
     colors: { primary },
   } = useTheme();
 
+  const value = useSharedValue(isEnabled);
+
+  const onPress = () => {
+    onToggle(value.value);
+  };
+
   return (
     <View style={styles.toggleContainer}>
-      <Switch onValueChange={onToggle} value={isEnabled} />
+      <AnimatedSwitch onPress={onPress} value={value} />
       <Text color={primary} style={styles.toggleText}>
         {title}
       </Text>
@@ -31,10 +38,12 @@ const styles = StyleSheet.create({
   toggleContainer: {
     display: 'flex',
     flexDirection: 'row',
+    gap: 16,
     alignItems: 'center',
-    gap: 5,
   },
   toggleText: {
+    flexShrink: 0,
+    textAlign: 'left',
     position: 'relative',
     top: -0.5,
   },

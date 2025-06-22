@@ -1,7 +1,7 @@
 import { CheckerBoardBackground, TransformImageButton } from '@molecules';
 import { View, StyleSheet, ImageBackground } from 'react-native';
 import { PageTemplate } from '@templates';
-import { useContentMeasurements } from '@hooks';
+import { usePageTemplateContext } from '@hooks';
 import { useSourceImageStore } from '@stores';
 import { PanZoomControl, SelectionOverlay } from '@components/organisms';
 
@@ -10,7 +10,7 @@ const MAX_SCALE = 1;
 
 const EditContent: React.FC = () => {
   const { sourceImage } = useSourceImageStore();
-  const { dimensions: contentDimensions, isReady } = useContentMeasurements();
+  const { dimensions: contentDimensions, isReady } = usePageTemplateContext();
 
   if (!isReady || !sourceImage) {
     return null;
