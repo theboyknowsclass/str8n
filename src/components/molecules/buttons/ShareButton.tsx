@@ -6,7 +6,7 @@ import { useShareImage } from '@hooks';
  * Button component for sharing the transformed image.
  * Handles loading states and availability of sharing.
  */
-export const DownloadButton: React.FC = () => {
+export const ShareButton: React.FC = () => {
   const { canShare, isSharing, shareImage } = useShareImage();
 
   return (
