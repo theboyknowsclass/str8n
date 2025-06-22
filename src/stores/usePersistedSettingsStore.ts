@@ -1,7 +1,6 @@
 import { PersistedSettings } from '@types';
 import { create } from 'zustand';
 import { AsyncStorageService } from '@services';
-import { bool } from '@techstark/opencv-js';
 
 /**
  * Represents the state of the settings store.
