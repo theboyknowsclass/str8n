@@ -44,13 +44,13 @@ export const useAnimatedBlurBackground = ({
    * Uses timing delays to prevent flickering and ensure smooth transitions
    */
   const setVisibility = useCallback(
-    (immediate: boolean) => {
+    (skipDelay: boolean) => {
       if (isVisible) {
         // Show modal: render immediately, set high z-index
         setZIndex(1000);
       } else {
         // Hide modal: set low z-index first, then unmount after animation
-        if (immediate) {
+        if (skipDelay) {
           setZIndex(-1000);
         } else {
           setTimeout(() => setZIndex(-1000), fadeOutDelay);
