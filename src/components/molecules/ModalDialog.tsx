@@ -13,7 +13,7 @@ interface ModalDialogProps {
   isVisible: boolean;
 }
 
-const ANIMATION_DURATION = 500;
+const ANIMATION_DURATION = 500; // Default duration for animations, aligned with the hook's default.
 
 export const ModalDialog: React.FC<ModalDialogProps> = ({
   children,
