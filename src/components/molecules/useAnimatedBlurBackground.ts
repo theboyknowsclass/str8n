@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { runOnJS, useSharedValue, withTiming } from 'react-native-reanimated';
 
 interface UseAnimatedBlurBackgroundOptions {
@@ -38,6 +38,20 @@ export const useAnimatedBlurBackground = ({
 
   // Animated opacity for smooth fade in/out
   const opacity = useSharedValue(isVisible ? targetOpacity : 0);
+
+  // Timeout reference for fade out delay
+  const timeoutRef = useRef<
+    NodeJS.Timeout | string | number | undefined | null
+  >(null);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   /**
    * Manages the visibility state changes
