@@ -11,8 +11,10 @@ interface UseAnimatedBlurBackgroundOptions {
 interface UseAnimatedBlurBackgroundReturn {
   zIndex: number;
   opacity: ReturnType<typeof useSharedValue<number>>;
-  setVisibility: () => void;
 }
+
+const DEFAULT_FADE_OUT_DELAY = 500;
+const DEFAULT_OPACITY_DURATION = 500;
 
 /**
  * Custom hook for managing AnimatedBlurBackground visibility with smooth animations
@@ -25,8 +27,8 @@ interface UseAnimatedBlurBackgroundReturn {
  */
 export const useAnimatedBlurBackground = ({
   isVisible,
-  fadeOutDelay = 300,
-  opacityDuration = 300,
+  fadeOutDelay = DEFAULT_FADE_OUT_DELAY,
+  opacityDuration = DEFAULT_OPACITY_DURATION,
   targetOpacity = 1, // Default to full opacity
 }: UseAnimatedBlurBackgroundOptions): UseAnimatedBlurBackgroundReturn => {
   // Z-index management to control layering
@@ -41,20 +43,27 @@ export const useAnimatedBlurBackground = ({
    * Manages the visibility state changes
    * Uses timing delays to prevent flickering and ensure smooth transitions
    */
-  const setVisibility = useCallback(() => {
-    if (isVisible) {
-      // Show modal: render immediately, set high z-index
-      setZIndex(1000);
-    } else {
-      // Hide modal: set low z-index first, then unmount after animation
-      setTimeout(() => setZIndex(-1000), fadeOutDelay);
-    }
-  }, [isVisible, fadeOutDelay]);
+  const setVisibility = useCallback(
+    (immediate: boolean) => {
+      if (isVisible) {
+        // Show modal: render immediately, set high z-index
+        setZIndex(1000);
+      } else {
+        // Hide modal: set low z-index first, then unmount after animation
+        if (immediate) {
+          setZIndex(-1000);
+        } else {
+          setTimeout(() => setZIndex(-1000), fadeOutDelay);
+        }
+      }
+    },
+    [isVisible, fadeOutDelay]
+  );
 
   useEffect(() => {
     if (isVisible) {
       // Trigger visibility state changes
-      runOnJS(setVisibility)();
+      runOnJS(setVisibility)(false);
     }
 
     // Animate opacity for smooth transitions
@@ -67,7 +76,7 @@ export const useAnimatedBlurBackground = ({
       (finished) => {
         // When hiding animation completes, trigger visibility cleanup
         if (finished && !isVisible) {
-          runOnJS(setVisibility)();
+          runOnJS(setVisibility)(true);
         }
       }
     );
@@ -76,6 +85,5 @@ export const useAnimatedBlurBackground = ({
   return {
     zIndex,
     opacity,
-    setVisibility,
   };
 };

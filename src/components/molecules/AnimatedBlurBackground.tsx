@@ -37,8 +37,6 @@ export const AnimatedBlurBackground: React.FC<AnimatedBlurBackgroundProps> = ({
   // Use the shared AnimatedBlurBackground hook
   const { zIndex, opacity } = useAnimatedBlurBackground({
     isVisible,
-    fadeOutDelay: 300,
-    opacityDuration: 300,
   });
 
   // Animated blur intensity for the BlurView

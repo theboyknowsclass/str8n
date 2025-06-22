@@ -13,6 +13,8 @@ interface ModalDialogProps {
   isVisible: boolean;
 }
 
+const ANIMATION_DURATION = 500;
+
 export const ModalDialog: React.FC<ModalDialogProps> = ({
   children,
   isVisible,
@@ -37,7 +39,7 @@ export const ModalDialog: React.FC<ModalDialogProps> = ({
 
   useEffect(() => {
     opacity.value = withTiming(isVisible ? 1 : 0, {
-      duration: 300,
+      duration: ANIMATION_DURATION,
       easing: Easing.inOut(Easing.ease),
     });
   }, [isVisible, opacity]);
