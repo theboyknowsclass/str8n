@@ -1,4 +1,4 @@
 export enum ScreenSize {
   SMALL = 'small',
-  NOT_SMALL = 'notsmall',
+  NOT_SMALL = 'not_small',
 }
