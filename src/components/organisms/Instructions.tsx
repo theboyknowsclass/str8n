@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
   },
   footerRow: {
     marginTop: 32,
+    alignItems: 'center',
   },
   iconContainer: {
     alignItems: 'center',
