@@ -1,6 +1,7 @@
 import { PersistedSettings } from '@types';
 import { create } from 'zustand';
 import { AsyncStorageService } from '@services';
+import { bool } from '@techstark/opencv-js';
 
 /**
  * Represents the state of the settings store.
@@ -24,17 +25,32 @@ export const usePersistedSettingsStore = create<PersistedSettingsState>()(
     maintainExifMetadata: false,
     alwaysShowInstructions: true,
     setCropToOverlay: (cropToOverlay: boolean) => {
-      const newSettings = { ...get(), cropToOverlay };
+      const { maintainExifMetadata, alwaysShowInstructions } = get();
+      const newSettings = {
+        cropToOverlay,
+        maintainExifMetadata,
+        alwaysShowInstructions,
+      };
       AsyncStorageService.storeSettings(newSettings);
       set({ cropToOverlay });
     },
     setMaintainExifMetadata: (maintainExifMetadata: boolean) => {
-      const newSettings = { ...get(), maintainExifMetadata };
+      const { cropToOverlay, alwaysShowInstructions } = get();
+      const newSettings = {
+        cropToOverlay,
+        maintainExifMetadata,
+        alwaysShowInstructions,
+      };
       AsyncStorageService.storeSettings(newSettings);
       set({ maintainExifMetadata });
     },
     setAlwaysShowInstructions: (alwaysShowInstructions: boolean) => {
-      const newSettings = { ...get(), alwaysShowInstructions };
+      const { cropToOverlay, maintainExifMetadata } = get();
+      const newSettings = {
+        cropToOverlay,
+        maintainExifMetadata,
+        alwaysShowInstructions,
+      };
       AsyncStorageService.storeSettings(newSettings);
       set({ alwaysShowInstructions });
     },

@@ -13,7 +13,7 @@
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "type-check:strict": "tsc --noEmit --strict",
-    "expoupdate": "npx expo install expo@latest && npx expo install --fix"
+    "upgrade:expo": "npx expo install expo@latest && npx expo install --fix"
   },
   "dependencies": {
     "@expo-google-fonts/orbitron": "^0.2.3",

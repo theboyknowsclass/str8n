@@ -19,10 +19,6 @@ export const useAutoShowInstructions = () => {
       ) {
         setIsModalVisible(true);
       }
-
-      return () => {
-        setIsModalVisible(false);
-      };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [isReady] // only run when page is ready
