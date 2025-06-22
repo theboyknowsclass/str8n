@@ -1,12 +1,11 @@
 import { ImagePickerButton } from '@molecules';
 import { PageTemplate } from '@templates';
 import { View, StyleSheet } from 'react-native';
-import { usePageModalContext, useScreenDimensions } from '@hooks';
-import { Instructions } from '@components/organisms/Instructions';
-import { useSessionStateStore } from '@stores';
+import { useScreenDimensions } from '@hooks';
+import { InstructionsModal } from '@organisms';
+import { InstructionMode } from '@types';
 import { Logo, Text } from '@atoms';
 import { useTheme } from '@react-navigation/native';
-import { useAutoShowInstructions } from '@hooks/useAutoShowInstructions';
 
 const ImportContent: React.FC = () => {
   const { colors } = useTheme();
@@ -25,25 +24,11 @@ const ImportContent: React.FC = () => {
   );
 };
 
-const ModalContent: React.FC = () => {
-  const { setIsModalVisible } = usePageModalContext();
-  const { setHasDismissedInstructions } = useSessionStateStore();
-
-  useAutoShowInstructions();
-
-  const onClosePress = () => {
-    setIsModalVisible(false);
-    setHasDismissedInstructions(true);
-  };
-
-  return <Instructions mode="import" onClosePress={onClosePress} />;
-};
-
 export const Import: React.FC = () => {
   return (
     <PageTemplate>
       <PageTemplate.ModalContent>
-        <ModalContent />
+        <InstructionsModal mode={InstructionMode.ALL} />
       </PageTemplate.ModalContent>
       <PageTemplate.ActionItems>
         <ImagePickerButton />

@@ -23,3 +23,4 @@ export {
 export { Vector } from './Vector';
 export { PersistedSettings } from './PersistedSettings';
 export { ScreenSize } from './ScreenSize';
+export { InstructionMode } from './InstructionMode';

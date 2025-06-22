@@ -3,7 +3,12 @@ import { View, StyleSheet, ImageBackground } from 'react-native';
 import { PageTemplate } from '@templates';
 import { usePageTemplateContext } from '@hooks';
 import { useSourceImageStore } from '@stores';
-import { PanZoomControl, SelectionOverlay } from '@components/organisms';
+import {
+  InstructionsModal,
+  PanZoomControl,
+  SelectionOverlay,
+} from '@organisms';
+import { InstructionMode } from '@types';
 
 const BORDER_PERCENTAGE = 0.2;
 const MAX_SCALE = 1;
@@ -92,10 +97,12 @@ const EditContent: React.FC = () => {
     </View>
   );
 };
-
 export const Edit: React.FC = () => {
   return (
     <PageTemplate>
+      <PageTemplate.ModalContent>
+        <InstructionsModal mode={InstructionMode.EDIT} />
+      </PageTemplate.ModalContent>
       <PageTemplate.ActionItems>
         <TransformImageButton />
       </PageTemplate.ActionItems>

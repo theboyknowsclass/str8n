@@ -1,12 +1,12 @@
 export { BackButton } from './buttons/BackButton';
 export { ThemeToggle } from './buttons/ThemeToggle';
 export { DownloadButton } from './buttons/DownloadButton';
+export { ShareButton } from './buttons/ShareButton';
 export { SettingsButton } from './buttons/SettingsButton';
 export { ImagePickerButton } from './buttons/ImagePickerButton';
 export { CloseButton } from './buttons/CloseButton';
 export { TransformImageButton } from './buttons/TransformImageButton';
 export { LoadingContainer } from './LoadingContainer';
-export { ZoomButton } from './ZoomButton';
 export { SettingsToggle } from './buttons/SettingsToggle';
 export { TouchPoint } from './TouchPoint';
 export { CheckerBoardBackground } from './CheckerBoardBackground';
