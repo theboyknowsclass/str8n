@@ -35,7 +35,7 @@ export const AnimatedBlurBackground: React.FC<AnimatedBlurBackgroundProps> = ({
   const blurTint = dark ? 'default' : 'regular';
 
   // Use the shared AnimatedBlurBackground hook
-  const { shouldRender, zIndex, opacity } = useAnimatedBlurBackground({
+  const { zIndex, opacity } = useAnimatedBlurBackground({
     isVisible,
     fadeOutDelay: 300,
     opacityDuration: 300,
@@ -70,10 +70,10 @@ export const AnimatedBlurBackground: React.FC<AnimatedBlurBackgroundProps> = ({
     });
   }, [isVisible, blurIntensity]);
 
-  // Don't render anything when hidden to prevent blocking interactions
-  if (!shouldRender) {
-    return null;
-  }
+  // // Don't render anything when hidden to prevent blocking interactions
+  // if (!shouldRender) {
+  //   return null;
+  // }
 
   return (
     <AnimatedBlurView

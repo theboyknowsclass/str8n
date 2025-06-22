@@ -6,11 +6,14 @@ import { Instructions } from '@components/organisms/Instructions';
 import { useSessionStateStore } from '@stores';
 import { Logo, Text } from '@atoms';
 import { useTheme } from '@react-navigation/native';
+import { useAutoShowInstructions } from '@hooks/useAutoShowInstructions';
 
 const ImportContent: React.FC = () => {
   const { colors } = useTheme();
   const { width, height } = useScreenDimensions();
   const logoSize = Math.min(width, height) * 0.7;
+
+  // useAutoShowInstructions();
 
   return (
     <View style={styles.container}>
@@ -25,6 +28,9 @@ const ImportContent: React.FC = () => {
 const ModalContent: React.FC = () => {
   const { setIsModalVisible } = usePageModalContext();
   const { setHasDismissedInstructions } = useSessionStateStore();
+
+  useAutoShowInstructions();
+
   const onClosePress = () => {
     setIsModalVisible(false);
     setHasDismissedInstructions(true);

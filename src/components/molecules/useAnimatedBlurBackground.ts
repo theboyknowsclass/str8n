@@ -9,7 +9,6 @@ interface UseAnimatedBlurBackgroundOptions {
 }
 
 interface UseAnimatedBlurBackgroundReturn {
-  shouldRender: boolean;
   zIndex: number;
   opacity: ReturnType<typeof useSharedValue<number>>;
   setVisibility: () => void;
@@ -30,10 +29,6 @@ export const useAnimatedBlurBackground = ({
   opacityDuration = 300,
   targetOpacity = 1, // Default to full opacity
 }: UseAnimatedBlurBackgroundOptions): UseAnimatedBlurBackgroundReturn => {
-  // State to control whether the component should be rendered
-  // This prevents the overlay from blocking interactions when hidden
-  const [shouldRender, setShouldRender] = useState(isVisible);
-
   // Z-index management to control layering
   // 1000: Above all content (modal visible)
   // -1000: Below all content (modal hidden, allows interactions)
@@ -49,13 +44,10 @@ export const useAnimatedBlurBackground = ({
   const setVisibility = useCallback(() => {
     if (isVisible) {
       // Show modal: render immediately, set high z-index
-      setShouldRender(true);
       setZIndex(1000);
     } else {
       // Hide modal: set low z-index first, then unmount after animation
-      setZIndex(-1000);
-      // Delay unmounting to allow fade-out animation to complete
-      setTimeout(() => setShouldRender(false), fadeOutDelay);
+      setTimeout(() => setZIndex(-1000), fadeOutDelay);
     }
   }, [isVisible, fadeOutDelay]);
 
@@ -82,7 +74,6 @@ export const useAnimatedBlurBackground = ({
   }, [isVisible, opacity, setVisibility, opacityDuration, targetOpacity]);
 
   return {
-    shouldRender,
     zIndex,
     opacity,
     setVisibility,

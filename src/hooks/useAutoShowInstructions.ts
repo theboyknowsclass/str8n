@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
 import { usePageModalContext } from './usePageModalContext';
 import { usePersistedSettingsStore, useSessionStateStore } from '@stores';
+import { usePageTemplateContext } from './usePageTemplateContext';
 
 export const useAutoShowInstructions = () => {
+  const { isReady } = usePageTemplateContext();
   const { setIsModalVisible, isModalVisible } = usePageModalContext();
   const { hasDismissedInstructions } = useSessionStateStore();
   const { alwaysShowInstructions } = usePersistedSettingsStore();
@@ -10,13 +12,12 @@ export const useAutoShowInstructions = () => {
   useEffect(
     () => {
       if (
+        isReady &&
         !isModalVisible &&
         alwaysShowInstructions &&
         !hasDismissedInstructions
       ) {
-        setTimeout(() => {
-          setIsModalVisible(true);
-        }, 1500);
+        setIsModalVisible(true);
       }
 
       return () => {
@@ -24,6 +25,6 @@ export const useAutoShowInstructions = () => {
       };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [] // only run once on mount
+    [isReady] // only run when page is ready
   );
 };

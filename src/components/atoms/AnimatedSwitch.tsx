@@ -1,5 +1,5 @@
 import { useTheme } from '@react-navigation/native';
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import Animated, {
   interpolate,

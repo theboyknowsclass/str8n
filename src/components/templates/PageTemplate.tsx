@@ -88,6 +88,7 @@ const Modal: React.FC<ModalContentProps> = ({ children }) => {
   const { isModalVisible } = usePageModalContext();
 
   if (!children) {
+    // if no children, don't render anything
     return null;
   }
 

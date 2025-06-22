@@ -1,6 +1,6 @@
 import { AnimatedSwitch, Text } from '@atoms';
 import { useTheme } from '@react-navigation/native';
-import { View, StyleSheet, Platform } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 
 interface SettingsToggleProps {
