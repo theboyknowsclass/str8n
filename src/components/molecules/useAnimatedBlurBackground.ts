@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { runOnJS, useSharedValue, withTiming } from 'react-native-reanimated';
 
 interface UseAnimatedBlurBackgroundOptions {
@@ -11,8 +11,10 @@ interface UseAnimatedBlurBackgroundOptions {
 interface UseAnimatedBlurBackgroundReturn {
   zIndex: number;
   opacity: ReturnType<typeof useSharedValue<number>>;
-  setVisibility: () => void;
 }
+
+const DEFAULT_FADE_OUT_DELAY = 500;
+const DEFAULT_OPACITY_DURATION = 500;
 
 /**
  * Custom hook for managing AnimatedBlurBackground visibility with smooth animations
@@ -25,8 +27,8 @@ interface UseAnimatedBlurBackgroundReturn {
  */
 export const useAnimatedBlurBackground = ({
   isVisible,
-  fadeOutDelay = 300,
-  opacityDuration = 300,
+  fadeOutDelay = DEFAULT_FADE_OUT_DELAY,
+  opacityDuration = DEFAULT_OPACITY_DURATION,
   targetOpacity = 1, // Default to full opacity
 }: UseAnimatedBlurBackgroundOptions): UseAnimatedBlurBackgroundReturn => {
   // Z-index management to control layering
@@ -37,24 +39,45 @@ export const useAnimatedBlurBackground = ({
   // Animated opacity for smooth fade in/out
   const opacity = useSharedValue(isVisible ? targetOpacity : 0);
 
+  // Timeout reference for fade out delay
+  const timeoutRef = useRef<
+    NodeJS.Timeout | string | number | undefined | null
+  >(null);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
   /**
    * Manages the visibility state changes
    * Uses timing delays to prevent flickering and ensure smooth transitions
    */
-  const setVisibility = useCallback(() => {
-    if (isVisible) {
-      // Show modal: render immediately, set high z-index
-      setZIndex(1000);
-    } else {
-      // Hide modal: set low z-index first, then unmount after animation
-      setTimeout(() => setZIndex(-1000), fadeOutDelay);
-    }
-  }, [isVisible, fadeOutDelay]);
+  const setVisibility = useCallback(
+    (skipDelay: boolean) => {
+      if (isVisible) {
+        // Show modal: render immediately, set high z-index
+        setZIndex(1000);
+      } else {
+        // Hide modal: set low z-index first, then unmount after animation
+        if (skipDelay) {
+          setZIndex(-1000);
+        } else {
+          timeoutRef.current = setTimeout(() => setZIndex(-1000), fadeOutDelay);
+        }
+      }
+    },
+    [isVisible, fadeOutDelay]
+  );
 
   useEffect(() => {
     if (isVisible) {
       // Trigger visibility state changes
-      runOnJS(setVisibility)();
+      runOnJS(setVisibility)(false);
     }
 
     // Animate opacity for smooth transitions
@@ -67,7 +90,7 @@ export const useAnimatedBlurBackground = ({
       (finished) => {
         // When hiding animation completes, trigger visibility cleanup
         if (finished && !isVisible) {
-          runOnJS(setVisibility)();
+          runOnJS(setVisibility)(true);
         }
       }
     );
@@ -76,6 +99,5 @@ export const useAnimatedBlurBackground = ({
   return {
     zIndex,
     opacity,
-    setVisibility,
   };
 };
