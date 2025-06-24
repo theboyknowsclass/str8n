@@ -4,6 +4,7 @@ import {
   useScreenDimensions,
 } from '@hooks';
 import { StyleSheet, View, LayoutChangeEvent, ViewStyle } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   LoadingContainer,
   AnimatedBlurBackground,
@@ -45,6 +46,7 @@ interface PageTemplateComponent extends React.FC<PageTemplateProps> {
 const Page: React.FC<PageTemplateProps> = ({ children }) => {
   const { isLandscape } = useScreenDimensions();
   const { setIsReady, setDimensions, isReady } = usePageTemplateContext();
+  const insets = useSafeAreaInsets();
 
   // Extract action items and modal content from children
   const { otherChildren, actionItems, modalContent } =
@@ -71,8 +73,8 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
   const modalChild = modalContent.length ? modalContent[0] : null;
 
   return (
-    <View style={styles.rootContainer}>
-      <View style={contentContainerStyles}>
+    <View style={[styles.rootContainer]}>
+      <View style={[contentContainerStyles, {paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right}]}>
         <NavigationBar />
         <View style={styles.mainContent} onLayout={onLayout}>
           <LoadingContainer isReady={isReady}>{otherChildren}</LoadingContainer>
@@ -130,14 +132,13 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    margin: 16,
     position: 'relative',
   },
   actionBarBase: {
     display: 'flex',
     flexGrow: 0,
+    padding: 16,    
     justifyContent: 'space-evenly',
-    padding: 16,
   },
 });
 
