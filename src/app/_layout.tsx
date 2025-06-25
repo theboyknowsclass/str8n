@@ -1,6 +1,7 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
 import { ThemeProvider } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useSavedTheme, useSavedSettings } from '@hooks';
 
 import {
@@ -45,24 +46,26 @@ export const RootLayout = () => {
   }
 
   return (
-    <ThemeProvider value={theme}>
-      {/* GestureHandlerRootView is required for gesture handling in React Native */}
-      <GestureHandlerRootView style={styles.container}>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="edit" options={{ headerShown: false }} />
-          <Stack.Screen name="export" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="settings"
-            options={{ headerShown: false, presentation: 'modal' }}
-          />
-          <Stack.Screen
-            name="transform"
-            options={{ headerShown: false, presentation: 'modal' }}
-          />
-        </Stack>
-      </GestureHandlerRootView>
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider value={theme}>
+        {/* GestureHandlerRootView is required for gesture handling in React Native */}
+        <GestureHandlerRootView style={styles.container}>
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="edit" options={{ headerShown: false }} />
+            <Stack.Screen name="export" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="settings"
+              options={{ headerShown: false, presentation: 'fullScreenModal' }}
+            />
+            <Stack.Screen
+              name="transform"
+              options={{ headerShown: false, presentation: 'fullScreenModal' }}
+            />
+          </Stack>
+        </GestureHandlerRootView>
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 };
 

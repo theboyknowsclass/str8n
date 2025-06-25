@@ -1,40 +1,33 @@
-import { CloseButton, SettingsToggle } from '@molecules';
+import { SettingsToggle } from '@molecules';
+import { ModalPageTemplate } from '@templates';
 import { usePersistedSettingsStore } from '@stores';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 export const Settings: React.FC = () => {
   const { cropToOverlay, setCropToOverlay } = usePersistedSettingsStore();
 
   return (
-    <View>
-      <View style={styles.closeButtonContainer}>
-        <CloseButton />
-      </View>
-      <View style={styles.container}>
+    <ModalPageTemplate title="Settings">
+      <View style={styles.contentContainer}>
         <SettingsToggle
           title="Crop to overlay"
           isEnabled={cropToOverlay}
           onToggle={setCropToOverlay}
         />
       </View>
-    </View>
+    </ModalPageTemplate>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  contentContainer: {
     display: 'flex',
     flexDirection: 'column',
     gap: 16,
     alignItems: 'center',
-    paddingTop: 80,
+    justifyContent: 'flex-start',
     width: '100%',
     height: '100%',
-  },
-  closeButtonContainer: {
-    position: 'absolute',
-    top: 16,
-    left: 16,
-    zIndex: 1000,
+    marginTop: 32,
   },
 });

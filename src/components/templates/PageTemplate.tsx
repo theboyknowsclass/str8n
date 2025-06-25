@@ -15,6 +15,7 @@ import {
   PageModalContextProvider,
 } from '@contexts';
 import { NavigationBar } from '@organisms';
+import { SafeAreaView } from '@atoms';
 
 interface PageTemplateProps {
   children?: React.ReactNode | React.ReactNode[];
@@ -53,12 +54,17 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
   // responsive styles for orientation
   const contentContainerStyles = [
     styles.contentContainer,
-    { flexDirection: isLandscape ? 'row' : 'column' } as ViewStyle,
+    {
+      flexDirection: isLandscape ? 'row' : 'column',
+    } as ViewStyle,
   ];
 
   const actionBarStyles = [
     styles.actionBarBase,
-    { flexDirection: isLandscape ? 'column' : 'row' } as ViewStyle,
+    {
+      flexDirection: isLandscape ? 'column' : 'row',
+      paddingTop: 16,
+    } as ViewStyle,
   ];
 
   const onLayout = (event: LayoutChangeEvent) => {
@@ -71,14 +77,14 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
   const modalChild = modalContent.length ? modalContent[0] : null;
 
   return (
-    <View style={styles.rootContainer}>
-      <View style={contentContainerStyles}>
+    <View style={[styles.rootContainer]}>
+      <SafeAreaView style={[contentContainerStyles]}>
         <NavigationBar />
         <View style={styles.mainContent} onLayout={onLayout}>
           <LoadingContainer isReady={isReady}>{otherChildren}</LoadingContainer>
         </View>
         <View style={actionBarStyles}>{actionItems}</View>
-      </View>
+      </SafeAreaView>
       <Modal>{modalChild}</Modal>
     </View>
   );
@@ -130,14 +136,12 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    margin: 16,
     position: 'relative',
   },
   actionBarBase: {
     display: 'flex',
     flexGrow: 0,
     justifyContent: 'space-evenly',
-    padding: 16,
   },
 });
 

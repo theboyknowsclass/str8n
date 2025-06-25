@@ -54,8 +54,6 @@ export const ModalDialog: React.FC<ModalDialogProps> = ({
 const styles = StyleSheet.create({
   modalContainer: {
     position: 'relative',
-    minWidth: '30%',
-    minHeight: '30%',
     maxWidth: '90%',
     maxHeight: '90%',
     padding: 16,
@@ -63,6 +61,5 @@ const styles = StyleSheet.create({
     boxShadow: '0px 0px 8px 4px rgba(0, 0, 0, 0.20)',
     zIndex: 1000,
     borderWidth: 0,
-    backgroundColor: 'red',
   },
 });

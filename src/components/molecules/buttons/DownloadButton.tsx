@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconButton } from '@atoms';
-import { useDownloadImage } from '@hooks/useDownloadImage.web';
+import { useDownloadImage } from '@hooks';
 import { useTransformedImageStore } from '@stores';
 
 /**

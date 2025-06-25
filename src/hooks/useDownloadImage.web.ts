@@ -2,6 +2,7 @@ import { saveAs } from 'file-saver';
 
 type DownloadImageHook = () => {
   downloadImage: (image: string, fileName: string) => Promise<void>;
+  canDownload: boolean;
 };
 
 export const useDownloadImage: DownloadImageHook = () => {
@@ -24,7 +25,7 @@ export const useDownloadImage: DownloadImageHook = () => {
     return;
   };
 
-  return { downloadImage };
+  return { downloadImage, canDownload: true };
 };
 
 export default useDownloadImage;

@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   navigationBarBase: {
     display: 'flex',
     flexGrow: 0,
-    padding: 16,
+    paddingBottom: 16,
     gap: 16,
   },
   navigationBarPrimary: {

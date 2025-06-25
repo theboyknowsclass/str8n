@@ -7,3 +7,4 @@ export { AnimatedSwitch } from './AnimatedSwitch';
 export { LoadingSpinner } from './LoadingSpinner';
 export { ProgressWheel } from './ProgressWheel';
 export { Logo, LogoSvg } from './logo';
+export { SafeAreaView } from './SafeAreaView';
