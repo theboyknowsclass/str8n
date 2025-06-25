@@ -77,16 +77,16 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
   const modalChild = modalContent.length ? modalContent[0] : null;
 
   return (
-    <SafeAreaView style={[styles.rootContainer]}>
-      <View style={[contentContainerStyles]}>
+    <View style={[styles.rootContainer]}>
+      <SafeAreaView style={[contentContainerStyles]}>
         <NavigationBar />
         <View style={styles.mainContent} onLayout={onLayout}>
           <LoadingContainer isReady={isReady}>{otherChildren}</LoadingContainer>
         </View>
         <View style={actionBarStyles}>{actionItems}</View>
-      </View>
+      </SafeAreaView>
       <Modal>{modalChild}</Modal>
-    </SafeAreaView>
+    </View>
   );
 };
 

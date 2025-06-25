@@ -96,10 +96,10 @@ export const AnimatedBlurBackground: React.FC<AnimatedBlurBackgroundProps> = ({
 const styles = StyleSheet.create({
   blurContainer: {
     position: 'absolute',
-    top: 0,
-    left: 0,
     width: '100%',
     height: '100%',
+    borderWidth: 1,
+    borderColor: 'red',
   },
   blurView: {
     width: '100%',

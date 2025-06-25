@@ -184,7 +184,7 @@ def generate_assets():
         
         # Generate splash icon (1024x1024 with transparency)
         print("\nGenerating splash icon...")
-        final_image_splash = create_bordered_icon(svg_path, 1024, 90)
+        final_image_splash = create_bordered_icon(svg_inverse_path, 1024, 90)
         final_image_splash.save(splash_icon, 'PNG')
         print(f"Generated splash icon at: {splash_icon}")
         
