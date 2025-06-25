@@ -111,6 +111,9 @@ def create_bordered_icon(svg_path, size, border_width, background_color=None, gr
     if grayscale:
         final_image = ImageOps.grayscale(final_image).convert('RGBA')
     
+    # Close the SVG image to release the file handle
+    svg_image.close()
+    
     # Clean up temporary file
     try:
         os.remove(temp_png)
@@ -184,7 +187,7 @@ def generate_assets():
         
         # Generate splash icon (1024x1024 with transparency)
         print("\nGenerating splash icon...")
-        final_image_splash = create_bordered_icon(svg_inverse_path, 1024, 90)
+        final_image_splash = create_bordered_icon(svg_inverse_path, 1024,80)
         final_image_splash.save(splash_icon, 'PNG')
         print(f"Generated splash icon at: {splash_icon}")
         

@@ -5,7 +5,7 @@
     "scheme": "str8n-scheme",
     "version": "1.0.0",
     "orientation": "default",
-    "icon": "./assets/icon-with-border-1024.png",
+    "icon": "./assets/icon-with-border-inverse-1024.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -57,7 +57,8 @@
     },
     "android": {
       "package": "com.ineffable.str8n",
-      "versionCode": 1
+      "versionCode": 1,
+      "edgeToEdgeEnabled": true
     },
     "web": {
       "favicon": "./assets/favicon.png",

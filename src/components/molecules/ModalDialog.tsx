@@ -61,6 +61,5 @@ const styles = StyleSheet.create({
     boxShadow: '0px 0px 8px 4px rgba(0, 0, 0, 0.20)',
     zIndex: 1000,
     borderWidth: 0,
-    backgroundColor: 'red',
   },
 });
