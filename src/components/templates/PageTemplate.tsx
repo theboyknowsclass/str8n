@@ -4,7 +4,6 @@ import {
   useScreenDimensions,
 } from '@hooks';
 import { StyleSheet, View, LayoutChangeEvent, ViewStyle } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   LoadingContainer,
   AnimatedBlurBackground,
@@ -16,6 +15,7 @@ import {
   PageModalContextProvider,
 } from '@contexts';
 import { NavigationBar } from '@organisms';
+import { SafeAreaView } from '@atoms';
 
 interface PageTemplateProps {
   children?: React.ReactNode | React.ReactNode[];
@@ -46,7 +46,6 @@ interface PageTemplateComponent extends React.FC<PageTemplateProps> {
 const Page: React.FC<PageTemplateProps> = ({ children }) => {
   const { isLandscape } = useScreenDimensions();
   const { setIsReady, setDimensions, isReady } = usePageTemplateContext();
-  const insets = useSafeAreaInsets();
 
   // Extract action items and modal content from children
   const { otherChildren, actionItems, modalContent } =
@@ -55,12 +54,17 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
   // responsive styles for orientation
   const contentContainerStyles = [
     styles.contentContainer,
-    { flexDirection: isLandscape ? 'row' : 'column' } as ViewStyle,
+    {
+      flexDirection: isLandscape ? 'row' : 'column',
+    } as ViewStyle,
   ];
 
   const actionBarStyles = [
     styles.actionBarBase,
-    { flexDirection: isLandscape ? 'column' : 'row' } as ViewStyle,
+    {
+      flexDirection: isLandscape ? 'column' : 'row',
+      paddingTop: 16,
+    } as ViewStyle,
   ];
 
   const onLayout = (event: LayoutChangeEvent) => {
@@ -73,8 +77,8 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
   const modalChild = modalContent.length ? modalContent[0] : null;
 
   return (
-    <View style={[styles.rootContainer]}>
-      <View style={[contentContainerStyles, {paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right}]}>
+    <SafeAreaView style={[styles.rootContainer]}>
+      <View style={[contentContainerStyles]}>
         <NavigationBar />
         <View style={styles.mainContent} onLayout={onLayout}>
           <LoadingContainer isReady={isReady}>{otherChildren}</LoadingContainer>
@@ -82,7 +86,7 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
         <View style={actionBarStyles}>{actionItems}</View>
       </View>
       <Modal>{modalChild}</Modal>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -137,7 +141,6 @@ const styles = StyleSheet.create({
   actionBarBase: {
     display: 'flex',
     flexGrow: 0,
-    padding: 16,    
     justifyContent: 'space-evenly',
   },
 });

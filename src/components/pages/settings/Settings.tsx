@@ -7,8 +7,7 @@ export const Settings: React.FC = () => {
   const { cropToOverlay, setCropToOverlay } = usePersistedSettingsStore();
 
   return (
-    <ModalPageTemplate
-    >
+    <ModalPageTemplate title="Settings">
       <View style={styles.contentContainer}>
         <SettingsToggle
           title="Crop to overlay"
@@ -27,5 +26,8 @@ const styles = StyleSheet.create({
     gap: 16,
     alignItems: 'center',
     justifyContent: 'flex-start',
+    width: '100%',
+    height: '100%',
+    marginTop: 32,
   },
 });

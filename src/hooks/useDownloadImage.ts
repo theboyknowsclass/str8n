@@ -8,8 +8,7 @@ export const useDownloadImage: DownloadImageHook = () => {
     console.warn('downloadImage', image, fileName);
   };
 
-  return { downloadImage,
-     canDownload: false };
+  return { downloadImage, canDownload: false };
 };
 
 export default useDownloadImage;

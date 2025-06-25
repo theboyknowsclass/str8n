@@ -1,4 +1,4 @@
-import { ProgressWheel, Text } from '@atoms';
+import { LoadingSpinner, Text } from '@atoms';
 import { useScreenDimensions, useTransformImage } from '@hooks';
 import { ModalPageTemplate } from '@templates';
 import { useTheme } from '@react-navigation/native';
@@ -17,11 +17,7 @@ export const Transform: React.FC = () => {
 
   return (
     <ModalPageTemplate onClose={cancel}>
-      <ProgressWheel
-        size={loadingAnimationSize}
-        progress={undefined}
-        animating={isLoading}
-      />
+      <LoadingSpinner size={loadingAnimationSize} animating={isLoading} />
       <Text style={styles.text} size="large" color={colors.primary}>
         Reticulating splines...
       </Text>
