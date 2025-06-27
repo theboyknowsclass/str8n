@@ -1,6 +1,5 @@
 import { useLocalSearchParams } from 'expo-router';
-import { Instructions } from '../components/organisms/Instructions/Instructions';
-import { ModalPageTemplate } from '@templates';
+import { InstructionsPage } from '@pages';
 import { InstructionMode } from '@types';
 
 export const InstructionsRoute: React.FC = () => {
@@ -16,9 +15,7 @@ export const InstructionsRoute: React.FC = () => {
   const shouldShowSteps = showSteps !== 'false';
 
   return (
-    <ModalPageTemplate title="Instructions">
-      <Instructions mode={instructionMode} showSteps={shouldShowSteps} />
-    </ModalPageTemplate>
+    <InstructionsPage mode={instructionMode} showSteps={shouldShowSteps} />
   );
 };
 
