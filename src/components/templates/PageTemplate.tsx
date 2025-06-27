@@ -59,7 +59,8 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
     styles.actionBarBase,
     {
       flexDirection: isLandscape ? 'column' : 'row',
-      paddingTop: 16,
+      paddingTop: isLandscape ? 0 : 16,
+      paddingLeft: isLandscape ? 16 : 0,
     } as ViewStyle,
   ];
 

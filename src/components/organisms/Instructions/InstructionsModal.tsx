@@ -22,6 +22,7 @@ export const InstructionsModal: React.FC<InstructionsModalProps> = ({
   };
 
   const showTitle = mode === InstructionMode.ALL;
+  const showSteps = mode === InstructionMode.ALL;
   const title = showTitle ? 'Instructions' : undefined;
 
   return (
@@ -30,7 +31,7 @@ export const InstructionsModal: React.FC<InstructionsModalProps> = ({
       title={title}
       onClose={onClosePress}
     >
-      <Instructions mode={mode} />
+      <Instructions mode={mode} showSteps={showSteps} />
     </ModalDialog>
   );
 };

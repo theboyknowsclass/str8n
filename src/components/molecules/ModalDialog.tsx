@@ -13,7 +13,7 @@ interface ModalDialogProps {
   children: React.ReactNode;
   isVisible: boolean;
   title?: string;
-  onClose?: () => void;
+  onClose: () => void;
 }
 
 const ANIMATION_DURATION = 500; // Default duration for animations, aligned with the hook's default.
@@ -52,23 +52,21 @@ export const ModalDialog: React.FC<ModalDialogProps> = ({
 
   return (
     <Animated.View style={[styles.modalContainer, themedStyle, animatedStyle]}>
-      {(title || onClose) && (
-        <View style={styles.header}>
-          {title && (
-            <Text size="larger" color={primary}>
-              {title}
-            </Text>
-          )}
-          {onClose && (
-            <IconButton
-              icon="close"
-              size="small"
-              accessibilityLabel="Close"
-              onPress={onClose}
-            />
-          )}
-        </View>
-      )}
+      <View style={styles.header}>
+        {title ? (
+          <Text size="larger" color={primary}>
+            {title}
+          </Text>
+        ) : (
+          <View style={styles.spacer} />
+        )}
+        <IconButton
+          icon="close"
+          size="small"
+          accessibilityLabel="Close"
+          onPress={onClose}
+        />
+      </View>
       <ScrollView
         showsVerticalScrollIndicator={true}
         showsHorizontalScrollIndicator={false}
@@ -96,5 +94,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 32,
+  },
+  spacer: {
+    flex: 1,
   },
 });

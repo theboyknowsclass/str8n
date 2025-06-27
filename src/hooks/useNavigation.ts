@@ -2,22 +2,36 @@ import { useRouter } from 'expo-router';
 import { useSessionStateStore } from '../stores/useSessionStateStore';
 import { Page } from '../types/Pages';
 import { InstructionMode } from '../types/InstructionMode';
+import { usePageModalContext } from './usePageModalContext';
+import { useScreenDimensions } from './useScreenDimensions';
 
 export const useNavigation = () => {
   const router = useRouter();
   const { setCurrentPage, currentPage, startPage } = useSessionStateStore();
+  const { setIsModalVisible } = usePageModalContext();
+  const { isMobile } = useScreenDimensions();
+
+  const useCustomModal = !isMobile;
 
   const navigateToInstructions = () => {
+    console.log('navigateToInstructions useCustomModal', useCustomModal);
+
+    if (useCustomModal) {
+      setIsModalVisible(true);
+      return;
+    }
+
+    // If the current page is the start page, show the step grouping
     const showSteps = currentPage === startPage;
 
     let mode: InstructionMode | undefined = undefined;
 
     switch (currentPage) {
       case Page.IMPORT:
-        mode = InstructionMode.IMPORT;
+        mode = showSteps ? InstructionMode.ALL : InstructionMode.IMPORT;
         break;
       case Page.EDIT:
-        mode = InstructionMode.EDIT;
+        mode = showSteps ? InstructionMode.ALL : InstructionMode.EDIT;
         break;
       case Page.EXPORT:
         mode = InstructionMode.EXPORT;

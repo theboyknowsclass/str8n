@@ -12,7 +12,7 @@ interface InstructionsProps {
 
 export const Instructions: React.FC<InstructionsProps> = ({
   mode = InstructionMode.ALL,
-  showSteps = true,
+  showSteps = false,
 }) => {
   const { colors } = useTheme();
   const instructions = useInstructions(mode);
