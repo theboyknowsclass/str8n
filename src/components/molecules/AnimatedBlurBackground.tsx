@@ -78,7 +78,7 @@ export const AnimatedBlurBackground: React.FC<AnimatedBlurBackgroundProps> = ({
       animatedProps={animatedProps}
       intensity={blurIntensity.value}
       tint={blurTint}
-      style={[styles.blurContainer, styles.blurView, { zIndex: 1000 }]}
+      style={styles.blurView}
       pointerEvents={pointerEvents}
       {...Platform.select({
         android: {
@@ -95,16 +95,13 @@ export const AnimatedBlurBackground: React.FC<AnimatedBlurBackgroundProps> = ({
 };
 
 const styles = StyleSheet.create({
-  blurContainer: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-  },
   blurView: {
+    position: 'absolute',
     width: '100%',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 1000,
   },
   opacityContainer: {
     width: '100%',

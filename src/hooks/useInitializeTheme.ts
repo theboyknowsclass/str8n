@@ -15,16 +15,17 @@ export const useInitializeTheme = () => {
   useEffect(() => {
     const loadInitialData = async () => {
       const storedTheme = await AsyncStorageService.getStoredTheme();
+
+      // If stored theme, use it
       if (storedTheme) {
         setTheme(storedTheme);
-        setIsReady(true);
-        return;
-      }
-
-      if (colorScheme === 'dark') {
-        setTheme(DarkTheme);
       } else {
-        setTheme(DefaultTheme);
+        // If no stored theme, use system default
+        if (colorScheme === 'dark') {
+          setTheme(DarkTheme);
+        } else {
+          setTheme(DefaultTheme);
+        }
       }
       setIsReady(true);
     };
