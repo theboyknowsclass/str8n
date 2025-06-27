@@ -7,12 +7,13 @@ export const useAutoShowInstructions = () => {
   const { isReady } = usePageTemplateContext();
   const { setIsModalVisible, isModalVisible } = usePageModalContext();
   const { hasDismissedInstructions } = useSessionStateStore();
-  const { alwaysShowInstructions } = usePersistedSettingsStore();
+  const { alwaysShowInstructions, isReady: isSettingsReady } = usePersistedSettingsStore();
 
   useEffect(
     () => {
       if (
         isReady &&
+        isSettingsReady &&
         !isModalVisible &&
         alwaysShowInstructions &&
         !hasDismissedInstructions
@@ -21,6 +22,6 @@ export const useAutoShowInstructions = () => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isReady] // only run when page is ready
+    [isReady, isSettingsReady] // only run when page is ready
   );
 };

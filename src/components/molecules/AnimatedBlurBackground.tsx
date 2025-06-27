@@ -34,6 +34,8 @@ export const AnimatedBlurBackground: React.FC<AnimatedBlurBackgroundProps> = ({
   const { dark } = useTheme();
   const blurTint = dark ? 'default' : 'regular';
 
+  console.log('AnimatedBlurBackground isVisible', isVisible);
+
   // Use the shared AnimatedBlurBackground hook
   const { zIndex, opacity } = useAnimatedBlurBackground({
     isVisible,

@@ -62,6 +62,7 @@ export const useAnimatedBlurBackground = ({
       if (isVisible) {
         // Show modal: render immediately, set high z-index
         setZIndex(1000);
+        console.log('AnimatedBlurBackground setZIndex 1000');
       } else {
         // Hide modal: set low z-index first, then unmount after animation
         if (skipDelay) {

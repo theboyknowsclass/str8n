@@ -23,6 +23,8 @@ export const ModalDialog: React.FC<ModalDialogProps> = ({
     colors: { background },
   } = useTheme();
 
+  console.log('ModalDialog isVisible', isVisible);
+
   const opacity = useSharedValue(isVisible ? 1 : 0);
 
   const themedStyle = useMemo(() => {
@@ -59,7 +61,6 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 16,
     boxShadow: '0px 0px 8px 4px rgba(0, 0, 0, 0.20)',
-    zIndex: 1000,
     borderWidth: 0,
   },
 });
