@@ -1,6 +1,6 @@
 import React from 'react';
-import { router } from 'expo-router';
 import { IconButton } from '@atoms';
+import { useNavigation } from '../../../hooks/useNavigation';
 
 interface BackButtonProps {
   size?: 'small' | 'large';
@@ -12,11 +12,13 @@ interface BackButtonProps {
  * Uses the Button component with an icon variant for consistent styling.
  */
 export const BackButton: React.FC<BackButtonProps> = ({ ...props }) => {
+  const { goBack, canGoBack } = useNavigation();
+
   const back = () => {
-    router.back();
+    goBack();
   };
 
-  const showBackButton = router.canGoBack();
+  const showBackButton = canGoBack();
 
   return showBackButton ? (
     <IconButton

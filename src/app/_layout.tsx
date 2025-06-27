@@ -62,6 +62,10 @@ export const RootLayout = () => {
               name="transform"
               options={{ headerShown: false, presentation: 'fullScreenModal' }}
             />
+            <Stack.Screen
+              name="instructions"
+              options={{ headerShown: false, presentation: 'fullScreenModal' }}
+            />
           </Stack>
         </GestureHandlerRootView>
       </ThemeProvider>

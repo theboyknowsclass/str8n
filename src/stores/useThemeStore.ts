@@ -3,11 +3,14 @@ import { create } from 'zustand';
 import { AsyncStorageService } from '@services';
 
 /**
- * Represents the state of the theme store.
- * @property theme - The current theme
- * @property setTheme - Function to set the theme
- * @property isReady - Indicates whether the theme is ready
- * @property setIsReady - Function to set the isReady state
+ * Theme state interface that manages the app's visual theme and primary color.
+ * This state is automatically saved to AsyncStorage and persists between app launches.
+ * @property theme - The current React Navigation theme object
+ * @property primaryColor - The primary color used throughout the app
+ * @property setTheme - Sets the theme and saves it to storage
+ * @property setPrimaryColor - Sets the primary color and updates the theme
+ * @property isReady - Whether the theme has been loaded from storage
+ * @property setIsReady - Sets the ready state of the theme
  */
 interface ThemeState {
   theme: Theme;
@@ -19,7 +22,27 @@ interface ThemeState {
 }
 
 /**
- * Creates the theme store using the Zustand library.
+ * Zustand store for managing the app's theme and color scheme.
+ *
+ * This store handles the visual theme configuration including the primary color
+ * and React Navigation theme. The theme is automatically saved to AsyncStorage
+ * and restored when the app launches.
+ *
+ * @example
+ * ```typescript
+ * const {
+ *   theme,
+ *   setTheme,
+ *   primaryColor,
+ *   setPrimaryColor
+ * } = useThemeStore();
+ *
+ * // Change primary color
+ * setPrimaryColor('#FF5722');
+ *
+ * // Switch to dark theme
+ * setTheme(DarkTheme);
+ * ```
  */
 export const useThemeStore = create<ThemeState>((set, get) => ({
   theme: DefaultTheme,
@@ -42,6 +65,13 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
   },
 }));
 
+/**
+ * Helper function to override the primary color in a theme object.
+ *
+ * @param theme - The base theme to modify
+ * @param primaryColor - The new primary color to apply
+ * @returns A new theme object with the updated primary color
+ */
 const overridePrimaryColour = (theme: Theme, primaryColor: string) => {
   return {
     ...theme,

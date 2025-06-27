@@ -1,6 +1,6 @@
 import React from 'react';
-import { router } from 'expo-router';
 import { IconButton } from '@atoms';
+import { useNavigation } from '../../../hooks/useNavigation';
 
 interface CloseButtonProps {
   onPress?: () => void;
@@ -14,12 +14,14 @@ export const CloseButton: React.FC<CloseButtonProps> = ({
   onPress,
   ...props
 }) => {
+  const { dismiss, canGoBack } = useNavigation();
+
   const close = () => {
-    router.dismiss();
+    dismiss();
     onPress?.();
   };
 
-  const showCloseButton = router.canGoBack();
+  const showCloseButton = canGoBack();
 
   return showCloseButton ? (
     <IconButton

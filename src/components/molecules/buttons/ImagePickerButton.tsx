@@ -1,11 +1,13 @@
 import { IconButton } from '@atoms';
 import { ImagePickerService } from '@services';
 import { useOverlayStore, useSourceImageStore } from '@stores';
-import { router } from 'expo-router';
+import { useNavigation } from '../../../hooks/useNavigation';
+import { Page } from '../../../types/Pages';
 
 export const ImagePickerButton: React.FC = () => {
   const { isLoading, setLoading, setSourceImage } = useSourceImageStore();
   const { resetPoints } = useOverlayStore();
+  const { navigate } = useNavigation();
 
   const onStartPress = async () => {
     setLoading(true);
@@ -14,7 +16,7 @@ export const ImagePickerButton: React.FC = () => {
       if (success && data) {
         resetPoints();
         setSourceImage(data);
-        router.navigate('edit');
+        navigate(Page.EDIT);
         return;
       }
       console.warn(error);

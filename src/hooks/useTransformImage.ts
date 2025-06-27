@@ -10,9 +10,10 @@ import {
   getPoints,
   orderPointsByCorner,
 } from '@utils/overlayUtils';
-import { router } from 'expo-router';
 import { TransformService } from '@services';
 import { useRef, useCallback } from 'react';
+import { useNavigation } from './useNavigation';
+import { Page } from '@types';
 
 type TransformImageHook = () => {
   transformImage: () => Promise<void>;
@@ -27,6 +28,7 @@ export const useTransformImage: TransformImageHook = () => {
     useTransformedImageStore();
   const { points: selectedOverlay } = useOverlayStore();
   const { cropToOverlay } = usePersistedSettingsStore();
+  const { dismiss, navigate } = useNavigation();
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const cancel = useCallback(() => {
@@ -82,8 +84,8 @@ export const useTransformImage: TransformImageHook = () => {
       }
 
       setDestinationUri(transformedUri);
-      router.dismiss();
-      router.push('export');
+      dismiss();
+      navigate(Page.EXPORT);
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') {
         setError('Image transformation cancelled');
@@ -103,6 +105,8 @@ export const useTransformImage: TransformImageHook = () => {
     setLoading,
     setError,
     setDestinationUri,
+    dismiss,
+    navigate,
   ]);
 
   return {
