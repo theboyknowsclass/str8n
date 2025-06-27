@@ -14,7 +14,7 @@ interface BackButtonProps {
 export const BackButton: React.FC<BackButtonProps> = ({ ...props }) => {
   const { goBack, canGoBack } = useNavigation();
 
-  const back = () => {
+  const onBackPress = () => {
     goBack();
   };
 
@@ -24,7 +24,7 @@ export const BackButton: React.FC<BackButtonProps> = ({ ...props }) => {
     <IconButton
       {...props}
       icon="arrow-back"
-      onPress={back}
+      onPress={onBackPress}
       accessibilityLabel="Go Back"
       title=""
     />

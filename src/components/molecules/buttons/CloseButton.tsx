@@ -14,16 +14,14 @@ export const CloseButton: React.FC<CloseButtonProps> = ({
   onPress,
   ...props
 }) => {
-  const { dismiss, canGoBack } = useNavigation();
+  const { dismiss } = useNavigation();
 
   const close = () => {
     dismiss();
     onPress?.();
   };
 
-  const showCloseButton = canGoBack();
-
-  return showCloseButton ? (
+  return (
     <IconButton
       {...props}
       icon="close"
@@ -31,5 +29,5 @@ export const CloseButton: React.FC<CloseButtonProps> = ({
       accessibilityLabel="Close"
       title=""
     />
-  ) : null;
+  );
 };

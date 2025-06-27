@@ -2,10 +2,8 @@ import { useLocalSearchParams } from 'expo-router';
 import { Instructions } from '../components/organisms/Instructions/Instructions';
 import { ModalPageTemplate } from '@templates';
 import { InstructionMode } from '@types';
-import { useNavigation } from '../hooks/useNavigation';
 
 export const InstructionsRoute: React.FC = () => {
-  const { goBack } = useNavigation();
   const { mode, showSteps } = useLocalSearchParams<{
     mode?: string;
     showSteps?: string;
@@ -17,12 +15,8 @@ export const InstructionsRoute: React.FC = () => {
   // Parse the showSteps parameter, defaulting to true if not provided
   const shouldShowSteps = showSteps !== 'false';
 
-  const handleClose = () => {
-    goBack();
-  };
-
   return (
-    <ModalPageTemplate title="Instructions" onClose={handleClose}>
+    <ModalPageTemplate title="Instructions">
       <Instructions mode={instructionMode} showSteps={shouldShowSteps} />
     </ModalPageTemplate>
   );

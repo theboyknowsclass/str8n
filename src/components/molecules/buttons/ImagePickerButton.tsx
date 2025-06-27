@@ -2,7 +2,6 @@ import { IconButton } from '@atoms';
 import { ImagePickerService } from '@services';
 import { useOverlayStore, useSourceImageStore } from '@stores';
 import { useNavigation } from '../../../hooks/useNavigation';
-import { Page } from '../../../types/Pages';
 
 export const ImagePickerButton: React.FC = () => {
   const { isLoading, setLoading, setSourceImage } = useSourceImageStore();
@@ -16,7 +15,7 @@ export const ImagePickerButton: React.FC = () => {
       if (success && data) {
         resetPoints();
         setSourceImage(data);
-        navigate(Page.EDIT);
+        navigate('edit');
         return;
       }
       console.warn(error);

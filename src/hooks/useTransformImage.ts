@@ -13,7 +13,6 @@ import {
 import { TransformService } from '@services';
 import { useRef, useCallback } from 'react';
 import { useNavigation } from './useNavigation';
-import { Page } from '@types';
 
 type TransformImageHook = () => {
   transformImage: () => Promise<void>;
@@ -85,7 +84,7 @@ export const useTransformImage: TransformImageHook = () => {
 
       setDestinationUri(transformedUri);
       dismiss();
-      navigate(Page.EXPORT);
+      navigate('export');
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') {
         setError('Image transformation cancelled');

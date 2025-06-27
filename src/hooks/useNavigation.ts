@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useSessionStateStore } from '../stores/useSessionStateStore';
-import { Page } from '../types/Pages';
+import { isModalPage, Page } from '../types/Pages';
 import { InstructionMode } from '../types/InstructionMode';
 import { usePageModalContext } from './usePageModalContext';
 import { useScreenDimensions } from './useScreenDimensions';
@@ -25,13 +25,13 @@ export const useNavigation = () => {
     let mode: InstructionMode | undefined = undefined;
 
     switch (currentPage) {
-      case Page.IMPORT:
+      case 'import':
         mode = showSteps ? InstructionMode.ALL : InstructionMode.IMPORT;
         break;
-      case Page.EDIT:
+      case 'edit':
         mode = showSteps ? InstructionMode.ALL : InstructionMode.EDIT;
         break;
-      case Page.EXPORT:
+      case 'export':
         mode = InstructionMode.EXPORT;
         break;
       default:
@@ -49,26 +49,26 @@ export const useNavigation = () => {
 
   const navigate = (page: Page) => {
     switch (page) {
-      case Page.IMPORT:
+      case 'import':
         router.push('/');
         break;
-      case Page.EDIT:
+      case 'edit':
         router.push('/edit');
         break;
-      case Page.EXPORT:
+      case 'export':
         router.push('/export');
         break;
-      case Page.TRANSFORM:
+      case 'transform':
         router.push('/transform');
         break;
-      case Page.SETTINGS:
+      case 'settings':
         router.push('/settings');
         break;
-      case Page.INSTRUCTIONS: {
+      case 'instructions': {
         navigateToInstructions();
         break;
       }
-      case Page.ABOUT:
+      case 'about':
         // About page is not implemented yet, redirect to settings or home
         router.push('/settings');
         break;
@@ -76,14 +76,15 @@ export const useNavigation = () => {
         router.push('/');
     }
 
-    setCurrentPage(page);
+    // If the page is not a modal page, set the current page
+    if (!isModalPage(page)) {
+      setCurrentPage(page);
+    }
   };
 
   const goBack = () => {
     if (router.canGoBack()) {
       router.back();
-    } else {
-      navigate(Page.IMPORT);
     }
   };
 

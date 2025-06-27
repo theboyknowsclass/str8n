@@ -1,10 +1,11 @@
 import { CircleTextButton } from '@atoms';
-import { usePageModalContext } from '@hooks';
+import { useNavigation } from '@hooks';
 
 export const ShowInstructionsButton: React.FC = () => {
-  const { setIsModalVisible } = usePageModalContext();
+  const { navigate } = useNavigation();
+
   const onShowInstructionsPress = async () => {
-    setIsModalVisible(true);
+    navigate('instructions');
   };
 
   return (

@@ -40,8 +40,8 @@ type SessionState = {
  */
 export const useSessionStateStore = create<SessionState>()((set) => ({
   hasDismissedInstructions: false,
-  currentPage: Page.IMPORT,
-  startPage: Page.IMPORT,
+  currentPage: 'import',
+  startPage: 'import',
   setHasDismissedInstructions: (hasDismissedInstructions: boolean) =>
     set({ hasDismissedInstructions }),
   setCurrentPage: (currentPage: Page) => set({ currentPage }),

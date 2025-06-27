@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { usePersistedSettingsStore, useSessionStateStore } from '@stores';
 import { usePageTemplateContext } from './usePageTemplateContext';
 import { useNavigation } from '@hooks';
-import { Page } from '@types';
 
 export const useAutoShowInstructions = () => {
   const { isReady } = usePageTemplateContext();
@@ -19,7 +18,7 @@ export const useAutoShowInstructions = () => {
         alwaysShowInstructions &&
         !hasDismissedInstructions
       ) {
-        navigate(Page.INSTRUCTIONS);
+        navigate('instructions');
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
