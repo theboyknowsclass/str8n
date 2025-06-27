@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { runOnJS, useSharedValue, withTiming } from 'react-native-reanimated';
+import { runOnJS, SharedValue, useSharedValue, withTiming } from 'react-native-reanimated';
 
 interface UseAnimatedBlurBackgroundOptions {
   isVisible: boolean;
@@ -10,7 +10,8 @@ interface UseAnimatedBlurBackgroundOptions {
 
 interface UseAnimatedBlurBackgroundReturn {
   zIndex: number;
-  opacity: ReturnType<typeof useSharedValue<number>>;
+  pointerEvents: 'auto' | 'none';
+  opacity: SharedValue<number>;
 }
 
 const DEFAULT_FADE_OUT_DELAY = 500;
@@ -62,7 +63,6 @@ export const useAnimatedBlurBackground = ({
       if (isVisible) {
         // Show modal: render immediately, set high z-index
         setZIndex(1000);
-        console.log('AnimatedBlurBackground setZIndex 1000');
       } else {
         // Hide modal: set low z-index first, then unmount after animation
         if (skipDelay) {
@@ -100,5 +100,6 @@ export const useAnimatedBlurBackground = ({
   return {
     zIndex,
     opacity,
+    pointerEvents: isVisible ? 'auto' : 'none',
   };
 };

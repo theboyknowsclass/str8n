@@ -100,7 +100,7 @@ const Modal: React.FC<ModalContentProps> = ({ children }) => {
 
   return (
     <AnimatedBlurBackground isVisible={isModalVisible}>
-      <ModalDialog isVisible={isModalVisible}>{children}</ModalDialog>
+      <ModalDialog isVisible={true}>{children}</ModalDialog>
     </AnimatedBlurBackground>
   );
 };

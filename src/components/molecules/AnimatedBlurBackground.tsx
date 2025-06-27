@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Platform, StyleSheet } from 'react-native';
-import { useEffect } from 'react';
+import { useEffect, } from 'react';
 import { useAnimatedBlurBackground } from './useAnimatedBlurBackground';
 
 const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
@@ -34,10 +34,8 @@ export const AnimatedBlurBackground: React.FC<AnimatedBlurBackgroundProps> = ({
   const { dark } = useTheme();
   const blurTint = dark ? 'default' : 'regular';
 
-  console.log('AnimatedBlurBackground isVisible', isVisible);
-
   // Use the shared AnimatedBlurBackground hook
-  const { zIndex, opacity } = useAnimatedBlurBackground({
+  const { zIndex, opacity, pointerEvents } = useAnimatedBlurBackground({
     isVisible,
   });
 
@@ -80,7 +78,8 @@ export const AnimatedBlurBackground: React.FC<AnimatedBlurBackgroundProps> = ({
       animatedProps={animatedProps}
       intensity={blurIntensity.value}
       tint={blurTint}
-      style={[styles.blurContainer, styles.blurView, { zIndex }]}
+      style={[styles.blurContainer, styles.blurView, { zIndex : 1000 }]}
+      pointerEvents={pointerEvents}
       {...Platform.select({
         android: {
           experimentalBlurMethod: 'dimezisBlurView',

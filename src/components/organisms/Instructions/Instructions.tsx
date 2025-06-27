@@ -8,7 +8,7 @@ import { AlwaysShowToggleSwitch } from './AlwaysShowToggleSwitch';
 
 interface InstructionsProps {
   mode: InstructionMode;
-  showSteps: boolean;
+  showSteps?: boolean;
   onClosePress: () => void;
 }
 

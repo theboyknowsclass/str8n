@@ -13,7 +13,9 @@
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "type-check:strict": "tsc --noEmit --strict",
-    "upgrade:expo": "npx expo install expo@latest && npx expo install --fix"
+    "check" : "npm run type-check:strict && npm run lint",
+    "upgrade:expo": "npx expo install expo@latest && npx expo install --fix",
+    "update:expo": "npm run upgrade:expo"
   },
   "dependencies": {
     "@expo-google-fonts/orbitron": "^0.2.3",
