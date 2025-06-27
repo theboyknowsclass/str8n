@@ -36,12 +36,14 @@ export const RootLayout = () => {
   const isSettingsReady = useInitializeSettings();
 
   useEffect(() => {
-    if (loaded || error || !isThemeReady || !isSettingsReady) {
+    // If the fonts are loaded, the theme is ready, and the settings are ready, hide the splash screen
+    if (loaded && !error && isThemeReady && isSettingsReady) {
       SplashScreen.hideAsync();
     }
   }, [loaded, error, isThemeReady, isSettingsReady]);
 
-  if (!loaded && !error && isThemeReady && isSettingsReady) {
+  // If the fonts are not loaded, the theme is not ready, or the settings are not ready don't render anything
+  if (!loaded || error || !isThemeReady || !isSettingsReady) {
     return null;
   }
 
