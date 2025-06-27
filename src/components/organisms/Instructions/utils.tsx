@@ -40,7 +40,7 @@ export const getInstructionRows = (
         <Text
           size="large"
           color={titleColor}
-          style={{ flexShrink: 1, textAlign: 'left' }}
+          style={{ flexShrink: 1, textAlign: 'left', paddingTop: 16 }}
           key={`instruction-title-${i}`}
         >
           {`Step ${i + 1}`}

@@ -3,7 +3,7 @@ import { useTheme } from '@react-navigation/native';
 import { InstructionMode } from '@types';
 import { useInstructions } from './useInstructions';
 import { AlwaysShowToggleSwitch } from './AlwaysShowToggleSwitch';
-import { getInstructionRows } from './InstructionRows';
+import { getInstructionRows } from './utils';
 
 interface InstructionsProps {
   mode: InstructionMode;
@@ -37,7 +37,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     gap: 16,
-    overflow: 'hidden',
+    width: '100%',
+    maxHeight: '100%',
   },
   footerRow: {
     marginTop: 32,
