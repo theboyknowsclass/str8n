@@ -47,7 +47,7 @@ export const useNavigation = () => {
     router.push(`/instructions${queryParams}`);
   };
 
-  const navigate = (page: Page, params?: Record<string, string>) => {
+  const navigate = (page: Page) => {
     switch (page) {
       case Page.IMPORT:
         router.push('/');
