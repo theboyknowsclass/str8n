@@ -6,12 +6,16 @@ import { AsyncStorageService } from '@services';
  * Represents the state of the theme store.
  * @property theme - The current theme
  * @property setTheme - Function to set the theme
+ * @property isReady - Indicates whether the theme is ready
+ * @property setIsReady - Function to set the isReady state
  */
 interface ThemeState {
   theme: Theme;
   primaryColor: string;
   setTheme: (theme: Theme) => void;
   setPrimaryColor: (color: string) => void;
+  isReady: boolean;
+  setIsReady: (isReady: boolean) => void;
 }
 
 /**
@@ -20,6 +24,8 @@ interface ThemeState {
 export const useThemeStore = create<ThemeState>((set, get) => ({
   theme: DefaultTheme,
   primaryColor: '#00BCD4',
+  isReady: false,
+  setIsReady: (isReady: boolean) => set({ isReady }),
   setTheme: (theme: Theme) => {
     const themeWithPrimaryColor = overridePrimaryColour(
       theme,

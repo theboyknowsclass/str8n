@@ -1,6 +1,6 @@
 export { useScreenDimensions } from './useScreenDimensions';
-export { useSavedTheme } from './useSavedTheme';
-export { useSavedSettings } from './useSavedSettings';
+export { useInitializeTheme } from './useInitializeTheme';
+export { useInitializeSettings } from './useInitializeSettings';
 export { useTransformImage } from './useTransformImage';
 export { useShareImage } from './useShareImage';
 export { usePageTemplateContext } from './usePageTemplateContext';
