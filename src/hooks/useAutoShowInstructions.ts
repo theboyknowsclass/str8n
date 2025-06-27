@@ -7,7 +7,8 @@ export const useAutoShowInstructions = () => {
   const { isReady } = usePageTemplateContext();
   const { setIsModalVisible, isModalVisible } = usePageModalContext();
   const { hasDismissedInstructions } = useSessionStateStore();
-  const { alwaysShowInstructions, isReady: isSettingsReady } = usePersistedSettingsStore();
+  const { alwaysShowInstructions, isReady: isSettingsReady } =
+    usePersistedSettingsStore();
 
   useEffect(
     () => {

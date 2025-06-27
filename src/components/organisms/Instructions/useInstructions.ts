@@ -1,7 +1,6 @@
 import { Instruction, InstructionMode } from '@types';
 import { useScreenDimensions } from '@hooks/useScreenDimensions';
 
-
 export function useInstructions(mode: InstructionMode): Instruction[] {
   const { isMobile } = useScreenDimensions();
   const instructions: Instruction[] = [];

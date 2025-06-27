@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { runOnJS, SharedValue, useSharedValue, withTiming } from 'react-native-reanimated';
+import {
+  runOnJS,
+  SharedValue,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 interface UseAnimatedBlurBackgroundOptions {
   isVisible: boolean;

@@ -1,5 +1,9 @@
 {
     "recommendations": [
-        "github.vscode-github-actions"
+        "github.vscode-github-actions",
+        "redhat.vscode-yaml",
+        "msjsdiag.vscode-react-native",
+        "rvest.vs-code-prettier-eslint",
+        "esbenp.prettier-vscode"
     ]
 }

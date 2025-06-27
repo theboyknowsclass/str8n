@@ -14,7 +14,7 @@ interface InstructionsProps {
 
 type InstructionGroup = {
   [key: string]: Instruction[];
-}
+};
 
 export const Instructions: React.FC<InstructionsProps> = ({
   mode = InstructionMode.ALL,
@@ -25,10 +25,14 @@ export const Instructions: React.FC<InstructionsProps> = ({
   const instructions = useInstructions(mode);
 
   const groupedInstructions = instructions.reduce(
-    (result: InstructionGroup, currentValue: Instruction) => { 
-      (result[currentValue.group] = result[currentValue.group] || []).push(currentValue);
+    (result: InstructionGroup, currentValue: Instruction) => {
+      (result[currentValue.group] = result[currentValue.group] || []).push(
+        currentValue
+      );
       return result;
-    }, {});
+    },
+    {}
+  );
 
   const showFooter = mode === InstructionMode.ALL;
 
@@ -45,30 +49,28 @@ export const Instructions: React.FC<InstructionsProps> = ({
           onPress={onClosePress}
         />
       </View>
-      {
-        showSteps ? (
-          Object.entries(groupedInstructions).map(([group, instructions], i) => {
-            return (
-              <View key={group}>
-                <Text
-        size="large"
-        color={colors.primary}
-        style={{ flexShrink: 1, textAlign: 'left' }}
-      >
-        {`Step ${i + 1}`}
-      </Text>
-                {instructions?.map((instruction) => (
-                  <InstructionRow key={instruction.icon} {...instruction} />
-                ))}
-              </View>
-            )
-          })
-          ) : (
-          instructions.map((instruction) => (
+      {showSteps
+        ? Object.entries(groupedInstructions).map(
+            ([group, instructions], i) => {
+              return (
+                <View key={group}>
+                  <Text
+                    size="large"
+                    color={colors.primary}
+                    style={{ flexShrink: 1, textAlign: 'left' }}
+                  >
+                    {`Step ${i + 1}`}
+                  </Text>
+                  {instructions?.map((instruction) => (
+                    <InstructionRow key={instruction.icon} {...instruction} />
+                  ))}
+                </View>
+              );
+            }
+          )
+        : instructions.map((instruction) => (
             <InstructionRow key={instruction.icon} {...instruction} />
-          ))
-        )
-      }
+          ))}
 
       {showFooter && (
         <View style={styles.footerRow}>
