@@ -1,26 +1,27 @@
 import { useEffect } from 'react';
-import { usePageModalContext } from './usePageModalContext';
 import { usePersistedSettingsStore, useSessionStateStore } from '@stores';
 import { usePageTemplateContext } from './usePageTemplateContext';
+import { useNavigation } from '@hooks';
 
 export const useAutoShowInstructions = () => {
   const { isReady } = usePageTemplateContext();
-  const { setIsModalVisible, isModalVisible } = usePageModalContext();
   const { hasDismissedInstructions } = useSessionStateStore();
-  const { alwaysShowInstructions } = usePersistedSettingsStore();
+  const { alwaysShowInstructions, isReady: isSettingsReady } =
+    usePersistedSettingsStore();
+  const { navigate } = useNavigation();
 
   useEffect(
     () => {
       if (
         isReady &&
-        !isModalVisible &&
+        isSettingsReady &&
         alwaysShowInstructions &&
         !hasDismissedInstructions
       ) {
-        setIsModalVisible(true);
+        navigate('instructions');
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isReady] // only run when page is ready
+    [isReady, isSettingsReady] // only run when page is ready
   );
 };

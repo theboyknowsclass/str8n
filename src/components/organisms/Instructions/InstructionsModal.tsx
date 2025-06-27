@@ -1,5 +1,6 @@
 import { useAutoShowInstructions, usePageModalContext } from '@hooks';
 import { useSessionStateStore } from '@stores';
+import { ModalDialog } from '@molecules';
 import { Instructions } from './Instructions';
 import { InstructionMode } from '@types';
 
@@ -10,7 +11,7 @@ interface InstructionsModalProps {
 export const InstructionsModal: React.FC<InstructionsModalProps> = ({
   mode,
 }) => {
-  const { setIsModalVisible } = usePageModalContext();
+  const { isModalVisible, setIsModalVisible } = usePageModalContext();
   const { setHasDismissedInstructions } = useSessionStateStore();
 
   useAutoShowInstructions();
@@ -20,5 +21,17 @@ export const InstructionsModal: React.FC<InstructionsModalProps> = ({
     setHasDismissedInstructions(true);
   };
 
-  return <Instructions mode={mode} onClosePress={onClosePress} />;
+  const showTitle = mode === InstructionMode.ALL;
+  const showSteps = mode === InstructionMode.ALL;
+  const title = showTitle ? 'Instructions' : undefined;
+
+  return (
+    <ModalDialog
+      isVisible={isModalVisible}
+      title={title}
+      onClose={onClosePress}
+    >
+      <Instructions mode={mode} showSteps={showSteps} />
+    </ModalDialog>
+  );
 };

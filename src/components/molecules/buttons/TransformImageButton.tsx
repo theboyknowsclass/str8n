@@ -1,9 +1,11 @@
 import { IconButton } from '@atoms';
-import { router } from 'expo-router';
+import { useNavigation } from '../../../hooks/useNavigation';
 
 export const TransformImageButton: React.FC = () => {
+  const { navigate } = useNavigation();
+
   const onTransformImagePress = async () => {
-    router.push('/transform');
+    navigate('transform');
   };
 
   return (

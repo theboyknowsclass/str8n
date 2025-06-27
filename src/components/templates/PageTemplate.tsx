@@ -4,11 +4,7 @@ import {
   useScreenDimensions,
 } from '@hooks';
 import { StyleSheet, View, LayoutChangeEvent, ViewStyle } from 'react-native';
-import {
-  LoadingContainer,
-  AnimatedBlurBackground,
-  ModalDialog,
-} from '@molecules';
+import { LoadingContainer, AnimatedBlurBackground } from '@molecules';
 import React, { ReactNode } from 'react';
 import {
   PageTemplateContextProvider,
@@ -63,7 +59,8 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
     styles.actionBarBase,
     {
       flexDirection: isLandscape ? 'column' : 'row',
-      paddingTop: 16,
+      paddingTop: isLandscape ? 0 : 16,
+      paddingLeft: isLandscape ? 16 : 0,
     } as ViewStyle,
   ];
 
@@ -100,7 +97,7 @@ const Modal: React.FC<ModalContentProps> = ({ children }) => {
 
   return (
     <AnimatedBlurBackground isVisible={isModalVisible}>
-      <ModalDialog isVisible={isModalVisible}>{children}</ModalDialog>
+      {children}
     </AnimatedBlurBackground>
   );
 };

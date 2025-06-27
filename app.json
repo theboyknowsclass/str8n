@@ -39,6 +39,12 @@
           },
           "imageWidth": 200
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app needs to access your photos to allow you to select and upload images."
+        }
       ]
     ],
     "ios": {

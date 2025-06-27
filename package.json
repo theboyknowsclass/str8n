@@ -13,7 +13,9 @@
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "type-check:strict": "tsc --noEmit --strict",
-    "upgrade:expo": "npx expo install expo@latest && npx expo install --fix"
+    "check" : "npm run type-check:strict && npm run lint",
+    "upgrade:expo": "npx expo install expo@latest && npx expo install --fix",
+    "update:expo": "npm run upgrade:expo"
   },
   "dependencies": {
     "@expo-google-fonts/orbitron": "^0.2.3",
@@ -23,16 +25,17 @@
     "@react-navigation/native": "^7.0.14",
     "@shopify/react-native-skia": "v2.0.0-next.4",
     "@techstark/opencv-js": "^4.10.0-release.1",
-    "expo": "^53.0.12",
+    "expo": "^53.0.13",
     "expo-blur": "~14.1.5",
     "expo-constants": "~17.1.6",
     "expo-dev-client": "~5.2.1",
     "expo-device": "~7.1.4",
     "expo-file-system": "~18.1.10",
     "expo-font": "~13.3.1",
+    "expo-image": "~2.3.0",
     "expo-image-picker": "~16.1.4",
     "expo-linking": "~7.1.5",
-    "expo-router": "~5.1.0",
+    "expo-router": "~5.1.1",
     "expo-sharing": "~13.1.5",
     "expo-splash-screen": "~0.30.9",
     "expo-status-bar": "~2.2.3",
@@ -49,8 +52,7 @@
     "react-native-svg": "15.11.2",
     "react-native-web": "^0.20.0",
     "typescript": "~5.8.3",
-    "zustand": "^5.0.3",
-    "expo-image": "~2.3.0"
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

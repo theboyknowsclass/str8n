@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { runOnJS, useSharedValue, withTiming } from 'react-native-reanimated';
+import {
+  runOnJS,
+  SharedValue,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 interface UseAnimatedBlurBackgroundOptions {
   isVisible: boolean;
@@ -10,7 +15,8 @@ interface UseAnimatedBlurBackgroundOptions {
 
 interface UseAnimatedBlurBackgroundReturn {
   zIndex: number;
-  opacity: ReturnType<typeof useSharedValue<number>>;
+  pointerEvents: 'auto' | 'none';
+  opacity: SharedValue<number>;
 }
 
 const DEFAULT_FADE_OUT_DELAY = 500;
@@ -99,5 +105,6 @@ export const useAnimatedBlurBackground = ({
   return {
     zIndex,
     opacity,
+    pointerEvents: isVisible ? 'auto' : 'none',
   };
 };

@@ -2,13 +2,14 @@ import { create } from 'zustand';
 import { Corner, Point } from '@types';
 
 /**
- * Represents the state of the overlay store.
- * @property points - The points of the overlay
- * @property activePointIndex - The index of the active point
- * @property setPoints - Function to set the points of the overlay
- * @property setActivePointIndex - Function to set the active point index
- * @property updatePoint - Function to update a specific point
- * @property resetPoints - Function to reset the points to the initial state
+ * Overlay state interface that manages the selection overlay points and active state.
+ * This state tracks the four corner points of the overlay and which point is currently active.
+ * @property points - Array of four corner points defining the overlay rectangle
+ * @property activePointIndex - The index of the currently active corner point
+ * @property setPoints - Sets all four corner points at once
+ * @property setActivePointIndex - Sets which corner point is currently active
+ * @property updatePoint - Updates a specific corner point by index
+ * @property resetPoints - Resets all points to their initial default positions
  */
 type OverlayState = {
   points: Point[];
@@ -19,7 +20,10 @@ type OverlayState = {
   resetPoints: () => void;
 };
 
-// Initialize with default points forming a rectangle in the center
+/**
+ * Default overlay points forming a centered rectangle.
+ * These points are used as the initial state and for resetting the overlay.
+ */
 export const initialPoints: Point[] = [
   { x: 0.25, y: 0.25 }, // Top-left
   { x: 0.75, y: 0.25 }, // Top-right
@@ -28,9 +32,40 @@ export const initialPoints: Point[] = [
 ];
 
 /**
- * Creates the overlay store using the Zustand library.
- * @param set - The set function from Zustand
- * @returns The overlay store
+ * Zustand store for managing overlay selection state.
+ *
+ * This store handles the state of the image selection overlay including
+ * the four corner points that define the selection area and which point
+ * is currently being manipulated by the user.
+ *
+ * @example
+ * ```typescript
+ * const {
+ *   points,
+ *   activePointIndex,
+ *   setPoints,
+ *   setActivePointIndex,
+ *   updatePoint,
+ *   resetPoints
+ * } = useOverlayStore();
+ *
+ * // Update a specific corner point
+ * updatePoint(Corner.TOP_LEFT, { x: 0.2, y: 0.2 });
+ *
+ * // Set which point is active
+ * setActivePointIndex(Corner.TOP_RIGHT);
+ *
+ * // Reset to default positions
+ * resetPoints();
+ *
+ * // Set all points at once
+ * setPoints([
+ *   { x: 0.1, y: 0.1 }, // Top-left
+ *   { x: 0.9, y: 0.1 }, // Top-right
+ *   { x: 0.9, y: 0.9 }, // Bottom-right
+ *   { x: 0.1, y: 0.9 }, // Bottom-left
+ * ]);
+ * ```
  */
 export const useOverlayStore = create<OverlayState>()((set) => ({
   points: initialPoints,

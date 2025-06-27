@@ -2,7 +2,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
 import { ThemeProvider } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { useSavedTheme, useSavedSettings } from '@hooks';
+import { useInitializeTheme, useInitializeSettings } from '@hooks';
 
 import {
   Orbitron_400Regular,
@@ -32,16 +32,18 @@ export const RootLayout = () => {
     Orbitron_800ExtraBold,
     Orbitron_900Black,
   });
-  const theme = useSavedTheme();
-  useSavedSettings();
+  const { theme, isReady: isThemeReady } = useInitializeTheme();
+  const isSettingsReady = useInitializeSettings();
 
   useEffect(() => {
-    if (loaded || error) {
+    // If the fonts are loaded, the theme is ready, and the settings are ready, hide the splash screen
+    if (loaded && !error && isThemeReady && isSettingsReady) {
       SplashScreen.hideAsync();
     }
-  }, [loaded, error]);
+  }, [loaded, error, isThemeReady, isSettingsReady]);
 
-  if (!loaded && !error) {
+  // If the fonts are not loaded, the theme is not ready, or the settings are not ready don't render anything
+  if (!loaded || error || !isThemeReady || !isSettingsReady) {
     return null;
   }
 
@@ -60,6 +62,10 @@ export const RootLayout = () => {
             />
             <Stack.Screen
               name="transform"
+              options={{ headerShown: false, presentation: 'fullScreenModal' }}
+            />
+            <Stack.Screen
+              name="instructions"
               options={{ headerShown: false, presentation: 'fullScreenModal' }}
             />
           </Stack>

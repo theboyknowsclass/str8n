@@ -3,19 +3,16 @@ import { usePersistedSettingsStore } from '@stores';
 import { AsyncStorageService } from '@services';
 
 /**
- * Custom hook for managing persisted settings following the Single Responsibility Principle.
- * This hook:
- * 1. Retrieves the stored settings from AsyncStorage
- * 2. Loads the stored settings or uses the default values
+ * Initializes persisted settings from AsyncStorage and sets isReady to true when done.
+ * Returns only isReady.
  */
-export const useSavedSettings = () => {
+export const useInitializeSettings = () => {
   const {
-    cropToOverlay,
-    maintainExifMetadata,
-    alwaysShowInstructions,
     setCropToOverlay,
     setMaintainExifMetadata,
     setAlwaysShowInstructions,
+    setIsReady,
+    isReady,
   } = usePersistedSettingsStore();
 
   useEffect(() => {
@@ -26,17 +23,12 @@ export const useSavedSettings = () => {
         setMaintainExifMetadata(storedSettings.maintainExifMetadata);
         setAlwaysShowInstructions(storedSettings.alwaysShowInstructions);
       }
+      setIsReady(true);
     };
-
     loadInitialData();
-  }, [setCropToOverlay, setMaintainExifMetadata, setAlwaysShowInstructions]);
+    // Only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  return {
-    cropToOverlay,
-    maintainExifMetadata,
-    alwaysShowInstructions,
-    setCropToOverlay,
-    setMaintainExifMetadata,
-    setAlwaysShowInstructions,
-  };
+  return isReady;
 };
