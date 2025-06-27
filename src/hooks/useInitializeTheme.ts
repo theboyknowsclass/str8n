@@ -30,9 +30,10 @@ export const useInitializeTheme = () => {
     };
 
     loadInitialData();
-    // disable reacting to colorScheme changes
+
+    // Only run on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setTheme, setIsReady]);
+  }, []);
 
   return { theme, isReady };
 };
