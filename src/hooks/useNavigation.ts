@@ -14,8 +14,6 @@ export const useNavigation = () => {
   const useCustomModal = !isMobile;
 
   const navigateToInstructions = () => {
-    console.log('navigateToInstructions useCustomModal', useCustomModal);
-
     if (useCustomModal) {
       setIsModalVisible(true);
       return;
