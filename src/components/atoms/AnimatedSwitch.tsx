@@ -1,5 +1,5 @@
 import { useTheme } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import Animated, {
   interpolate,
@@ -59,6 +59,10 @@ export const AnimatedSwitch: React.FC<AnimatedSwitchProps> = ({
   const trackBackgroundColor = useSharedValue(
     value.value ? primary : inActiveColor
   );
+
+  useEffect(() => {
+    trackBackgroundColor.value = value.value ? primary : inActiveColor;
+  }, [primary, inActiveColor, value, trackBackgroundColor]);
 
   const translateX = useSharedValue(
     value.value ? TRACK_WIDTH - TRACK_HEIGHT : 0

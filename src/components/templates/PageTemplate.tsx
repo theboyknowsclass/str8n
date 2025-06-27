@@ -4,11 +4,7 @@ import {
   useScreenDimensions,
 } from '@hooks';
 import { StyleSheet, View, LayoutChangeEvent, ViewStyle } from 'react-native';
-import {
-  LoadingContainer,
-  AnimatedBlurBackground,
-  ModalDialog,
-} from '@molecules';
+import { LoadingContainer, AnimatedBlurBackground } from '@molecules';
 import React, { ReactNode } from 'react';
 import {
   PageTemplateContextProvider,
@@ -100,7 +96,7 @@ const Modal: React.FC<ModalContentProps> = ({ children }) => {
 
   return (
     <AnimatedBlurBackground isVisible={isModalVisible}>
-      <ModalDialog isVisible={true}>{children}</ModalDialog>
+      {children}
     </AnimatedBlurBackground>
   );
 };
