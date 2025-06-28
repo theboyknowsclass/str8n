@@ -1,7 +1,7 @@
 import { PanZoomProvider } from '@contexts';
 import { PanZoomContext } from '@contexts/PanZoomContext';
 import { useCallback, useContext, useMemo } from 'react';
-import { Dimensions, Vector } from '@types';
+import { Dimensions } from '@types';
 import { View, Platform } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -14,26 +14,28 @@ interface PanZoomProps {
   children?: React.ReactNode | React.ReactNode[];
   contentSize: Dimensions;
   controlSize: Dimensions;
-  initialScale?: number;
   maxScale?: number;
   minScale?: number;
-  initialTranslate?: { x: number; y: number };
 }
 
 const PanZoom: React.FC<PanZoomProps> = ({
   children,
   contentSize,
   controlSize,
-  initialScale = 1,
   maxScale = 1,
   minScale = 0.1,
-  initialTranslate = { x: 0, y: 0 },
 }) => {
-  const { scale, panGesture: contextPanGesture } = useContext(PanZoomContext);
-  scale.value = initialScale;
-  const savedScale = useSharedValue(initialScale);
-  const translate = useSharedValue<Vector>(initialTranslate);
-  const savedTranslate = useSharedValue<Vector>(initialTranslate);
+  const {
+    scale,
+    translate,
+    panGesture: contextPanGesture,
+  } = useContext(PanZoomContext);
+
+  console.log('scale', scale.value);
+  console.log('translate', translate.value);
+
+  const savedScale = useSharedValue(scale.value);
+  const savedTranslate = useSharedValue(translate.value);
   const savedFocalPoint = useSharedValue({ x: 0, y: 0 });
 
   const windowWidth = useDerivedValue(() => {
@@ -192,9 +194,5 @@ const PanZoom: React.FC<PanZoomProps> = ({
 };
 
 export const PanZoomControl: React.FC<PanZoomProps> = (props) => {
-  return (
-    <PanZoomProvider>
-      <PanZoom {...props} />
-    </PanZoomProvider>
-  );
+  return <PanZoom {...props} />;
 };

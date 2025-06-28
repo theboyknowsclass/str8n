@@ -11,12 +11,17 @@ export const Transform: React.FC = () => {
   const { colors } = useTheme();
   const loadingAnimationSize = (isLandscape ? width : height) * 0.3;
 
-  useEffect(() => {
-    transformImage();
-  }, [transformImage]);
+  useEffect(
+    () => {
+      transformImage();
+    },
+    // we only want to call this on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   return (
-    <ModalPageTemplate onClose={cancel}>
+    <ModalPageTemplate title="Please wait..." onClose={cancel}>
       <LoadingSpinner size={loadingAnimationSize} animating={isLoading} />
       <Text style={styles.text} size="large" color={colors.primary}>
         Reticulating splines...

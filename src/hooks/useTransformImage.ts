@@ -11,7 +11,7 @@ import {
   orderPointsByCorner,
 } from '@utils/overlayUtils';
 import { TransformService } from '@services';
-import { useRef, useCallback } from 'react';
+import { useRef } from 'react';
 import { useNavigation } from './useNavigation';
 
 type TransformImageHook = () => {
@@ -30,16 +30,16 @@ export const useTransformImage: TransformImageHook = () => {
   const { dismiss, navigate } = useNavigation();
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const cancel = useCallback(() => {
+  const cancel = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
       setLoading(false);
       setError('Image transformation cancelled');
     }
-  }, [setLoading, setError]);
+  };
 
-  const transformImage = useCallback(async () => {
+  const transformImage = async () => {
     if (!sourceImage) return;
 
     const { dimensions } = sourceImage;
@@ -97,16 +97,7 @@ export const useTransformImage: TransformImageHook = () => {
       abortControllerRef.current = null;
       setLoading(false);
     }
-  }, [
-    sourceImage,
-    selectedOverlay,
-    cropToOverlay,
-    setLoading,
-    setError,
-    setDestinationUri,
-    dismiss,
-    navigate,
-  ]);
+  };
 
   return {
     transformImage,

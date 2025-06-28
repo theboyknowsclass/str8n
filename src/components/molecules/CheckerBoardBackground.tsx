@@ -66,8 +66,8 @@ export const CheckerBoardBackground: React.FC<CheckerBoardBackgroundProps> = ({
       style={[
         styles.checkerboard,
         {
-          width: width,
-          height: height,
+          width,
+          height,
         },
       ]}
       resizeMode={Platform.OS === 'android' ? 'cover' : 'repeat'}
