@@ -3,7 +3,7 @@ import { useScreenDimensions, useTransformImage } from '@hooks';
 import { ModalPageTemplate } from '@templates';
 import { useTheme } from '@react-navigation/native';
 import { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 /**
  * Transform page component that handles image transformation processing.
@@ -37,15 +37,22 @@ export const Transform: React.FC = () => {
 
   return (
     <ModalPageTemplate title="Please wait..." onClose={cancel}>
-      <LoadingSpinner size={loadingAnimationSize} animating={isLoading} />
-      <Text style={styles.text} size="large" color={colors.primary}>
-        Reticulating splines...
-      </Text>
+      <View style={styles.container}>
+        <LoadingSpinner size={loadingAnimationSize} animating={isLoading} />
+        <Text style={styles.text} size="large" color={colors.primary}>
+          Reticulating splines...
+        </Text>
+      </View>
     </ModalPageTemplate>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   text: {
     marginTop: 24,
   },
