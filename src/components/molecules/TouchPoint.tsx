@@ -24,8 +24,8 @@ type TouchPointProps = {
   position: SharedValue<Point>;
 };
 
-const SIZE = 48;
-const STROKE = 8;
+const SIZE = 64;
+const STROKE = 12;
 
 /**
  * TouchPoint component that provides interactive corner point manipulation.
