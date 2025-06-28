@@ -137,7 +137,11 @@ export const Switch: React.FC<SwitchProps> = ({
   });
 
   return (
-    <Pressable onPress={onSwitchPress}>
+    <Pressable
+      onPress={onSwitchPress}
+      accessibilityLabel={`Switch ${value.value ? 'on' : 'off'}`}
+      accessibilityRole="switch"
+    >
       {/* Track container - holds the background color and thumb */}
       <Animated.View style={[switchStyles.track, trackAnimatedStyle]}>
         {/* Thumb - the moving part of the switch */}
