@@ -1,13 +1,25 @@
 import React, { createContext, useState, ReactNode } from 'react';
 import { Dimensions } from '@types';
 
-interface PageTemplateContextType {
+/**
+ * Context type for page template functionality.
+ * Provides dimensions and ready state management for page layout.
+ * @property dimensions - The current dimensions of the page template
+ * @property isReady - Boolean indicating if the template is ready
+ * @property setDimensions - Function to update the template dimensions
+ * @property setIsReady - Function to update the ready state
+ */
+export interface PageTemplateContextType {
   dimensions: Dimensions;
   isReady: boolean;
   setDimensions: (dimensions: Dimensions) => void;
   setIsReady: (isReady: boolean) => void;
 }
 
+/**
+ * React context for page template functionality.
+ * Provides shared state for page dimensions and ready status across components.
+ */
 export const PageTemplateContext = createContext<PageTemplateContextType>({
   dimensions: { width: 0, height: 0 },
   setDimensions: () => {},
@@ -15,10 +27,28 @@ export const PageTemplateContext = createContext<PageTemplateContextType>({
   setIsReady: () => {},
 });
 
+/**
+ * Props for the PageTemplateContextProvider component.
+ * @property children - React nodes to be wrapped by the provider
+ */
 interface PageTemplateProviderProps {
   children: ReactNode;
 }
 
+/**
+ * Provider component for page template functionality.
+ * Manages page dimensions and ready state, providing them to child components.
+ *
+ * @param props - PageTemplateProviderProps containing children
+ * @returns PageTemplateContext.Provider wrapping the children
+ *
+ * @example
+ * ```typescript
+ * <PageTemplateContextProvider>
+ *   <PageComponent />
+ * </PageTemplateContextProvider>
+ * ```
+ */
 export const PageTemplateContextProvider: React.FC<
   PageTemplateProviderProps
 > = ({ children }) => {

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import { StyleSheet } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -12,8 +12,13 @@ import Animated, {
 import { useOverlayStore, useSourceImageStore } from '@stores';
 import { Corner, Point } from '@types';
 import { useTheme } from '@react-navigation/native';
-import { PanZoomContext } from '@contexts/PanZoomContext';
+import { usePanZoomContext } from '@hooks';
 
+/**
+ * Props for the TouchPoint component.
+ * @property index - The corner index this point represents (0-3)
+ * @property position - Shared value containing the absolute position of the point
+ */
 type TouchPointProps = {
   index: Corner;
   position: SharedValue<Point>;
@@ -22,11 +27,27 @@ type TouchPointProps = {
 const SIZE = 48;
 const STROKE = 8;
 
+/**
+ * TouchPoint component that provides interactive corner point manipulation.
+ *
+ * This component renders a draggable corner point for the selection overlay.
+ * It supports pan gestures for repositioning, visual feedback during interaction,
+ * and automatically updates the overlay store when moved. The point size and
+ * stroke scale with the current zoom level.
+ *
+ * @param props - TouchPointProps containing index and position
+ * @returns JSX element containing the interactive touch point
+ *
+ * @example
+ * ```typescript
+ * <TouchPoint index={Corner.TOP_LEFT} position={positionSharedValue} />
+ * ```
+ */
 export const TouchPoint: React.FC<TouchPointProps> = ({
   index,
   position: absolutePosition,
 }) => {
-  const { scale, panGesture: parentPanGesture } = useContext(PanZoomContext);
+  const { scale, panGesture: parentPanGesture } = usePanZoomContext();
   const updatePoint = useOverlayStore((state) => state.updatePoint);
   const theme = useTheme();
 

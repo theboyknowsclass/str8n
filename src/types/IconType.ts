@@ -2,7 +2,10 @@ import { MaterialIconType } from './MaterialIconType';
 import { MaterialCommunityIconType } from './MaterialCommunityIconType';
 import { SvgIconType } from './SvgIconType';
 
-// Union type that represents all possible icon types in the application
+/**
+ * Union type that represents all possible icon types in the application.
+ * This includes Material Design icons, Material Community icons, and custom SVG icons.
+ */
 export type IconType =
   | MaterialIconType
   | MaterialCommunityIconType

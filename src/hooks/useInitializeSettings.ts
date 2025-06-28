@@ -3,10 +3,23 @@ import { usePersistedSettingsStore } from '@stores';
 import { AsyncStorageService } from '@services';
 
 /**
- * Initializes persisted settings from AsyncStorage and sets isReady to true when done.
- * Returns only isReady.
+ * Return type for the useInitializeSettings hook.
+ * @property isReady - Boolean indicating if settings initialization is complete
  */
-export const useInitializeSettings = () => {
+type UseInitializeSettings = boolean;
+
+/**
+ * Hook for initializing persisted settings from AsyncStorage.
+ * Loads stored settings and applies them to the store, then sets isReady to true.
+ *
+ * @returns UseInitializeSettings boolean indicating if settings are ready
+ *
+ * @example
+ * ```typescript
+ * const isReady = useInitializeSettings();
+ * ```
+ */
+export const useInitializeSettings = (): UseInitializeSettings => {
   const {
     setCropToOverlay,
     setMaintainExifMetadata,

@@ -5,6 +5,21 @@ import { useTheme } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 
+/**
+ * Transform page component that handles image transformation processing.
+ *
+ * This component displays a loading screen while the image transformation
+ * is being processed. It automatically starts the transformation on mount
+ * and provides a cancel option. The loading animation size is responsive
+ * to screen dimensions.
+ *
+ * @returns JSX element containing the transformation loading screen
+ *
+ * @example
+ * ```typescript
+ * <Transform />
+ * ```
+ */
 export const Transform: React.FC = () => {
   const { transformImage, cancel, isLoading } = useTransformImage();
   const { isLandscape, width, height } = useScreenDimensions();

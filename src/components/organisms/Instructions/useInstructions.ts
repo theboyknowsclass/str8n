@@ -1,6 +1,21 @@
 import { Instruction, InstructionMode } from '@types';
 import { useScreenDimensions } from '@hooks/useScreenDimensions';
 
+/**
+ * Hook that provides instructions based on the current instruction mode.
+ *
+ * This hook generates a list of instructions appropriate for the current
+ * context (import, edit, or export mode) and adapts the text and icons
+ * based on the device type (mobile vs desktop).
+ *
+ * @param mode - The instruction mode that determines which instructions to show
+ * @returns Array of Instruction objects for the current mode and device type
+ *
+ * @example
+ * ```typescript
+ * const instructions = useInstructions(InstructionMode.EDIT);
+ * ```
+ */
 export function useInstructions(mode: InstructionMode): Instruction[] {
   const { isMobile } = useScreenDimensions();
   const instructions: Instruction[] = [];

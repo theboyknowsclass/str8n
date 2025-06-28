@@ -1,17 +1,20 @@
-import { EditContext } from '@contexts/EditContext';
-import { PanZoomContext } from '@contexts/PanZoomContext';
 import { useTheme } from '@react-navigation/native';
-import { useContext, useRef } from 'react';
+import { useRef } from 'react';
 import Animated, {
   useAnimatedProps,
   useAnimatedStyle,
   useDerivedValue,
 } from 'react-native-reanimated';
 import { Polygon, Svg } from 'react-native-svg';
-import { useEdit } from '@hooks';
+import { useEdit, usePanZoomContext, useEditContext } from '@hooks';
 import { View } from 'react-native';
 import { Point } from '@types';
 
+/**
+ * Props for the SelectionShape component.
+ * @property width - The width of the control area in pixels
+ * @property height - The height of the control area in pixels
+ */
 export type SelectionShapeProps = {
   width: number;
   height: number;
@@ -19,6 +22,22 @@ export type SelectionShapeProps = {
 
 const AnimatedPolygon = Animated.createAnimatedComponent(Polygon);
 
+/**
+ * SelectionShape component that renders an animated polygon overlay.
+ *
+ * This component displays a visual representation of the current selection
+ * area as a polygon shape. It responds to pan/zoom transformations and
+ * updates in real-time as the user manipulates the selection points.
+ * The shape is rendered as an SVG polygon with animated properties.
+ *
+ * @param props - SelectionShapeProps containing width and height
+ * @returns JSX element containing the animated selection shape
+ *
+ * @example
+ * ```typescript
+ * <SelectionShape width={400} height={300} />
+ * ```
+ */
 export const SelectionShape: React.FC<SelectionShapeProps> = ({
   width,
   height,
@@ -47,7 +66,7 @@ export const SelectionShape: React.FC<SelectionShapeProps> = ({
   };
 
   const { scale: panZoomScale, translate: panZoomTranslate } =
-    useContext(PanZoomContext);
+    usePanZoomContext();
 
   // store the initial pan zoom scale and translate to calculate the relative position of the selection shape
   const initialPanZoomScale = useRef(panZoomScale.value);
@@ -57,7 +76,7 @@ export const SelectionShape: React.FC<SelectionShapeProps> = ({
     return panZoomScale.value / initialPanZoomScale.current;
   });
 
-  const { absolutePoints } = useContext(EditContext);
+  const { absolutePoints } = useEditContext();
 
   const relativePoints = useDerivedValue<Point[]>(() => {
     return [...absolutePoints, absolutePoints[0]].map((p) => ({

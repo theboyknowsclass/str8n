@@ -7,7 +7,19 @@ import {
 } from 'react-native';
 
 /**
- * A themed Switch component that uses the current theme colors
+ * Switch component that provides themed styling consistent with the app design.
+ *
+ * This component extends React Native's Switch component with automatic theme
+ * integration. It applies theme colors to the track and thumb, with different
+ * opacity levels for light and dark themes to ensure proper contrast and visibility.
+ *
+ * @param props - RNSwitchProps extending React Native SwitchProps with theme integration
+ * @returns JSX element containing the themed switch
+ *
+ * @example
+ * ```typescript
+ * <Switch value={isEnabled} onValueChange={setIsEnabled} />
+ * ```
  */
 export const Switch: React.FC<RNSwitchProps> = ({ value, ...props }) => {
   const {

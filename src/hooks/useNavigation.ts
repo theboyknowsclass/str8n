@@ -5,7 +5,33 @@ import { InstructionMode } from '../types/InstructionMode';
 import { usePageModalContext } from './usePageModalContext';
 import { useScreenDimensions } from './useScreenDimensions';
 
-export const useNavigation = () => {
+/**
+ * Return type for the useNavigation hook.
+ * @property navigate - Function to navigate to a specific page
+ * @property goBack - Function to navigate back to the previous page
+ * @property dismiss - Function to dismiss the current modal
+ * @property canGoBack - Function to check if navigation back is possible
+ */
+type UseNavigation = {
+  navigate: (page: Page) => void;
+  goBack: () => void;
+  dismiss: () => void;
+  canGoBack: () => boolean;
+};
+
+/**
+ * Hook that provides navigation functionality for the application.
+ * Handles navigation between pages, modal management, and instruction navigation.
+ *
+ * @returns UseNavigation object containing navigation methods
+ *
+ * @example
+ * ```typescript
+ * const { navigate, goBack, dismiss } = useNavigation();
+ * navigate('edit');
+ * ```
+ */
+export const useNavigation = (): UseNavigation => {
   const router = useRouter();
   const { setCurrentPage, currentPage, startPage } = useSessionStateStore();
   const { setIsModalVisible } = usePageModalContext();

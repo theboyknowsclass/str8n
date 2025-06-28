@@ -14,14 +14,32 @@ import { TransformService } from '@services';
 import { useRef, useCallback } from 'react';
 import { useNavigation } from './useNavigation';
 
-type TransformImageHook = () => {
+/**
+ * Return type for the useTransformImage hook.
+ * @property transformImage - Function to initiate image transformation
+ * @property cancel - Function to cancel ongoing transformation
+ * @property isLoading - Boolean indicating if transformation is in progress
+ * @property error - String containing error message if transformation failed
+ */
+type UseTransformImage = {
   transformImage: () => Promise<void>;
   cancel: () => void;
   isLoading: boolean;
   error: string | null;
 };
 
-export const useTransformImage: TransformImageHook = () => {
+/**
+ * Hook for handling image transformation functionality.
+ * Provides methods to transform images using perspective transformation and handles loading states.
+ *
+ * @returns UseTransformImage object containing transformation methods and state
+ *
+ * @example
+ * ```typescript
+ * const { transformImage, cancel, isLoading, error } = useTransformImage();
+ * ```
+ */
+export const useTransformImage = (): UseTransformImage => {
   const { sourceImage } = useSourceImageStore();
   const { setDestinationUri, setLoading, setError, isLoading, error } =
     useTransformedImageStore();

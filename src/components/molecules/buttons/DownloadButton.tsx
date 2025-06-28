@@ -4,8 +4,18 @@ import { useDownloadImage } from '@hooks';
 import { useTransformedImageStore } from '@stores';
 
 /**
- * A button component that allows users to download an image.
- * Uses the Button component with an icon variant for consistent styling.
+ * DownloadButton component that allows users to download the transformed image.
+ *
+ * This component renders a button with a download icon that initiates the image
+ * download process when pressed. It checks for the availability of a transformed
+ * image before attempting to download and uses a default filename.
+ *
+ * @returns JSX element containing the download button
+ *
+ * @example
+ * ```typescript
+ * <DownloadButton />
+ * ```
  */
 export const DownloadButton: React.FC = () => {
   const { downloadImage } = useDownloadImage();

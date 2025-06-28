@@ -6,6 +6,12 @@ import {
   StyleSheet,
 } from 'react-native';
 
+/**
+ * Props for the CheckerBoardBackground component.
+ * @property children - React nodes to be rendered over the checkerboard background
+ * @property width - The width of the checkerboard area in pixels
+ * @property height - The height of the checkerboard area in pixels
+ */
 interface CheckerBoardBackgroundProps {
   children: React.ReactNode | React.ReactNode[];
   width: number;
@@ -20,6 +26,10 @@ const checkerBoardDarkSmall = require('@assets/checkerboard_dark_30px.png');
 const checkerBoardDarkMedium = require('@assets/checkerboard_dark_60px.png');
 const checkerBoardDarkLarge = require('@assets/checkerboard_dark_120px.png');
 
+/**
+ * Map of checkerboard patterns organized by theme and size.
+ * Provides different checkerboard textures for various use cases.
+ */
 const checkerBoards = new Map<string, Map<string, ImageSourcePropType>>([
   [
     'light',
@@ -39,6 +49,24 @@ const checkerBoards = new Map<string, Map<string, ImageSourcePropType>>([
   ],
 ]);
 
+/**
+ * CheckerBoardBackground component that provides a transparent background pattern.
+ *
+ * This component renders a checkerboard pattern background that helps visualize
+ * transparent areas in images. It automatically selects the appropriate pattern
+ * size based on the dimensions and theme (light/dark). The pattern is commonly
+ * used in image editing applications to show transparency.
+ *
+ * @param props - CheckerBoardBackgroundProps containing children and dimensions
+ * @returns JSX element containing the checkerboard background with children
+ *
+ * @example
+ * ```typescript
+ * <CheckerBoardBackground width={800} height={600}>
+ *   <TransparentImage />
+ * </CheckerBoardBackground>
+ * ```
+ */
 export const CheckerBoardBackground: React.FC<CheckerBoardBackgroundProps> = ({
   children,
   width,

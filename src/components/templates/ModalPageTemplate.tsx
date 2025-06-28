@@ -4,12 +4,35 @@ import { CloseButton } from '@molecules';
 import { SafeAreaView, Text } from '@atoms';
 import { useTheme } from '@react-navigation/native';
 
+/**
+ * Props for the ModalPageTemplate component.
+ * @property children - React nodes to be rendered in the modal content area
+ * @property title - Optional title text to display in the modal header
+ * @property onClose - Optional callback function called when the close button is pressed
+ */
 interface ModalPageTemplateProps {
   children?: ReactNode;
   title?: string;
   onClose?: () => void;
 }
 
+/**
+ * ModalPageTemplate component that provides a consistent modal page layout.
+ *
+ * This component provides a standardized layout for modal pages with a header
+ * containing an optional title and close button, plus a content area. It uses
+ * SafeAreaView for proper spacing and theme colors for consistent styling.
+ *
+ * @param props - ModalPageTemplateProps containing children, title, and onClose
+ * @returns JSX element containing the modal page template
+ *
+ * @example
+ * ```typescript
+ * <ModalPageTemplate title="Settings" onClose={handleClose}>
+ *   <SettingsContent />
+ * </ModalPageTemplate>
+ * ```
+ */
 export const ModalPageTemplate: React.FC<ModalPageTemplateProps> = ({
   children,
   title,

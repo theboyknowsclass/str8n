@@ -9,6 +9,13 @@ import Animated, {
 } from 'react-native-reanimated';
 import { IconButton, Text } from '@atoms';
 
+/**
+ * Props for the ModalDialog component.
+ * @property children - React nodes to be rendered in the modal content area
+ * @property isVisible - Boolean controlling the visibility and animation state
+ * @property title - Optional title text to display in the modal header
+ * @property onClose - Callback function called when the close button is pressed
+ */
 interface ModalDialogProps {
   children: React.ReactNode;
   isVisible: boolean;
@@ -18,6 +25,23 @@ interface ModalDialogProps {
 
 const ANIMATION_DURATION = 500; // Default duration for animations, aligned with the hook's default.
 
+/**
+ * ModalDialog component that provides an animated modal dialog.
+ *
+ * This component renders a modal dialog with smooth fade in/out animations,
+ * a header with optional title and close button, and scrollable content area.
+ * It uses theme colors for consistent styling and supports both light and dark themes.
+ *
+ * @param props - ModalDialogProps containing children, visibility state, title, and onClose
+ * @returns JSX element containing the animated modal dialog
+ *
+ * @example
+ * ```typescript
+ * <ModalDialog isVisible={showDialog} title="Confirm Action" onClose={handleClose}>
+ *   <Text>Are you sure you want to proceed?</Text>
+ * </ModalDialog>
+ * ```
+ */
 export const ModalDialog: React.FC<ModalDialogProps> = ({
   children,
   isVisible,

@@ -3,6 +3,20 @@ import { ImagePickerService } from '@services';
 import { useOverlayStore, useSourceImageStore } from '@stores';
 import { useNavigation } from '../../../hooks/useNavigation';
 
+/**
+ * ImagePickerButton component that allows users to select images from their library.
+ *
+ * This component renders a button that opens the device's image picker when pressed.
+ * It handles the image selection process, updates the source image store, resets
+ * overlay points, and navigates to the edit page upon successful selection.
+ *
+ * @returns JSX element containing the image picker button
+ *
+ * @example
+ * ```typescript
+ * <ImagePickerButton />
+ * ```
+ */
 export const ImagePickerButton: React.FC = () => {
   const { isLoading, setLoading, setSourceImage } = useSourceImageStore();
   const { resetPoints } = useOverlayStore();

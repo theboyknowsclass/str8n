@@ -3,11 +3,31 @@ import { Icon, Text } from '@atoms';
 import { useTheme } from '@react-navigation/native';
 import { IconType } from '@types';
 
+/**
+ * Props for the InstructionRow component.
+ * @property icon - The icon to display alongside the instruction text
+ * @property text - The instruction text to display
+ */
 interface InstructionRowProps {
   icon: IconType;
   text: string;
 }
 
+/**
+ * InstructionRow component that displays a single instruction with an icon.
+ *
+ * This component renders a horizontal row containing an icon and text for
+ * a single instruction. The icon is displayed in a circular container with
+ * a border, and the text is styled with the theme's primary color.
+ *
+ * @param props - InstructionRowProps containing the icon and text
+ * @returns JSX element containing the instruction row
+ *
+ * @example
+ * ```typescript
+ * <InstructionRow icon="gesture-tap-hold" text="Tap and hold to move" />
+ * ```
+ */
 export const InstructionRow: React.FC<InstructionRowProps> = ({
   icon,
   text,

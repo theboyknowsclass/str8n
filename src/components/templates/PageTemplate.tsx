@@ -13,32 +13,61 @@ import {
 import { NavigationBar } from '@organisms';
 import { SafeAreaView } from '@atoms';
 
+/**
+ * Props for the PageTemplate component.
+ * @property children - React nodes to be rendered within the template
+ * @property isLoading - Whether to show loading state (deprecated, use LoadingContainer)
+ * @property loadingText - Text to display during loading (deprecated)
+ */
 interface PageTemplateProps {
   children?: React.ReactNode | React.ReactNode[];
   isLoading?: boolean;
   loadingText?: string;
 }
 
+/**
+ * Props for the ActionItems compound component.
+ * @property children - React nodes to be rendered in the action bar
+ */
 interface ActionItemsProps {
   children?: React.ReactNode | React.ReactNode[];
 }
 
+/**
+ * Props for the ModalContent compound component.
+ * @property children - React node to be rendered in the modal overlay
+ */
 interface ModalContentProps {
   children?: React.ReactNode;
 }
 
-// ActionItems component that will be used as a compound component
+/**
+ * ActionItems compound component for PageTemplate.
+ * Renders children in the action bar area of the page template.
+ */
 const ActionItems: React.FC<ActionItemsProps> = () => null;
 
+/**
+ * ModalContent compound component for PageTemplate.
+ * Renders children in a modal overlay when visible.
+ */
 const ModalContent: React.FC<ModalContentProps> = () => null;
 
-// Define the type for the PageTemplate component with its static properties
+/**
+ * Type definition for the PageTemplate component with compound components.
+ * Includes static ActionItems and ModalContent properties.
+ */
 interface PageTemplateComponent extends React.FC<PageTemplateProps> {
   ActionItems: React.FC<ActionItemsProps>;
   ModalContent: React.FC<ModalContentProps>;
 }
 
-// Create the Page component
+/**
+ * Internal Page component that handles the main layout logic.
+ *
+ * @param props - PageTemplateProps containing children
+ * @returns JSX element containing the page layout
+ */
 const Page: React.FC<PageTemplateProps> = ({ children }) => {
   const { isLandscape } = useScreenDimensions();
   const { setIsReady, setDimensions, isReady } = usePageTemplateContext();
@@ -87,6 +116,12 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
   );
 };
 
+/**
+ * Modal component that renders content in an animated blur overlay.
+ *
+ * @param props - ModalContentProps containing children
+ * @returns JSX element containing the modal overlay or null
+ */
 const Modal: React.FC<ModalContentProps> = ({ children }) => {
   const { isModalVisible } = usePageModalContext();
 
@@ -102,7 +137,30 @@ const Modal: React.FC<ModalContentProps> = ({ children }) => {
   );
 };
 
-// Export a wrapped version of Page with PageTemplateContextProvider
+/**
+ * PageTemplate component that provides a consistent page layout structure.
+ *
+ * This compound component provides a standardized page layout with navigation bar,
+ * main content area, action bar, and modal support. It automatically handles
+ * responsive layout for different orientations and provides context providers
+ * for page state management.
+ *
+ * @param props - PageTemplateProps containing children
+ * @returns JSX element containing the complete page template
+ *
+ * @example
+ * ```typescript
+ * <PageTemplate>
+ *   <PageTemplate.ModalContent>
+ *     <InstructionsModal />
+ *   </PageTemplate.ModalContent>
+ *   <PageTemplate.ActionItems>
+ *     <ImagePickerButton />
+ *   </PageTemplate.ActionItems>
+ *   <MainContent />
+ * </PageTemplate>
+ * ```
+ */
 export const PageTemplate: PageTemplateComponent = (props) => {
   return (
     <PageTemplateContextProvider>
@@ -142,7 +200,12 @@ const styles = StyleSheet.create({
   },
 });
 
-// Separate children into action items and other children
+/**
+ * Separates children into action items, modal content, and other children.
+ *
+ * @param children - React nodes to be separated
+ * @returns Object containing separated actionItems, otherChildren, and modalContent
+ */
 const separateChildren = (
   children: React.ReactNode
 ): {

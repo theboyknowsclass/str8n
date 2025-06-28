@@ -6,6 +6,11 @@ import {
   StyleSheet,
 } from 'react-native';
 
+/**
+ * Props for the Text component.
+ * @property color - Optional custom color for the text (defaults to theme text color)
+ * @property size - Text size variant ('small', 'medium', 'large', 'larger')
+ */
 interface TextProps extends RNTextProps {
   /** The color of the text */
   color?: string;
@@ -14,8 +19,20 @@ interface TextProps extends RNTextProps {
 }
 
 /**
- * A themed text component that provides consistent styling across the app.
- * Extends React Native's Text component with additional styling capabilities.
+ * Text component that provides consistent themed styling across the app.
+ *
+ * This component extends React Native's Text component with additional
+ * styling capabilities including theme integration, size variants, and
+ * custom color support. It uses the Orbitron font family for consistent
+ * typography throughout the application.
+ *
+ * @param props - TextProps extending React Native TextProps with additional styling options
+ * @returns JSX element containing the styled text
+ *
+ * @example
+ * ```typescript
+ * <Text size="large" color="#FF0000">Hello World</Text>
+ * ```
  */
 export const Text: React.FC<TextProps> = ({
   color,

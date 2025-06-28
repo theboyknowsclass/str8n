@@ -20,8 +20,27 @@ import { Stack } from 'expo-router';
 SplashScreen.preventAutoHideAsync();
 
 /**
- * Root layout component that sets up the app's navigation drawer and theme handling.
- * This component wraps the entire app and provides theme context to all child components.
+ * RootLayout component that sets up the app's navigation and theme handling.
+ *
+ * This component serves as the root layout for the entire application, providing
+ * essential providers and configuration. It handles font loading, theme initialization,
+ * settings initialization, and splash screen management. The component only renders
+ * the app content when all initialization is complete.
+ *
+ * Features:
+ * - Font loading with Orbitron font family
+ * - Theme provider setup
+ * - Safe area provider for device compatibility
+ * - Gesture handler root for touch interactions
+ * - Navigation stack configuration
+ * - Splash screen management
+ *
+ * @returns JSX element containing the root layout or null during initialization
+ *
+ * @example
+ * ```typescript
+ * export default RootLayout;
+ * ```
  */
 export const RootLayout = () => {
   const [loaded, error] = expoUseFonts({

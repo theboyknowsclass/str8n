@@ -4,8 +4,18 @@ import { DarkTheme, DefaultTheme } from '@react-navigation/native';
 import { IconButton } from '@atoms';
 
 /**
- * A toggle button component that switches between light and dark themes.
- * Uses the Button component with an icon variant for consistent styling.
+ * ThemeToggle component that switches between light and dark themes.
+ *
+ * This component renders a button with a theme-appropriate icon that toggles
+ * between light and dark themes when pressed. The icon and accessibility label
+ * update dynamically based on the current theme state.
+ *
+ * @returns JSX element containing the theme toggle button
+ *
+ * @example
+ * ```typescript
+ * <ThemeToggle />
+ * ```
  */
 export const ThemeToggle: React.FC = () => {
   const {
