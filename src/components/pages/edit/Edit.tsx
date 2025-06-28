@@ -12,6 +12,21 @@ import { InstructionMode } from '@types';
 import { PanZoomProvider } from '@contexts/PanZoomContext';
 import { EditProvider } from '@contexts';
 
+/**
+ * Content component for the edit page.
+ *
+ * Renders the interactive image editing interface with pan/zoom controls,
+ * selection overlay, and checkerboard background. Manages the complex
+ * layout of image, overlay points, and selection shape.
+ *
+ * @returns JSX element containing the editing interface
+ * @returns null if the page template is not ready
+ *
+ * @example
+ * ```typescript
+ * <EditContent />
+ * ```
+ */
 const EditContent: React.FC = () => {
   const { dimensions: contentDimensions, isReady } = usePageTemplateContext();
   const {
@@ -73,6 +88,20 @@ const EditContent: React.FC = () => {
   );
 };
 
+/**
+ * Edit page component that provides the main image editing interface.
+ *
+ * This component allows users to manipulate the selection overlay points
+ * on the source image. It includes pan/zoom functionality, visual feedback
+ * with selection shapes, and a transform button to process the image.
+ *
+ * @returns JSX element containing the edit page layout
+ *
+ * @example
+ * ```typescript
+ * <Edit />
+ * ```
+ */
 export const Edit: React.FC = () => {
   return (
     <PageTemplate>

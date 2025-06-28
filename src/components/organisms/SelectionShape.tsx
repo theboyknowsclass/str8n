@@ -10,6 +10,11 @@ import { useEdit, usePanZoomContext, useEditContext } from '@hooks';
 import { View } from 'react-native';
 import { Point } from '@types';
 
+/**
+ * Props for the SelectionShape component.
+ * @property width - The width of the control area in pixels
+ * @property height - The height of the control area in pixels
+ */
 export type SelectionShapeProps = {
   width: number;
   height: number;
@@ -17,6 +22,22 @@ export type SelectionShapeProps = {
 
 const AnimatedPolygon = Animated.createAnimatedComponent(Polygon);
 
+/**
+ * SelectionShape component that renders an animated polygon overlay.
+ *
+ * This component displays a visual representation of the current selection
+ * area as a polygon shape. It responds to pan/zoom transformations and
+ * updates in real-time as the user manipulates the selection points.
+ * The shape is rendered as an SVG polygon with animated properties.
+ *
+ * @param props - SelectionShapeProps containing width and height
+ * @returns JSX element containing the animated selection shape
+ *
+ * @example
+ * ```typescript
+ * <SelectionShape width={400} height={300} />
+ * ```
+ */
 export const SelectionShape: React.FC<SelectionShapeProps> = ({
   width,
   height,

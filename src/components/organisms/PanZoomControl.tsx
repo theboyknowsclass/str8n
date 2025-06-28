@@ -9,6 +9,14 @@ import Animated, {
 } from 'react-native-reanimated';
 import { usePanZoomContext } from '@hooks';
 
+/**
+ * Props for the PanZoomControl component.
+ * @property children - React nodes to be wrapped by the pan/zoom controls
+ * @property contentSize - The dimensions of the content being controlled
+ * @property controlSize - The dimensions of the control area
+ * @property maxScale - Maximum allowed scale factor (default: 1)
+ * @property minScale - Minimum allowed scale factor (default: 0.1)
+ */
 interface PanZoomProps {
   children?: React.ReactNode | React.ReactNode[];
   contentSize: Dimensions;
@@ -17,6 +25,24 @@ interface PanZoomProps {
   minScale?: number;
 }
 
+/**
+ * PanZoomControl component that provides pan and zoom functionality.
+ *
+ * This component wraps content with gesture detection for panning and zooming.
+ * It supports touch gestures on mobile and mouse wheel zooming on web.
+ * The component maintains proper bounds checking and focal point preservation
+ * during zoom operations.
+ *
+ * @param props - PanZoomProps containing children and size configurations
+ * @returns JSX element containing the gesture-controlled content
+ *
+ * @example
+ * ```typescript
+ * <PanZoomControl contentSize={{ width: 1000, height: 800 }} controlSize={{ width: 400, height: 300 }}>
+ *   <Image source={imageSource} />
+ * </PanZoomControl>
+ * ```
+ */
 export const PanZoomControl: React.FC<PanZoomProps> = ({
   children,
   contentSize,

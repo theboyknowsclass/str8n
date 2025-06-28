@@ -2,6 +2,20 @@ import { TouchPoint } from '../molecules/TouchPoint';
 import { View, StyleSheet } from 'react-native';
 import { useEditContext } from '@hooks';
 
+/**
+ * SelectionPoints component that renders interactive touch points.
+ *
+ * This component displays the four corner points of the selection overlay
+ * as interactive TouchPoint components. Each point can be dragged to adjust
+ * the selection area. The points are positioned absolutely over the image.
+ *
+ * @returns JSX element containing the interactive selection points
+ *
+ * @example
+ * ```typescript
+ * <SelectionPoints />
+ * ```
+ */
 export const SelectionPoints: React.FC = () => {
   const { absolutePoints } = useEditContext();
   return (

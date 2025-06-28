@@ -7,6 +7,20 @@ import {
 import { useScreenDimensions } from '@hooks';
 import { View, StyleSheet, ViewStyle } from 'react-native';
 
+/**
+ * NavigationBar component that provides app-wide navigation controls.
+ *
+ * This component displays navigation buttons including back, settings,
+ * instructions, and theme toggle. The layout adapts to landscape/portrait
+ * orientation for optimal user experience.
+ *
+ * @returns JSX element containing the navigation bar with action buttons
+ *
+ * @example
+ * ```typescript
+ * <NavigationBar />
+ * ```
+ */
 export const NavigationBar: React.FC = () => {
   const { isLandscape } = useScreenDimensions();
 
@@ -56,6 +70,12 @@ const styles = StyleSheet.create({
   },
 });
 
+/**
+ * Helper function to get navigation bar styles based on orientation.
+ *
+ * @param isLandscape - Boolean indicating if the device is in landscape mode
+ * @returns ViewStyle object with appropriate flexDirection and padding
+ */
 const getNavigationBarStyles = (isLandscape: boolean): ViewStyle => {
   return {
     flexDirection: isLandscape ? 'column' : 'row',

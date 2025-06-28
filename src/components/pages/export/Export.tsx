@@ -7,6 +7,21 @@ import { useScreenDimensions } from '@hooks';
 import { InstructionsModal } from '@organisms';
 import { InstructionMode } from '@types';
 
+/**
+ * Export page component that displays the transformed image.
+ *
+ * This component shows the final transformed image with options to download (desktop)
+ * or share (mobile) the result. It includes instruction modal support and
+ * responsive behavior based on device type.
+ *
+ * @returns JSX element containing the export page layout
+ * @returns null if no transformed image is available
+ *
+ * @example
+ * ```typescript
+ * <Export />
+ * ```
+ */
 export const Export: React.FC = () => {
   const { destinationUri } = useTransformedImageStore();
   const { isMobile } = useScreenDimensions();
