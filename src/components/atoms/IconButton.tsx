@@ -3,17 +3,17 @@ import {
   TouchableOpacity,
   StyleSheet,
   TouchableOpacityProps,
-  ActivityIndicator,
   ViewStyle,
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { IconType } from '@types';
 import { Icon } from './Icon';
+import { LoadingSpinner } from './LoadingSpinner';
 
 /**
  * Props for the IconButton component.
  * @property icon - The icon to display in the button
- * @property loading - Whether the button is in a loading state (shows activity indicator)
+ * @property loading - Whether the button is in a loading state (shows LoadingSpinner instead of icon)
  * @property disabled - Whether the button is disabled (reduces opacity and prevents interaction)
  * @property accessibilityLabel - The accessibility label for screen readers
  * @property title - Optional title to display alongside the icon
@@ -23,7 +23,7 @@ import { Icon } from './Icon';
 interface IconButtonProps extends TouchableOpacityProps {
   /** The icon to display */
   icon: IconType;
-  /** Whether the button is in a loading state */
+  /** Whether the button is in a loading state - shows LoadingSpinner when true */
   loading?: boolean;
   /** Whether the button is disabled */
   disabled?: boolean;
@@ -46,12 +46,13 @@ interface IconButtonProps extends TouchableOpacityProps {
  *
  * Features:
  * - Support for icons with optional text
- * - Loading state with activity indicator
- * - Dark/light theme support
- * - Customizable styles
- * - Accessibility support
- * - Two size variants (small: 24px, large: 32px)
- * - Optional border styling
+ * - Loading state with LoadingSpinner component (replaces icon when loading)
+ * - Dark/light theme support with automatic color adaptation
+ * - Customizable styles and border options
+ * - Accessibility support with proper labels and roles
+ * - Two size variants (small: 20px icon, large: 36px icon)
+ * - Optional border styling with theme-aware colors
+ * - Automatic disabled state handling (opacity reduction and interaction prevention)
  *
  * @param props - IconButtonProps extending TouchableOpacityProps with icon-specific options
  * @returns JSX element containing the icon button
@@ -63,6 +64,14 @@ interface IconButtonProps extends TouchableOpacityProps {
  *   icon="settings"
  *   onPress={() => {}}
  *   accessibilityLabel="Settings"
+ * />
+ *
+ * // Loading state with spinner
+ * <IconButton
+ *   icon="download"
+ *   loading={true}
+ *   onPress={() => {}}
+ *   accessibilityLabel="Download"
  * />
  *
  * // Without border
@@ -113,7 +122,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
       {...rest}
     >
       {loading ? (
-        <ActivityIndicator size={size} color={colors.primary} />
+        <LoadingSpinner size={iconSize} animating={loading} />
       ) : (
         <Icon name={icon} size={iconSize} />
       )}

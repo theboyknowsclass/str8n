@@ -1,4 +1,4 @@
-import { AnimatedSwitch, Text } from '@atoms';
+import { Switch, Text } from '@atoms';
 import { useTheme } from '@react-navigation/native';
 import { View, StyleSheet } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
@@ -51,7 +51,7 @@ export const SettingsToggle: React.FC<SettingsToggleProps> = ({
 
   return (
     <View style={styles.toggleContainer}>
-      <AnimatedSwitch onPress={onPress} value={value} />
+      <Switch onPress={onPress} value={value} />
       <Text color={primary} style={styles.toggleText}>
         {title}
       </Text>

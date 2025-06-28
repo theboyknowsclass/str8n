@@ -1,7 +1,7 @@
 import { ImagePickerButton } from '@molecules';
 import { PageTemplate } from '@templates';
 import { View, StyleSheet } from 'react-native';
-import { useScreenDimensions } from '@hooks';
+import { useAutoShowInstructions, useScreenDimensions } from '@hooks';
 import { InstructionsModal } from '@organisms';
 import { InstructionMode } from '@types';
 import { Logo, Text } from '@atoms';
@@ -10,8 +10,15 @@ import { useTheme } from '@react-navigation/native';
 /**
  * Content component for the import page.
  *
- * Displays the app logo and tagline in a centered layout.
- * The logo size is responsive based on screen dimensions.
+ * Displays the app logo and tagline in a centered layout with responsive sizing.
+ * The logo size is dynamically calculated based on screen dimensions to ensure
+ * optimal display across different device sizes.
+ *
+ * Features:
+ * - Responsive logo sizing based on screen dimensions
+ * - Centered layout with proper spacing
+ * - Theme-aware text coloring
+ * - Automatic instruction display integration
  *
  * @returns JSX element containing the centered logo and text
  *
@@ -25,7 +32,7 @@ const ImportContent: React.FC = () => {
   const { width, height } = useScreenDimensions();
   const logoSize = Math.min(width, height) * 0.7;
 
-  // useAutoShowInstructions();
+  useAutoShowInstructions();
 
   return (
     <View style={styles.container}>
@@ -43,6 +50,13 @@ const ImportContent: React.FC = () => {
  * This component displays the app logo, tagline, and provides an image picker
  * button for users to select images for processing. It includes instruction
  * modal support and uses the page template for consistent layout.
+ *
+ * Features:
+ * - Landing page with app branding and tagline
+ * - Image picker integration for photo selection
+ * - Instruction modal with auto-show functionality
+ * - Responsive layout using page template
+ * - Consistent styling and navigation structure
  *
  * @returns JSX element containing the import page layout
  *
