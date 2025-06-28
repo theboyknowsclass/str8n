@@ -1,10 +1,9 @@
 import { TouchPoint } from '../molecules/TouchPoint';
 import { View, StyleSheet } from 'react-native';
-import { useContext } from 'react';
-import { EditContext } from '@contexts/EditContext';
+import { useEditContext } from '@hooks';
 
 export const SelectionPoints: React.FC = () => {
-  const { absolutePoints } = useContext(EditContext);
+  const { absolutePoints } = useEditContext();
   return (
     <View style={styles.container}>
       <View style={styles.pointsContainer}>

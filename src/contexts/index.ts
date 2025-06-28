@@ -8,5 +8,9 @@ export {
   PageModalContext,
   PageModalContextType,
 } from './PageModalContext';
-export { PanZoomProvider } from './PanZoomContext';
-export { EditProvider } from './EditContext';
+export {
+  PanZoomProvider,
+  PanZoomContext,
+  PanZoomContextType,
+} from './PanZoomContext';
+export { EditProvider, EditContext, EditContextType } from './EditContext';

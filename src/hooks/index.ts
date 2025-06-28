@@ -5,6 +5,8 @@ export { useTransformImage } from './useTransformImage';
 export { useShareImage } from './useShareImage';
 export { usePageTemplateContext } from './usePageTemplateContext';
 export { usePageModalContext } from './usePageModalContext';
+export { usePanZoomContext } from './usePanZoomContext';
+export { useEditContext } from './useEditContext';
 export { useAutoShowInstructions } from './useAutoShowInstructions';
 export { useDownloadImage } from './useDownloadImage';
 export { useNavigation } from './useNavigation';

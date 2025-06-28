@@ -1,14 +1,12 @@
-import { EditContext } from '@contexts/EditContext';
-import { PanZoomContext } from '@contexts/PanZoomContext';
 import { useTheme } from '@react-navigation/native';
-import { useContext, useRef } from 'react';
+import { useRef } from 'react';
 import Animated, {
   useAnimatedProps,
   useAnimatedStyle,
   useDerivedValue,
 } from 'react-native-reanimated';
 import { Polygon, Svg } from 'react-native-svg';
-import { useEdit } from '@hooks';
+import { useEdit, usePanZoomContext, useEditContext } from '@hooks';
 import { View } from 'react-native';
 import { Point } from '@types';
 
@@ -47,7 +45,7 @@ export const SelectionShape: React.FC<SelectionShapeProps> = ({
   };
 
   const { scale: panZoomScale, translate: panZoomTranslate } =
-    useContext(PanZoomContext);
+    usePanZoomContext();
 
   // store the initial pan zoom scale and translate to calculate the relative position of the selection shape
   const initialPanZoomScale = useRef(panZoomScale.value);
@@ -57,7 +55,7 @@ export const SelectionShape: React.FC<SelectionShapeProps> = ({
     return panZoomScale.value / initialPanZoomScale.current;
   });
 
-  const { absolutePoints } = useContext(EditContext);
+  const { absolutePoints } = useEditContext();
 
   const relativePoints = useDerivedValue<Point[]>(() => {
     return [...absolutePoints, absolutePoints[0]].map((p) => ({

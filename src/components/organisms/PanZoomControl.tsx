@@ -1,5 +1,4 @@
-import { PanZoomContext } from '@contexts/PanZoomContext';
-import { useCallback, useContext, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Dimensions } from '@types';
 import { View, Platform } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -8,6 +7,7 @@ import Animated, {
   useDerivedValue,
   useSharedValue,
 } from 'react-native-reanimated';
+import { usePanZoomContext } from '@hooks';
 
 interface PanZoomProps {
   children?: React.ReactNode | React.ReactNode[];
@@ -28,7 +28,7 @@ export const PanZoomControl: React.FC<PanZoomProps> = ({
     scale,
     translate,
     panGesture: contextPanGesture,
-  } = useContext(PanZoomContext);
+  } = usePanZoomContext();
 
   const savedScale = useSharedValue(scale.value);
   const savedTranslate = useSharedValue(translate.value);

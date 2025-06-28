@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import { StyleSheet } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -12,7 +12,7 @@ import Animated, {
 import { useOverlayStore, useSourceImageStore } from '@stores';
 import { Corner, Point } from '@types';
 import { useTheme } from '@react-navigation/native';
-import { PanZoomContext } from '@contexts/PanZoomContext';
+import { usePanZoomContext } from '@hooks';
 
 type TouchPointProps = {
   index: Corner;
@@ -26,7 +26,7 @@ export const TouchPoint: React.FC<TouchPointProps> = ({
   index,
   position: absolutePosition,
 }) => {
-  const { scale, panGesture: parentPanGesture } = useContext(PanZoomContext);
+  const { scale, panGesture: parentPanGesture } = usePanZoomContext();
   const updatePoint = useOverlayStore((state) => state.updatePoint);
   const theme = useTheme();
 
