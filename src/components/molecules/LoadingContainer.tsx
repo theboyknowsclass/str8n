@@ -7,11 +7,33 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 
+/**
+ * Props for the LoadingContainer component.
+ * @property children - React nodes to be rendered when ready
+ * @property isReady - Boolean indicating if content should be visible
+ */
 interface LoadingContainerProps {
   children: React.ReactNode;
   isReady: boolean;
 }
 
+/**
+ * LoadingContainer component that provides smooth content transitions.
+ *
+ * This component wraps content with fade in/out animations based on the ready state.
+ * It provides a smooth transition when content becomes available, improving
+ * the user experience during loading states.
+ *
+ * @param props - LoadingContainerProps containing children and ready state
+ * @returns JSX element containing the animated content container
+ *
+ * @example
+ * ```typescript
+ * <LoadingContainer isReady={isDataLoaded}>
+ *   <DataContent />
+ * </LoadingContainer>
+ * ```
+ */
 export const LoadingContainer: React.FC<LoadingContainerProps> = ({
   children,
   isReady,
