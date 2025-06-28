@@ -7,7 +7,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Polygon, Svg } from 'react-native-svg';
 import { useEdit, usePanZoomContext, useEditContext } from '@hooks';
-import { View } from 'react-native';
 import { Point } from '@types';
 
 /**
@@ -93,7 +92,7 @@ export const SelectionShape: React.FC<SelectionShapeProps> = ({
     return 3 / relativeScale.value;
   });
 
-  const transform = useAnimatedStyle(() => {
+  const transform = useDerivedValue(() => {
     // calculate the relative scale of the pan zoom scale to the initial pan zoom scale
     const relativeScale = panZoomScale.value / initialPanZoomScale.current;
 
@@ -103,23 +102,21 @@ export const SelectionShape: React.FC<SelectionShapeProps> = ({
     const translateX = xDiff * panZoomScale.value - topLeft.x * relativeScale;
     const translateY = yDiff * panZoomScale.value - topLeft.y * relativeScale;
 
+    return [
+      { translateX: translateX },
+      { translateY: translateY },
+      { scale: relativeScale },
+    ];
+  });
+
+  const transformAnimatedStyle = useAnimatedStyle(() => {
     return {
-      transform: [
-        {
-          translateX,
-        },
-        {
-          translateY,
-        },
-        {
-          scale: relativeScale,
-        },
-      ],
+      transform: transform.value,
       transformOrigin: '0 0',
     };
   });
 
-  const animatedProps = useAnimatedProps(() => {
+  const animatedPolygonProps = useAnimatedProps(() => {
     return {
       points: path.value,
       strokeWidth: lineWidth.value,
@@ -127,35 +124,22 @@ export const SelectionShape: React.FC<SelectionShapeProps> = ({
   });
 
   return (
-    <View
-      style={{
-        width: width,
-        height: height,
-        pointerEvents: 'none',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-      }}
+    <Animated.View
+      style={[
+        transformAnimatedStyle,
+        {
+          position: 'absolute',
+          pointerEvents: 'none',
+        },
+      ]}
     >
-      <Animated.View
-        style={[
-          transform,
-          {
-            pointerEvents: 'none',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-          },
-        ]}
-      >
-        <Svg width={svgDimensions.width} height={svgDimensions.height}>
-          <AnimatedPolygon
-            animatedProps={animatedProps}
-            fill="transparent"
-            stroke={colors.primary}
-          />
-        </Svg>
-      </Animated.View>
-    </View>
+      <Svg width={svgDimensions.width} height={svgDimensions.height}>
+        <AnimatedPolygon
+          animatedProps={animatedPolygonProps}
+          fill="transparent"
+          stroke={colors.primary}
+        />
+      </Svg>
+    </Animated.View>
   );
 };
