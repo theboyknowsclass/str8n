@@ -18,11 +18,11 @@ const TRACK_PADDING = 5; // Padding inside the track for the thumb
 const DURATION = 400; // Animation duration in milliseconds
 
 /**
- * Props for the AnimatedSwitch component
- * @param value - SharedValue<boolean> that controls the switch state (on/off)
- * @param onPress - Callback function called when the switch is pressed
- * @param duration - Optional animation duration in milliseconds
- * @param trackColors - Optional custom colors for on/off states
+ * Props for the AnimatedSwitch component.
+ * @property value - SharedValue<boolean> that controls the switch state (on/off)
+ * @property onPress - Callback function called when the switch is pressed
+ * @property duration - Optional animation duration in milliseconds
+ * @property trackColors - Optional custom colors for on/off states
  */
 export type AnimatedSwitchProps = {
   value: SharedValue<boolean>;
@@ -32,13 +32,30 @@ export type AnimatedSwitchProps = {
 };
 
 /**
- * AnimatedSwitch - A custom animated toggle switch component
+ * AnimatedSwitch component that provides a smooth animated toggle switch.
+ *
+ * This component creates a custom animated toggle switch with smooth color
+ * transitions and thumb movement. It uses React Native Reanimated for
+ * performant animations and automatically adapts to theme changes.
  *
  * Features:
  * - Smooth color transitions between on/off states
  * - Animated thumb movement
  * - Theme-aware colors (uses primary color for on state)
  * - Responsive to dark/light theme changes
+ *
+ * @param props - AnimatedSwitchProps containing the switch state and callbacks
+ * @returns JSX element containing the animated switch
+ *
+ * @example
+ * ```typescript
+ * const switchValue = useSharedValue(false);
+ *
+ * <AnimatedSwitch
+ *   value={switchValue}
+ *   onPress={() => console.log('Switch toggled')}
+ * />
+ * ```
  */
 export const AnimatedSwitch: React.FC<AnimatedSwitchProps> = ({
   value,

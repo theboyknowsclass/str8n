@@ -7,6 +7,14 @@ import { useGetDerivedX, useGetDerivedY } from './useLogo';
 
 const AnimatedPolygon = Animated.createAnimatedComponent(Polygon);
 
+/**
+ * Props for the Path component.
+ * @property strokeWidth - The width of the stroke in pixels
+ * @property scale - The scale factor for the path
+ * @property animationProgress - Shared value controlling animation progress
+ * @property background - The background color of the path
+ * @property foreground - The foreground/stroke color of the path
+ */
 type PathProps = {
   strokeWidth: number;
   scale: number;
@@ -15,6 +23,27 @@ type PathProps = {
   foreground: string;
 };
 
+/**
+ * Path component that renders an animated polygon for the logo.
+ *
+ * This component creates an animated polygon that forms part of the STR8N logo.
+ * It uses React Native Reanimated to smoothly animate the polygon points based
+ * on the animation progress, creating a dynamic visual effect.
+ *
+ * @param props - PathProps containing styling and animation parameters
+ * @returns JSX element containing the animated polygon
+ *
+ * @example
+ * ```typescript
+ * <Path
+ *   strokeWidth={2}
+ *   scale={1.0}
+ *   animationProgress={progress}
+ *   background="#000000"
+ *   foreground="#FFFFFF"
+ * />
+ * ```
+ */
 export const Path = ({
   strokeWidth,
   scale,

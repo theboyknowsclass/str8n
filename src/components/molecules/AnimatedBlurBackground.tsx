@@ -13,19 +13,38 @@ import { useAnimatedBlurBackground } from './useAnimatedBlurBackground';
 
 const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
 
+/**
+ * Props for the AnimatedBlurBackground component.
+ * @property children - React nodes to render inside the blur background
+ * @property isVisible - Boolean controlling the visibility and animation state
+ */
 interface AnimatedBlurBackgroundProps {
   children: React.ReactNode;
   isVisible: boolean;
 }
 
 /**
- * AnimatedBlurBackground - Modal overlay with blur effect
+ * AnimatedBlurBackground component that creates a modal overlay with blur effect.
  *
- * This component creates a modal overlay that:
- * 1. Shows a blurred background when visible
- * 2. Animates smoothly in/out without flickering
- * 3. Doesn't block interactions when hidden
- * 4. Uses conditional rendering to prevent UX blocking
+ * This component creates a modal overlay that provides a blurred background effect
+ * with smooth animations. It uses React Native Reanimated for performant animations
+ * and Expo Blur for the blur effect, automatically adapting to theme changes.
+ *
+ * Features:
+ * - Smooth blur intensity animations
+ * - Theme-aware blur tint
+ * - Non-blocking when hidden
+ * - Platform-specific optimizations
+ *
+ * @param props - AnimatedBlurBackgroundProps containing children and visibility state
+ * @returns JSX element containing the animated blur background
+ *
+ * @example
+ * ```typescript
+ * <AnimatedBlurBackground isVisible={showModal}>
+ *   <ModalContent />
+ * </AnimatedBlurBackground>
+ * ```
  */
 export const AnimatedBlurBackground: React.FC<AnimatedBlurBackgroundProps> = ({
   children,

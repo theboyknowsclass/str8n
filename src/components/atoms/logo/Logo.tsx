@@ -4,11 +4,32 @@ import { useLogo } from './useLogo';
 import { Path } from './Path';
 import { Point } from './Point';
 
+/**
+ * Props for the Logo component.
+ * @property size - The size of the logo in pixels
+ * @property variant - The variant of the logo ('icon' or 'logo')
+ */
 export type LogoProps = {
   size: number;
   variant: 'icon' | 'logo';
 };
 
+/**
+ * Logo component that renders the STR8N logo with animated elements.
+ *
+ * This component creates an animated SVG logo with customizable size and variant.
+ * It includes animated path elements, points, and optional text. The logo uses
+ * the Orbitron font family and supports both icon and full logo variants.
+ *
+ * @param props - LogoProps containing size and variant options
+ * @returns JSX element containing the animated logo
+ *
+ * @example
+ * ```typescript
+ * <Logo size={100} variant="logo" />
+ * <Logo size={32} variant="icon" />
+ * ```
+ */
 export const Logo: React.FC<LogoProps> = ({ size, variant = 'icon' }) => {
   const {
     width,

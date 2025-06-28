@@ -10,6 +10,16 @@ import { useTheme } from '@react-navigation/native';
 import { IconType } from '@types';
 import { Icon } from './Icon';
 
+/**
+ * Props for the IconButton component.
+ * @property icon - The icon to display in the button
+ * @property loading - Whether the button is in a loading state (shows activity indicator)
+ * @property disabled - Whether the button is disabled (reduces opacity and prevents interaction)
+ * @property accessibilityLabel - The accessibility label for screen readers
+ * @property title - Optional title to display alongside the icon
+ * @property size - The size of the button ('small' or 'large')
+ * @property showBorder - Whether to show the border around the button
+ */
 interface IconButtonProps extends TouchableOpacityProps {
   /** The icon to display */
   icon: IconType;
@@ -28,8 +38,11 @@ interface IconButtonProps extends TouchableOpacityProps {
 }
 
 /**
- * A button component specifically designed for icon-based buttons.
- * Provides a clean, focused interface for icon buttons with consistent styling.
+ * IconButton component that provides a clean interface for icon-based buttons.
+ *
+ * This component creates a touchable button with an icon, supporting loading states,
+ * theme integration, accessibility, and customizable styling. It automatically
+ * handles disabled states and provides consistent visual feedback.
  *
  * Features:
  * - Support for icons with optional text
@@ -37,11 +50,14 @@ interface IconButtonProps extends TouchableOpacityProps {
  * - Dark/light theme support
  * - Customizable styles
  * - Accessibility support
- * - Two size variants (small: 24px, medium: 32px)
+ * - Two size variants (small: 24px, large: 32px)
  * - Optional border styling
  *
+ * @param props - IconButtonProps extending TouchableOpacityProps with icon-specific options
+ * @returns JSX element containing the icon button
+ *
  * @example
- * ```tsx
+ * ```typescript
  * // Basic usage with border
  * <IconButton
  *   icon="settings"
