@@ -1,4 +1,3 @@
-import { PanZoomProvider } from '@contexts';
 import { PanZoomContext } from '@contexts/PanZoomContext';
 import { useCallback, useContext, useMemo } from 'react';
 import { Dimensions } from '@types';
@@ -18,7 +17,7 @@ interface PanZoomProps {
   minScale?: number;
 }
 
-const PanZoom: React.FC<PanZoomProps> = ({
+export const PanZoomControl: React.FC<PanZoomProps> = ({
   children,
   contentSize,
   controlSize,
@@ -30,9 +29,6 @@ const PanZoom: React.FC<PanZoomProps> = ({
     translate,
     panGesture: contextPanGesture,
   } = useContext(PanZoomContext);
-
-  console.log('scale', scale.value);
-  console.log('translate', translate.value);
 
   const savedScale = useSharedValue(scale.value);
   const savedTranslate = useSharedValue(translate.value);
@@ -191,8 +187,4 @@ const PanZoom: React.FC<PanZoomProps> = ({
       </GestureDetector>
     </View>
   );
-};
-
-export const PanZoomControl: React.FC<PanZoomProps> = (props) => {
-  return <PanZoom {...props} />;
 };
