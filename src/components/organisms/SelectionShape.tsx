@@ -22,6 +22,8 @@ export type SelectionShapeProps = {
 
 const AnimatedPolygon = Animated.createAnimatedComponent(Polygon);
 
+const AnimatedSvg = Animated.createAnimatedComponent(Svg);
+
 /**
  * SelectionShape component that renders an animated polygon overlay.
  *
@@ -90,7 +92,7 @@ export const SelectionShape: React.FC<SelectionShapeProps> = ({
   });
 
   const lineWidth = useDerivedValue(() => {
-    return 3 / relativeScale.value;
+    return 3 / relativeScale.value, 1;
   });
 
   const transform = useAnimatedStyle(() => {
@@ -137,8 +139,7 @@ export const SelectionShape: React.FC<SelectionShapeProps> = ({
         left: 0,
       }}
     >
-      <Animated.View
-        style={[
+        <AnimatedSvg width={svgDimensions.width} height={svgDimensions.height}         style={[
           transform,
           {
             pointerEvents: 'none',
@@ -146,16 +147,13 @@ export const SelectionShape: React.FC<SelectionShapeProps> = ({
             top: 0,
             left: 0,
           },
-        ]}
-      >
-        <Svg width={svgDimensions.width} height={svgDimensions.height}>
+        ]}>
           <AnimatedPolygon
             animatedProps={animatedProps}
             fill="transparent"
             stroke={colors.primary}
           />
-        </Svg>
-      </Animated.View>
+        </AnimatedSvg>
     </View>
   );
 };
