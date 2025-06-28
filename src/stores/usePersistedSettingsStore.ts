@@ -3,11 +3,17 @@ import { create } from 'zustand';
 import { AsyncStorageService } from '@services';
 
 /**
- * Represents the state of the settings store.
- * @property cropToOverlay - Whether to crop the image to the overlay bounds
- * @property setCropToOverlay - Function to set the cropToOverlay setting
- * @property isReady - Whether the settings are loaded
- * @property setIsReady - Function to set the isReady setting
+ * Persisted settings state interface that manages user preferences.
+ * This state extends PersistedSettings with setter methods and ready state.
+ * Settings are automatically saved to AsyncStorage when changed.
+ * @property cropToOverlay - Whether to automatically crop the transformed image to fit the overlay boundaries
+ * @property maintainExifMetadata - Whether to preserve EXIF metadata when transforming images
+ * @property alwaysShowInstructions - Whether to always display instruction text to guide users
+ * @property isReady - Whether the settings have been loaded from storage
+ * @property setCropToOverlay - Sets the cropToOverlay setting and saves to storage
+ * @property setMaintainExifMetadata - Sets the maintainExifMetadata setting and saves to storage
+ * @property setAlwaysShowInstructions - Sets the alwaysShowInstructions setting and saves to storage
+ * @property setIsReady - Sets the ready state of the settings
  */
 type PersistedSettingsState = PersistedSettings & {
   setCropToOverlay: (cropToOverlay: boolean) => void;
@@ -18,9 +24,28 @@ type PersistedSettingsState = PersistedSettings & {
 };
 
 /**
- * Creates the settings store using the Zustand library.
- * @param set - The set function from Zustand
- * @returns The settings store
+ * Zustand store for managing persisted user settings.
+ *
+ * This store handles user preferences that are automatically saved to AsyncStorage
+ * and restored when the app launches. Settings include image processing options
+ * and UI behavior preferences.
+ *
+ * @example
+ * ```typescript
+ * const {
+ *   cropToOverlay,
+ *   maintainExifMetadata,
+ *   alwaysShowInstructions,
+ *   setCropToOverlay,
+ *   setMaintainExifMetadata,
+ *   setAlwaysShowInstructions
+ * } = usePersistedSettingsStore();
+ *
+ * // Update settings (automatically saved to storage)
+ * setCropToOverlay(true);
+ * setMaintainExifMetadata(false);
+ * setAlwaysShowInstructions(true);
+ * ```
  */
 export const usePersistedSettingsStore = create<PersistedSettingsState>()(
   (set, get) => ({

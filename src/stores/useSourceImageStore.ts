@@ -2,16 +2,15 @@ import { create } from 'zustand';
 import { DefaultSourceImage, ImageSource } from '@types';
 
 /**
- * Represents the state of the source image store.
- * @property uri - The URI of the selected image
- * @property originalDimensions - The original dimensions of the image
- * @property isLoading - Whether the image is loading
- * @property error - The error message if the image fails to load
- * @property setUri - Function to set the URI of the selected image
- * @property setOriginalDimensions - Function to set the original dimensions of the image
- * @property setLoading - Function to set the loading state
- * @property setError - Function to set the error message
- * @property clearImage - Function to clear the image state
+ * Source image state interface that manages the state of the selected source image.
+ * This state tracks the image URI, dimensions, metadata, loading state, and any errors.
+ * @property sourceImage - The currently selected source image with URI, dimensions, and metadata
+ * @property isLoading - Whether the image is currently loading
+ * @property error - Error message if the image failed to load
+ * @property setSourceImage - Sets the source image data
+ * @property setLoading - Sets the loading state
+ * @property setError - Sets the error message
+ * @property clearImage - Clears all image state and resets to defaults
  */
 type SourceImageState = {
   sourceImage: ImageSource;
@@ -24,9 +23,41 @@ type SourceImageState = {
 };
 
 /**
- * Creates the source image store using the Zustand library.
- * @param set - The set function from Zustand
- * @returns The source image store
+ * Zustand store for managing source image state.
+ *
+ * This store handles the state of the selected source image including
+ * the image URI, dimensions, EXIF metadata, loading states, and error handling.
+ * It provides methods to update the image data and manage the loading process.
+ *
+ * @example
+ * ```typescript
+ * const {
+ *   sourceImage,
+ *   isLoading,
+ *   error,
+ *   setSourceImage,
+ *   setLoading,
+ *   setError,
+ *   clearImage
+ * } = useSourceImageStore();
+ *
+ * // Load a new image
+ * setLoading(true);
+ * setError(null);
+ * setSourceImage({
+ *   uri: 'file://path/to/image.jpg',
+ *   dimensions: { width: 1920, height: 1080 },
+ *   tags: { /* EXIF data *\/ }
+ * });
+ * setLoading(false);
+ *
+ * // Handle error
+ * setError('Failed to load image');
+ * setLoading(false);
+ *
+ * // Clear image
+ * clearImage();
+ * ```
  */
 export const useSourceImageStore = create<SourceImageState>()((set) => ({
   sourceImage: DefaultSourceImage,
