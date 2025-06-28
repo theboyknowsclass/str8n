@@ -5,6 +5,5 @@ export { TextButton, CircleTextButton } from './TextButton';
 export { Switch } from './Switch';
 export { AnimatedSwitch } from './AnimatedSwitch';
 export { LoadingSpinner } from './LoadingSpinner';
-export { ProgressWheel } from './ProgressWheel';
-export { Logo, LogoSvg } from './logo';
+export { Logo } from './logo';
 export { SafeAreaView } from './SafeAreaView';

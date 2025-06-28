@@ -16,7 +16,7 @@ const ImportContent: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Logo size={logoSize} />
+      <Logo size={logoSize} variant="logo" />
       <Text size="larger" color={colors.primary}>
         correct your perspective
       </Text>

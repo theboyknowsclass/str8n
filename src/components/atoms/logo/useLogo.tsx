@@ -7,6 +7,7 @@ import {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
+import { useTheme } from '@react-navigation/native';
 
 export const LogoStartPoints = [
   { x: 150, y: 150 },
@@ -53,13 +54,30 @@ export type UseLogo = {
   height: number;
   scale: number;
   animationProgress: SharedValue<number>;
+  strokeWidth: number;
+  radius: number;
+  showText: boolean;
+  foreground: string;
+  background: string;
 };
 
-export const useLogo = (size: number): UseLogo => {
+export const useLogo = (size: number, variant: 'icon' | 'logo'): UseLogo => {
   const width = Math.max(size, 0);
   const height = Math.max(size, 0);
 
   const scale = size / LogoSize;
+
+  const isLogo = variant === 'logo';
+  const isIcon = variant === 'icon';
+
+  const { colors, dark } = useTheme();
+
+  const foreground = dark || isIcon ? colors.primary : colors.background;
+  const background = dark || isIcon ? colors.background : colors.primary;
+
+  const strokeWidth = isLogo ? 30 : 60;
+  const radius = isLogo ? 80 : 120;
+  const showText = isLogo;
 
   // Animation shared value
   const animationProgress = useSharedValue(0);
@@ -77,10 +95,15 @@ export const useLogo = (size: number): UseLogo => {
   }, [animationProgress]);
 
   return {
+    strokeWidth,
+    radius,
+    showText,
     width,
     height,
     scale,
     animationProgress,
+    foreground,
+    background,
   };
 };
 
