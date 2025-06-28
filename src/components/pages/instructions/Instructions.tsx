@@ -1,7 +1,7 @@
 import { Instructions } from '@organisms';
+import { useSessionStateStore } from '@stores';
 import { ModalPageTemplate } from '@templates';
 import { InstructionMode } from '@types';
-import { StyleSheet, View } from 'react-native';
 
 interface InstructionsPageProps {
   mode: InstructionMode;
@@ -12,21 +12,15 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({
   mode,
   showSteps,
 }) => {
+  const { setHasDismissedInstructions } = useSessionStateStore();
+
+  const onClose = () => {
+    setHasDismissedInstructions(true);
+  };
+
   return (
-    <ModalPageTemplate title="Instructions">
-      {/* <View style={styles.instructionsContainer}> */}
+    <ModalPageTemplate title="Instructions" onClose={onClose}>
       <Instructions mode={mode} showSteps={showSteps} />
-      {/* </View> */}
     </ModalPageTemplate>
   );
 };
-
-const styles = StyleSheet.create({
-  instructionsContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    width: '100%',
-    height: '100%',
-  },
-});

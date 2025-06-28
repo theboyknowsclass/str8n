@@ -8,3 +8,4 @@ export { usePageModalContext } from './usePageModalContext';
 export { useAutoShowInstructions } from './useAutoShowInstructions';
 export { useDownloadImage } from './useDownloadImage';
 export { useNavigation } from './useNavigation';
+export { useEdit } from './useEdit';

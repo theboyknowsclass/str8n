@@ -1,1 +1,1 @@
-export { Transform } from './Tranform';
+export { Transform } from './Transform';
