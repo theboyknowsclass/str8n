@@ -9,6 +9,7 @@ import {
 import { useTheme } from '@react-navigation/native';
 import { IconType } from '@types';
 import { Icon } from './Icon';
+import { LoadingSpinner } from './LoadingSpinner';
 
 /**
  * Props for the IconButton component.
@@ -113,7 +114,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
       {...rest}
     >
       {loading ? (
-        <ActivityIndicator size={size} color={colors.primary} />
+        <LoadingSpinner size={iconSize} animating={loading} />
       ) : (
         <Icon name={icon} size={iconSize} />
       )}

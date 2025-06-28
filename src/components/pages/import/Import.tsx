@@ -1,7 +1,7 @@
 import { ImagePickerButton } from '@molecules';
 import { PageTemplate } from '@templates';
 import { View, StyleSheet } from 'react-native';
-import { useScreenDimensions } from '@hooks';
+import { useAutoShowInstructions, useScreenDimensions } from '@hooks';
 import { InstructionsModal } from '@organisms';
 import { InstructionMode } from '@types';
 import { Logo, Text } from '@atoms';
@@ -25,7 +25,7 @@ const ImportContent: React.FC = () => {
   const { width, height } = useScreenDimensions();
   const logoSize = Math.min(width, height) * 0.7;
 
-  // useAutoShowInstructions();
+  useAutoShowInstructions();
 
   return (
     <View style={styles.container}>

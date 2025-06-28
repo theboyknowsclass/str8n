@@ -1,4 +1,4 @@
-import { useAutoShowInstructions, usePageModalContext } from '@hooks';
+import { usePageModalContext } from '@hooks';
 import { useSessionStateStore } from '@stores';
 import { ModalDialog } from '@molecules';
 import { Instructions } from './Instructions';
@@ -32,8 +32,6 @@ export const InstructionsModal: React.FC<InstructionsModalProps> = ({
 }) => {
   const { isModalVisible, setIsModalVisible } = usePageModalContext();
   const { setHasDismissedInstructions } = useSessionStateStore();
-
-  useAutoShowInstructions();
 
   const onClosePress = () => {
     setIsModalVisible(false);

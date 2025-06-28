@@ -31,7 +31,8 @@ type ScreenDimensions = {
  */
 export const useScreenDimensions = (): ScreenDimensions => {
   const { width, height } = useWindowDimensions();
-  const isMobile = deviceType === DeviceType.PHONE;
+  const isMobile =
+    deviceType === DeviceType.PHONE || deviceType === DeviceType.TABLET;
 
   return {
     width,
