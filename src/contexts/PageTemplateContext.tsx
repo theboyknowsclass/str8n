@@ -1,7 +1,7 @@
 import React, { createContext, useState, ReactNode } from 'react';
 import { Dimensions } from '@types';
 
-interface PageTemplateContextType {
+export interface PageTemplateContextType {
   dimensions: Dimensions;
   isReady: boolean;
   setDimensions: (dimensions: Dimensions) => void;

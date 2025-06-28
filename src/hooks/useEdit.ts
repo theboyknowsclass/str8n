@@ -4,6 +4,18 @@ import { Dimensions } from '@types';
 const BORDER_PERCENTAGE = 0.2;
 const MAX_SCALE = 1;
 
+/**
+ * Return type for the useEdit hook containing image display and scaling information.
+ * @property uri - The source image URI
+ * @property imageDimensions - The original dimensions of the source image
+ * @property checkerboardSize - The calculated size of the checkerboard background
+ * @property initialScale - The initial scale factor to fit the image in the viewport
+ * @property minScale - The minimum allowed scale factor
+ * @property maxScale - The maximum allowed scale factor
+ * @property initialTranslate - The initial translation values to center the image
+ * @property borderWidth - The width of the border around the image
+ * @property borderHeight - The height of the border around the image
+ */
 interface UseEditReturn {
   uri: string | null;
   imageDimensions: Dimensions;
@@ -16,6 +28,18 @@ interface UseEditReturn {
   borderHeight: number;
 }
 
+/**
+ * Hook for calculating image display parameters in the edit view.
+ * Computes scaling, positioning, and checkerboard dimensions for optimal image display.
+ *
+ * @param contentDimensions - The available content area dimensions
+ * @returns UseEditReturn object containing all calculated display parameters
+ *
+ * @example
+ * ```typescript
+ * const { uri, initialScale, initialTranslate } = useEdit({ width: 400, height: 600 });
+ * ```
+ */
 export const useEdit = (contentDimensions: Dimensions): UseEditReturn => {
   const { sourceImage } = useSourceImageStore();
   const { uri, dimensions: imageDimensions } = sourceImage;

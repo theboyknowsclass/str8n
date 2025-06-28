@@ -1,14 +1,31 @@
 import { useEffect } from 'react';
 import { useThemeStore } from '@stores';
 import { useColorScheme } from 'react-native';
-import { DarkTheme, DefaultTheme } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, Theme } from '@react-navigation/native';
 import { AsyncStorageService } from '@services';
 
 /**
- * Custom hook for initializing the application theme from storage or system default.
- * Returns { theme, isReady }.
+ * Return type for the useInitializeTheme hook.
+ * @property theme - The current theme object
+ * @property isReady - Boolean indicating if theme initialization is complete
  */
-export const useInitializeTheme = () => {
+type UseInitializeTheme = {
+  theme: Theme;
+  isReady: boolean;
+};
+
+/**
+ * Hook for initializing the application theme from storage or system default.
+ * Loads the stored theme from AsyncStorage or falls back to system color scheme.
+ *
+ * @returns UseInitializeTheme object containing theme and ready state
+ *
+ * @example
+ * ```typescript
+ * const { theme, isReady } = useInitializeTheme();
+ * ```
+ */
+export const useInitializeTheme = (): UseInitializeTheme => {
   const colorScheme = useColorScheme();
   const { theme, setTheme, setIsReady, isReady } = useThemeStore();
 

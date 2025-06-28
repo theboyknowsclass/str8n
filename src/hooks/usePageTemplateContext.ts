@@ -1,7 +1,19 @@
-import { PageTemplateContext } from '@contexts/PageTemplateContext';
 import { useContext } from 'react';
+import { PageTemplateContext, PageTemplateContextType } from '@contexts';
 
-export const usePageTemplateContext = () => {
+/**
+ * Hook to access the PageTemplate context.
+ * Provides access to page template functionality and state.
+ *
+ * @returns PageTemplateContextType object containing template state
+ * @throws Error if used outside of PageTemplateContextProvider
+ *
+ * @example
+ * ```typescript
+ * const { dimensions, isReady } = usePageTemplateContext();
+ * ```
+ */
+export const usePageTemplateContext = (): PageTemplateContextType => {
   const context = useContext(PageTemplateContext);
   if (context === undefined) {
     throw new Error(

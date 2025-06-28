@@ -1,6 +1,6 @@
 import React, { createContext, useState, ReactNode } from 'react';
 
-interface PageModalContextType {
+export interface PageModalContextType {
   isModalVisible: boolean;
   setIsModalVisible: (isModalVisible: boolean) => void;
 }
