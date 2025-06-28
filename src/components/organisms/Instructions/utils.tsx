@@ -2,6 +2,23 @@ import { Instruction } from '@types';
 import { InstructionRow } from './InstructionRow';
 import { Text } from '@atoms';
 
+/**
+ * Utility function that converts instructions into React nodes for rendering.
+ *
+ * This function takes an array of instructions and converts them into React nodes
+ * that can be rendered. It supports two modes: simple list (when showSteps is false)
+ * and grouped steps (when showSteps is true) with step titles.
+ *
+ * @param instructions - Array of Instruction objects to convert
+ * @param showSteps - Boolean indicating whether to group instructions into steps
+ * @param titleColor - Color for the step titles when grouping is enabled
+ * @returns Array of React nodes representing the instructions
+ *
+ * @example
+ * ```typescript
+ * const instructionNodes = getInstructionRows(instructions, true, '#FF0000');
+ * ```
+ */
 export const getInstructionRows = (
   instructions: Instruction[],
   showSteps: boolean,

@@ -4,10 +4,29 @@ import { ModalDialog } from '@molecules';
 import { Instructions } from './Instructions';
 import { InstructionMode } from '@types';
 
+/**
+ * Props for the InstructionsModal component.
+ * @property mode - The instruction mode that determines which instructions to show
+ */
 interface InstructionsModalProps {
   mode: InstructionMode;
 }
 
+/**
+ * InstructionsModal component that displays instructions in a modal dialog.
+ *
+ * This component wraps the Instructions component in a modal dialog and handles
+ * the modal visibility state. It automatically shows instructions when appropriate
+ * and tracks when the user has dismissed instructions to avoid showing them again.
+ *
+ * @param props - InstructionsModalProps containing the instruction mode
+ * @returns JSX element containing the instructions modal
+ *
+ * @example
+ * ```typescript
+ * <InstructionsModal mode={InstructionMode.EDIT} />
+ * ```
+ */
 export const InstructionsModal: React.FC<InstructionsModalProps> = ({
   mode,
 }) => {

@@ -5,11 +5,32 @@ import { useInstructions } from './useInstructions';
 import { AlwaysShowToggleSwitch } from './AlwaysShowToggleSwitch';
 import { getInstructionRows } from './utils';
 
+/**
+ * Props for the Instructions component.
+ * @property mode - The instruction mode that determines which instructions to show
+ * @property showSteps - Optional boolean to group instructions into numbered steps
+ */
 interface InstructionsProps {
   mode: InstructionMode;
   showSteps?: boolean;
 }
 
+/**
+ * Instructions component that displays contextual help and guidance.
+ *
+ * This component renders a list of instructions appropriate for the current
+ * context (import, edit, or export mode). It can display instructions as a
+ * simple list or grouped into numbered steps, and includes an optional
+ * toggle for always showing instructions when in ALL mode.
+ *
+ * @param props - InstructionsProps containing mode and display options
+ * @returns JSX element containing the instructions list
+ *
+ * @example
+ * ```typescript
+ * <Instructions mode={InstructionMode.EDIT} showSteps={true} />
+ * ```
+ */
 export const Instructions: React.FC<InstructionsProps> = ({
   mode = InstructionMode.ALL,
   showSteps = false,
