@@ -1,2 +1,1 @@
-export { Logo } from './skia/Logo';
-export { LogoSvg } from './svg/LogoSvg';
+export { Logo } from './Logo';

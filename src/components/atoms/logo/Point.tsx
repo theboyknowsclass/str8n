@@ -3,12 +3,14 @@ import Animated, {
   useAnimatedProps,
 } from 'react-native-reanimated';
 import { Circle } from 'react-native-svg';
-import { useGetDerivedX, useGetDerivedY } from '../useLogo';
+import { useGetDerivedX, useGetDerivedY } from './useLogo';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 interface PointProps {
   index: number;
+  radius: number;
+  strokeWidth: number;
   scale: number;
   animationProgress: SharedValue<number>;
   background: string;
@@ -17,13 +19,15 @@ interface PointProps {
 
 export const Point = ({
   index,
+  radius,
+  strokeWidth,
   scale,
   animationProgress,
   background,
   foreground,
 }: PointProps) => {
-  const pointRadius = 120 * scale;
-  const strokeWidth = 60 * scale;
+  const scaledRadius = radius * scale;
+  const scaledStrokeWidth = strokeWidth * scale;
 
   const x = useGetDerivedX(index, scale, animationProgress);
   const y = useGetDerivedY(index, scale, animationProgress);
@@ -38,10 +42,10 @@ export const Point = ({
   return (
     <AnimatedCircle
       animatedProps={animatedProps}
-      r={pointRadius}
+      r={scaledRadius}
       stroke={foreground}
       fill={background}
-      strokeWidth={strokeWidth}
+      strokeWidth={scaledStrokeWidth}
     />
   );
 };

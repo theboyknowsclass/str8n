@@ -3,11 +3,12 @@ import Animated, {
   useAnimatedProps,
 } from 'react-native-reanimated';
 import { Polygon } from 'react-native-svg';
-import { useGetDerivedX, useGetDerivedY } from '../useLogo';
+import { useGetDerivedX, useGetDerivedY } from './useLogo';
 
 const AnimatedPolygon = Animated.createAnimatedComponent(Polygon);
 
 type PathProps = {
+  strokeWidth: number;
   scale: number;
   animationProgress: SharedValue<number>;
   background: string;
@@ -15,12 +16,13 @@ type PathProps = {
 };
 
 export const Path = ({
+  strokeWidth,
   scale,
   animationProgress,
   background,
   foreground,
 }: PathProps) => {
-  const strokeWidth = 60 * scale;
+  const scaledStrokeWidth = strokeWidth * scale;
   const x1 = useGetDerivedX(0, scale, animationProgress);
   const y1 = useGetDerivedY(0, scale, animationProgress);
   const x2 = useGetDerivedX(1, scale, animationProgress);
@@ -41,7 +43,7 @@ export const Path = ({
       animatedProps={animatedProps}
       fill={background}
       stroke={foreground}
-      strokeWidth={strokeWidth}
+      strokeWidth={scaledStrokeWidth}
     />
   );
 };
