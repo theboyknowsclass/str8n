@@ -11,30 +11,44 @@ import Animated, {
 import { Circle, Svg } from 'react-native-svg';
 
 /**
- * Props for the SpinnerDot component.
+ * Props for the LoadingSpinner component.
  * @property size - The size of the spinner in pixels
- * @property animating - Whether the spinner should animate
+ * @property animating - Whether the spinner should animate (continuous rotation when true)
  */
 interface LoadingSpinnerProps {
+  /** The size of the spinner in pixels */
   size: number;
+  /** Whether the spinner should animate (continuous rotation when true) */
   animating: boolean;
 }
 
 const REF_SIZE = 1000;
 
 /**
- * SpinnerDot component that renders a circular loading spinner with rotating segment.
+ * LoadingSpinner component that renders a circular loading spinner with rotating segment.
  *
  * This component creates a circular outline with a colored segment that rotates
  * around the circle when animating. It uses React Native SVG and Reanimated for
- * smooth rotation animations.
+ * smooth rotation animations with configurable speed based on size.
  *
- * @param props - SpinnerDotProps containing size and animation state
+ * Features:
+ * - Smooth continuous rotation animation using React Native Reanimated
+ * - Theme-aware colors (primary color for active segment, border color for background)
+ * - Scalable design that maintains proportions at any size
+ * - Configurable animation speed (larger spinners rotate slower)
+ * - Clean start/stop animation transitions
+ * - SVG-based rendering for crisp appearance at any scale
+ *
+ * @param props - LoadingSpinnerProps containing size and animation state
  * @returns JSX element containing the animated spinner
  *
  * @example
  * ```typescript
- * <SpinnerDot size={40} animating={true} />
+ * // Basic usage
+ * <LoadingSpinner size={40} animating={true} />
+ *
+ * // Large spinner
+ * <LoadingSpinner size={80} animating={isLoading} />
  * ```
  */
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
