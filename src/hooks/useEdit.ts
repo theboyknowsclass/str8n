@@ -2,7 +2,7 @@ import { useSourceImageStore } from '@stores';
 import { Dimensions } from '@types';
 
 const BORDER_PERCENTAGE = 0.2;
-const MAX_SCALE = 1;
+const MAX_SCALE = 2;
 
 /**
  * Return type for the useEdit hook containing image display and scaling information.

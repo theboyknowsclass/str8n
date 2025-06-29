@@ -24,8 +24,8 @@ type TouchPointProps = {
   position: SharedValue<Point>;
 };
 
-const SIZE = 48;
-const STROKE = 8;
+const SIZE = 64;
+const STROKE = 12;
 
 /**
  * TouchPoint component that provides interactive corner point manipulation.
@@ -135,8 +135,9 @@ export const TouchPoint: React.FC<TouchPointProps> = ({
   // Animated styles for the point
   const animatedStyles = useAnimatedStyle(() => {
     'worklet';
+    const currentScale = activationScale.value;
     return {
-      transform: [{ scale: activationScale.value }],
+      transform: [{ scale: currentScale }],
       left: absolutePosition.value.x - pointRadius.value,
       top: absolutePosition.value.y - pointRadius.value,
       width: pointSize.value,

@@ -1,13 +1,10 @@
 import { useTheme } from '@react-navigation/native';
 import { useRef } from 'react';
-import Animated, {
-  useAnimatedProps,
-  useAnimatedStyle,
-  useDerivedValue,
-} from 'react-native-reanimated';
-import { Polygon, Svg } from 'react-native-svg';
+import { StyleSheet, View } from 'react-native';
+import { useDerivedValue } from 'react-native-reanimated';
 import { useEdit, usePanZoomContext, useEditContext } from '@hooks';
 import { Point } from '@types';
+import { Canvas, Circle, Group, Points } from '@shopify/react-native-skia';
 
 /**
  * Props for the SelectionShape component.
@@ -18,8 +15,6 @@ export type SelectionShapeProps = {
   width: number;
   height: number;
 };
-
-const AnimatedPolygon = Animated.createAnimatedComponent(Polygon);
 
 /**
  * SelectionShape component that renders an animated polygon overlay.
@@ -84,12 +79,8 @@ export const SelectionShape: React.FC<SelectionShapeProps> = ({
     }));
   }, [absolutePoints, imageWidth, imageHeight]);
 
-  const path = useDerivedValue(() => {
-    return relativePoints.value.map((p) => `${p.x},${p.y}`).join(' ');
-  });
-
   const lineWidth = useDerivedValue(() => {
-    return Math.ceil(3 / relativeScale.value);
+    return 3 / relativeScale.value;
   });
 
   const transform = useDerivedValue(() => {
@@ -109,37 +100,37 @@ export const SelectionShape: React.FC<SelectionShapeProps> = ({
     ];
   });
 
-  const transformAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: transform.value,
-      transformOrigin: '0 0',
-    };
-  });
-
-  const animatedPolygonProps = useAnimatedProps(() => {
-    return {
-      points: path.value,
-      strokeWidth: lineWidth.value,
-    };
-  });
-
   return (
-    <Animated.View
-      style={[
-        transformAnimatedStyle,
-        {
-          position: 'absolute',
-          pointerEvents: 'none',
-        },
-      ]}
-    >
-      <Svg width={svgDimensions.width} height={svgDimensions.height}>
-        <AnimatedPolygon
-          animatedProps={animatedPolygonProps}
-          fill="transparent"
-          stroke={colors.primary}
-        />
-      </Svg>
-    </Animated.View>
+    <View style={styles.container}>
+      <Canvas style={styles.canvas} pointerEvents="none">
+        <Group transform={transform}>
+          <Points
+            points={relativePoints}
+            mode="polygon"
+            color={colors.primary}
+            style="stroke"
+            strokeWidth={lineWidth}
+            strokeJoin="round"
+            strokeCap="round"
+            opacity={0.5}
+          />
+        </Group>
+      </Canvas>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    pointerEvents: 'none',
+    width: '100%',
+    height: '100%',
+  },
+  canvas: {
+    position: 'absolute',
+    pointerEvents: 'none',
+    width: '100%',
+    height: '100%',
+  },
+});
