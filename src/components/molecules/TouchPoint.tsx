@@ -6,11 +6,10 @@ import Animated, {
   useAnimatedStyle,
   useDerivedValue,
   withTiming,
-  SharedValue,
   runOnJS,
 } from 'react-native-reanimated';
 import { useOverlayStore, useSourceImageStore } from '@stores';
-import { Corner, Point } from '@types';
+import { Corner, MovablePoint, Point } from '@types';
 import { useTheme } from '@react-navigation/native';
 import { usePanZoomContext } from '@hooks';
 
@@ -21,7 +20,7 @@ import { usePanZoomContext } from '@hooks';
  */
 type TouchPointProps = {
   index: Corner;
-  position: SharedValue<Point>;
+  position: MovablePoint;
 };
 
 const SIZE = 64;
@@ -55,13 +54,16 @@ export const TouchPoint: React.FC<TouchPointProps> = ({
   const { width: imageWidth, height: imageHeight } = sourceImage.dimensions;
 
   // allows for animating the point to be larger when active
-  const isActive = useSharedValue(false);
   const savedAbsolutePosition = useSharedValue({
     x: 0,
     y: 0,
+    isActive: false,
   });
+
   const activationScale = useDerivedValue(() => {
-    return withTiming(isActive.value ? 1.2 : 1, { duration: 100 });
+    return withTiming(absolutePosition.isActive.value ? 1.2 : 1, {
+      duration: 100,
+    });
   });
   const pointSize = useDerivedValue(() => SIZE / scale.value);
   const pointStroke = useDerivedValue(() => STROKE / scale.value);
@@ -80,8 +82,8 @@ export const TouchPoint: React.FC<TouchPointProps> = ({
 
   const relativePosition = useDerivedValue(() => {
     return convertToRelative(
-      absolutePosition.value.x,
-      absolutePosition.value.y
+      absolutePosition.x.value,
+      absolutePosition.y.value
     );
   });
 
@@ -99,8 +101,12 @@ export const TouchPoint: React.FC<TouchPointProps> = ({
     .minDistance(0)
     .onStart(() => {
       'worklet';
-      isActive.value = true;
-      savedAbsolutePosition.value = absolutePosition.value;
+      absolutePosition.isActive.value = true;
+      savedAbsolutePosition.value = {
+        x: absolutePosition.x.value,
+        y: absolutePosition.y.value,
+        isActive: absolutePosition.isActive.value,
+      };
     })
     .onUpdate((e) => {
       'worklet';
@@ -108,26 +114,22 @@ export const TouchPoint: React.FC<TouchPointProps> = ({
       const scaledTranslationX = e.translationX / scale.value;
       const scaledTranslationY = e.translationY / scale.value;
 
-      absolutePosition.value = {
-        x: Math.max(
-          0,
-          Math.min(
-            imageWidth,
-            savedAbsolutePosition.value.x + scaledTranslationX
-          )
-        ),
-        y: Math.max(
-          0,
-          Math.min(
-            imageHeight,
-            savedAbsolutePosition.value.y + scaledTranslationY
-          )
-        ),
-      };
+      absolutePosition.x.value = Math.max(
+        0,
+        Math.min(imageWidth, savedAbsolutePosition.value.x + scaledTranslationX)
+      );
+
+      absolutePosition.y.value = Math.max(
+        0,
+        Math.min(
+          imageHeight,
+          savedAbsolutePosition.value.y + scaledTranslationY
+        )
+      );
     })
     .onEnd(() => {
       'worklet';
-      isActive.value = false;
+      absolutePosition.isActive.value = false;
       runOnJS(updateStore)(relativePosition.value.x, relativePosition.value.y);
     })
     .blocksExternalGesture(parentPanGesture.current!);
@@ -138,13 +140,13 @@ export const TouchPoint: React.FC<TouchPointProps> = ({
     const currentScale = activationScale.value;
     return {
       transform: [{ scale: currentScale }],
-      left: absolutePosition.value.x - pointRadius.value,
-      top: absolutePosition.value.y - pointRadius.value,
+      left: absolutePosition.x.value - pointRadius.value,
+      top: absolutePosition.y.value - pointRadius.value,
       width: pointSize.value,
       height: pointSize.value,
       borderRadius: pointRadius.value,
       borderWidth: pointStroke.value,
-      borderColor: isActive.value
+      borderColor: absolutePosition.isActive.value
         ? `${theme.colors.primary}90`
         : 'rgba(255, 255, 255, 0.5)',
     };

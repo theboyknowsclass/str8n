@@ -79,8 +79,8 @@ export const SelectionShape: React.FC<SelectionShapeProps> = ({
 
   const relativePoints = useDerivedValue<Point[]>(() => {
     return [...absolutePoints, absolutePoints[0]].map((p) => ({
-      x: (p.value.x / imageWidth) * svgDimensions.width,
-      y: (p.value.y / imageHeight) * svgDimensions.height,
+      x: (p.x.value / imageWidth) * svgDimensions.width,
+      y: (p.y.value / imageHeight) * svgDimensions.height,
     }));
   }, [absolutePoints, imageWidth, imageHeight]);
 

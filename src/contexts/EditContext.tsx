@@ -1,7 +1,7 @@
 import { useOverlayStore, useSourceImageStore } from '@stores';
-import { Point } from '@types';
+import { MovablePoint } from '@types';
 import { createContext, useMemo } from 'react';
-import { makeMutable, SharedValue } from 'react-native-reanimated';
+import { makeMutable } from 'react-native-reanimated';
 
 /**
  * Context type for edit functionality.
@@ -9,7 +9,7 @@ import { makeMutable, SharedValue } from 'react-native-reanimated';
  * @property absolutePoints - Array of shared values representing absolute point coordinates
  */
 export interface EditContextType {
-  absolutePoints: SharedValue<Point>[];
+  absolutePoints: MovablePoint[];
 }
 
 /**
@@ -51,12 +51,11 @@ export const EditProvider: React.FC<EditProviderProps> = ({ children }) => {
   const points = useOverlayStore((state) => state.points);
 
   const absolutePoints = useMemo(() => {
-    return points.map((p) =>
-      makeMutable({
-        x: p.x * width,
-        y: p.y * height,
-      })
-    );
+    return points.map((p) => ({
+      x: makeMutable(p.x * width),
+      y: makeMutable(p.y * height),
+      isActive: makeMutable(false),
+    }));
   }, [points, width, height]);
 
   const value = {

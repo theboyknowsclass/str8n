@@ -58,25 +58,7 @@ const EditContent: React.FC = () => {
             minScale={minScale}
             maxScale={maxScale}
           >
-            <CheckerBoardBackground
-              width={checkerboardSize.width}
-              height={checkerboardSize.height}
-            >
-              <ImageBackground
-                source={{ uri: uri ?? undefined }}
-                style={[
-                  {
-                    position: 'absolute',
-                    top: borderHeight,
-                    left: borderWidth,
-                    width: imageDimensions.width,
-                    height: imageDimensions.height,
-                  },
-                ]}
-              >
-                <SelectionPoints />
-              </ImageBackground>
-            </CheckerBoardBackground>
+            <SelectionPoints />
           </PanZoomControl>
           <SelectionShape
             width={contentDimensions.width}
