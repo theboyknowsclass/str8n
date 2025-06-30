@@ -1,16 +1,21 @@
 import { TransformImageButton } from '@molecules';
 import { View, StyleSheet } from 'react-native';
 import { PageTemplate } from '@templates';
-import { useEdit } from '@hooks';
 import {
   InstructionsModal,
   PanZoomGestureHandler,
   SelectionControl,
 } from '@organisms';
-import { InstructionMode } from '@types';
+import { InstructionMode, MovablePoint } from '@types';
 import { PanZoomContextProvider } from '@contexts/PanZoomContext';
-import { SelectionProvider } from '@contexts/SelectionContext';
 import { usePageTemplateContext } from '@contexts';
+import { useOverlayStore, useSourceImageStore } from '@stores';
+import { makeMutable } from 'react-native-reanimated';
+import { getEditControlParams } from '@utils/editControlUtils';
+
+interface EditContentProps {
+  points: MovablePoint[];
+}
 
 /**
  * Content component for the edit page.
@@ -27,15 +32,24 @@ import { usePageTemplateContext } from '@contexts';
  * <EditContent />
  * ```
  */
-const EditContent: React.FC = () => {
-  const { dimensions: contentDimensions, isReady } = usePageTemplateContext();
+const EditContent: React.FC<EditContentProps> = ({ points }) => {
+  const {
+    dimensions: { width, height },
+    isReady,
+  } = usePageTemplateContext();
+
+  const { sourceImage } = useSourceImageStore();
+  const {
+    dimensions: { width: imageWidth, height: imageHeight },
+  } = sourceImage;
+
   const {
     checkerboardSize,
     initialScale,
     minScale,
     maxScale,
     initialTranslate,
-  } = useEdit(contentDimensions);
+  } = getEditControlParams(width, height, imageWidth, imageHeight);
 
   if (!isReady) {
     return null;
@@ -49,14 +63,17 @@ const EditContent: React.FC = () => {
       >
         <PanZoomGestureHandler
           contentSize={checkerboardSize}
-          width={contentDimensions.width}
-          height={contentDimensions.height}
+          width={width}
+          height={height}
           minScale={minScale}
           maxScale={maxScale}
         >
           <SelectionControl
-            width={contentDimensions.width}
-            height={contentDimensions.height}
+            width={width}
+            height={height}
+            imageWidth={imageWidth}
+            imageHeight={imageHeight}
+            points={points}
           />
         </PanZoomGestureHandler>
       </PanZoomContextProvider>
@@ -79,18 +96,28 @@ const EditContent: React.FC = () => {
  * ```
  */
 export const Edit: React.FC = () => {
+  const points = useOverlayStore((state) => state.points);
+
+  // create mutable points for smooth animations
+  const movablePoints = points.map(
+    (p) =>
+      ({
+        x: makeMutable(p.x),
+        y: makeMutable(p.y),
+        isActive: makeMutable(false),
+      }) as MovablePoint
+  );
+
   return (
-    <SelectionProvider>
-      <PageTemplate>
-        <PageTemplate.ModalContent>
-          <InstructionsModal mode={InstructionMode.EDIT} />
-        </PageTemplate.ModalContent>
-        <PageTemplate.ActionItems>
-          <TransformImageButton />
-        </PageTemplate.ActionItems>
-        <EditContent />
-      </PageTemplate>
-    </SelectionProvider>
+    <PageTemplate>
+      <PageTemplate.ModalContent>
+        <InstructionsModal mode={InstructionMode.EDIT} />
+      </PageTemplate.ModalContent>
+      <PageTemplate.ActionItems>
+        <TransformImageButton />
+      </PageTemplate.ActionItems>
+      <EditContent points={movablePoints} />
+    </PageTemplate>
   );
 };
 

@@ -15,6 +15,8 @@ export interface PanZoomContextType {
   isReady: boolean;
   scale: SharedValue<number>;
   translate: SharedValue<Vector>;
+  initialScale: number;
+  initialTranslate: Vector;
   panGesture: RefObject<GestureType | undefined>;
 }
 
@@ -65,6 +67,8 @@ export const PanZoomContextProvider: React.FC<PanZoomContextProviderProps> = ({
     isReady: true,
     scale,
     translate,
+    initialScale,
+    initialTranslate,
     panGesture,
   };
 

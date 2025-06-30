@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { Dimensions } from '@types';
 import { View, Platform } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -67,9 +67,9 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
   } = usePanZoomContext();
 
   // save the scale and translate values to be used in the pinch gesture to prevent jittering
-  const savedScale = useSharedValue(scale.value);
-  const savedTranslate = useSharedValue(translate.value);
-  const savedFocalPoint = useSharedValue({ x: 0, y: 0 });
+  const savedScale = useRef(scale.value);
+  const savedTranslate = useRef(translate.value);
+  const savedFocalPoint = useRef({ x: 0, y: 0 });
 
   const scaledWidth = useDerivedValue(() => {
     return width / scale.value;
@@ -112,11 +112,11 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
         .minDistance(0)
         .onStart(() => {
           'worklet';
-          savedTranslate.value = translate.value;
+          savedTranslate.current = translate.value;
         })
         .onUpdate((e) => {
           'worklet';
-          const { x, y } = savedTranslate.value;
+          const { x, y } = savedTranslate.current;
           const newX = x + e.translationX / scale.value;
           const newY = y + e.translationY / scale.value;
           updateTranslate(newX, newY);
@@ -134,8 +134,8 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
         .enabled(true)
         .onStart((e) => {
           'worklet';
-          savedScale.value = scale.value;
-          savedFocalPoint.value = {
+          savedScale.current = scale.value;
+          savedFocalPoint.current = {
             x: e.focalX,
             y: e.focalY,
           };
@@ -145,10 +145,10 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
 
           // update scale
           const { scale: eventScale } = e;
-          const newScale = updateScale(savedScale.value * eventScale);
+          const newScale = updateScale(savedScale.current * eventScale);
 
           // update translate to keep the focal point in the same position
-          const { x: focalX, y: focalY } = savedFocalPoint.value;
+          const { x: focalX, y: focalY } = savedFocalPoint.current;
           const newScaledWidth = width / newScale;
           const newScaledHeight = height / newScale;
           const newX = -focalX + newScaledWidth / 2;
@@ -174,8 +174,8 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
     e.preventDefault();
 
     // Use mouse pointer position as focal point
-    const absoluteFocalX = e.clientX / savedScale.value;
-    const absoluteFocalY = e.clientY / savedScale.value;
+    const absoluteFocalX = e.clientX / savedScale.current;
+    const absoluteFocalY = e.clientY / savedScale.current;
 
     // Calculate zoom factor based on wheel delta
     const zoomFactor = e.deltaY > 0 ? 0.95 : 1.05;

@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { LoadingSpinner } from '@atoms';
+import { useEffect, useState } from 'react';
+import { View, StyleSheet, LayoutChangeEvent } from 'react-native';
 import Animated, {
   useSharedValue,
   withTiming,
@@ -15,6 +16,7 @@ import Animated, {
 interface LoadingContainerProps {
   children: React.ReactNode;
   isReady: boolean;
+  showSpinner?: boolean;
 }
 
 /**
@@ -37,9 +39,11 @@ interface LoadingContainerProps {
 export const LoadingContainer: React.FC<LoadingContainerProps> = ({
   children,
   isReady,
+  showSpinner = false,
 }) => {
   // Create shared values for opacity
   const contentOpacity = useSharedValue(isReady ? 1 : 0);
+  const [spinnerSize, setSpinnerSize] = useState(0);
 
   // Update animations when isReady changes
   useEffect(() => {
@@ -54,11 +58,19 @@ export const LoadingContainer: React.FC<LoadingContainerProps> = ({
     opacity: contentOpacity.value,
   }));
 
+  const onLayout = (event: LayoutChangeEvent) => {
+    const { width, height } = event.nativeEvent.layout;
+    setSpinnerSize(Math.min(width, height) / 2);
+  };
+
   return (
-    <View style={styles.animatedContainer}>
+    <View style={styles.animatedContainer} onLayout={onLayout}>
       <Animated.View style={[styles.content, contentAnimatedStyle]}>
         {children}
       </Animated.View>
+      {showSpinner && spinnerSize && (
+        <LoadingSpinner size={spinnerSize} animating={true} />
+      )}
     </View>
   );
 };

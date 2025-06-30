@@ -5,32 +5,31 @@ import Animated, {
   useAnimatedStyle,
   useDerivedValue,
 } from 'react-native-reanimated';
-import { useEdit } from '@hooks';
-import { Point } from '@types';
-import {
-  Canvas,
-  Group,
-  Points,
-  useImage,
-  Image,
-} from '@shopify/react-native-skia';
-import { PointVisual } from './PointVisual';
-import { CheckerBoard } from '@components/molecules/CheckerBoard';
+import { MovablePoint } from '@types';
+import { Canvas, Group } from '@shopify/react-native-skia';
 import { PointGestureHandler } from './PointGestureHandler';
-import { usePanZoomContext, useSelectionContext } from '@contexts';
+import { usePanZoomContext } from '@contexts';
+import { Point as PointComponent } from './Point';
+import { SelectionPolygon } from './SelectionPolygon';
+import { ImageView } from './ImageView';
+import { useSourceImageStore } from '@stores';
 
-const LINE_WIDTH = 3;
 const POINT_RADIUS = 26;
 const POINT_STROKE = 12;
+const POINT_SIZE = (POINT_RADIUS + POINT_STROKE) * 2;
 
 /**
  * Props for the SelectionShape component.
  * @property width - The width of the control area in pixels
  * @property height - The height of the control area in pixels
+ * @property points - The points to display in relative coordinates (0-1)
  */
 export type SelectionControlProps = {
   width: number;
   height: number;
+  imageWidth: number;
+  imageHeight: number;
+  points: MovablePoint[];
 };
 
 /**
@@ -52,25 +51,16 @@ export type SelectionControlProps = {
 export const SelectionControl: React.FC<SelectionControlProps> = ({
   width,
   height,
+  imageWidth,
+  imageHeight,
+  points,
 }) => {
-  const { colors, dark } = useTheme();
+  const { colors } = useTheme();
 
-  const {
-    uri,
-    imageDimensions: { width: imageWidth, height: imageHeight },
-    checkerboardSize,
-    borderWidth,
-    borderHeight,
-  } = useEdit({
-    width,
-    height,
-  });
-
-  const image = useImage(uri);
-
-  const imageWidthRatio = width / imageWidth;
-  const imageHeightRatio = height / imageHeight;
-  const imageToControlRatio = Math.min(imageWidthRatio, imageHeightRatio);
+  const imageToControlRatio = Math.min(
+    width / imageWidth,
+    height / imageHeight
+  );
 
   const initialScaledImageDimensions = {
     width: imageWidth * imageToControlRatio,
@@ -93,31 +83,6 @@ export const SelectionControl: React.FC<SelectionControlProps> = ({
     return panZoomScale.value / initialPanZoomScale.current;
   });
 
-  const { absolutePoints } = useSelectionContext();
-
-  const relativePoints = useDerivedValue<Point[]>(() => {
-    return absolutePoints.map((p) => ({
-      x: (p.x.value / imageWidth) * initialScaledImageDimensions.width,
-      y: (p.y.value / imageHeight) * initialScaledImageDimensions.height,
-    }));
-  }, [absolutePoints, imageWidth, imageHeight]);
-
-  const pathPoints = useDerivedValue<Point[]>(() => {
-    return [...relativePoints.value, relativePoints.value[0]];
-  }, [relativePoints]);
-
-  const lineWidth = useDerivedValue(() => {
-    return LINE_WIDTH / relativeScale.value;
-  });
-
-  const pointSize = useDerivedValue(() => {
-    return POINT_RADIUS / relativeScale.value;
-  });
-
-  const pointStroke = useDerivedValue(() => {
-    return POINT_STROKE / relativeScale.value;
-  });
-
   const translateX = useDerivedValue(() => {
     const xDiff = panZoomTranslate.value.x - initialPanZoomTranslate.current.x;
     const translateX =
@@ -133,27 +98,7 @@ export const SelectionControl: React.FC<SelectionControlProps> = ({
   });
 
   const overlayTransform = useDerivedValue(() => {
-    return [
-      { translateX: translateX.value },
-      { translateY: translateY.value },
-      { scale: relativeScale.value },
-    ];
-  });
-
-  const imageTransform = useDerivedValue(() => {
-    return [
-      { translateX: translateX.value },
-      { translateY: translateY.value },
-      { scale: panZoomScale.value },
-    ];
-  }, [panZoomScale, panZoomTranslate]);
-
-  const backgroundTransform = useDerivedValue(() => {
-    return [
-      { translateX: translateX.value - borderWidth * panZoomScale.value },
-      { translateY: translateY.value - borderHeight * panZoomScale.value },
-      { scale: relativeScale.value },
-    ];
+    return [{ translateX: translateX.value }, { translateY: translateY.value }];
   });
 
   const scaledImageWidth = useDerivedValue(() => {
@@ -163,7 +108,7 @@ export const SelectionControl: React.FC<SelectionControlProps> = ({
     return imageHeight * panZoomScale.value;
   });
 
-  const imageBorderStyle = useAnimatedStyle(() => {
+  const translateToImageStyle = useAnimatedStyle(() => {
     return {
       top: translateY.value,
       left: translateX.value,
@@ -174,56 +119,48 @@ export const SelectionControl: React.FC<SelectionControlProps> = ({
 
   return (
     <View style={styles.container}>
-      <View style={styles.canvasContainer}>
-        <Canvas style={{ width, height }}>
-          <Group transform={backgroundTransform}>
-            <CheckerBoard
-              width={checkerboardSize.width * initialPanZoomScale.current}
-              height={checkerboardSize.height * initialPanZoomScale.current}
-              isDarkMode={dark}
-            />
-          </Group>
-          <Group transform={imageTransform}>
-            <Image image={image} width={imageWidth} height={imageHeight} />
-          </Group>
-          <Group transform={overlayTransform}>
-            <Points
-              points={pathPoints}
-              mode="polygon"
-              color={colors.primary}
-              style="stroke"
-              strokeWidth={lineWidth}
-              strokeJoin="round"
-              strokeCap="round"
-              opacity={0.5}
-            />
-            {absolutePoints.map((p, i) => (
-              <PointVisual
-                key={`Point ${i}`}
-                absolutePoint={p}
-                pointRadius={pointSize}
-                pointStroke={pointStroke}
-                activeColor={colors.primary}
-                imageWidth={imageWidth}
-                imageHeight={imageHeight}
-                canvasDimensions={initialScaledImageDimensions}
-              />
-            ))}
-          </Group>
-        </Canvas>
-      </View>
-      <Animated.View
-        style={[styles.pointsGestureHandlerContainer, imageBorderStyle]}
+      <ImageView
+        width={width}
+        height={height}
+        translateX={translateX}
+        translateY={translateY}
+      />
+      <Canvas
+        style={{
+          width,
+          height,
+        }}
       >
-        {absolutePoints.map((p, i) => (
+        <Group transform={overlayTransform}>
+          {points.map((p, i) => (
+            <PointComponent
+              key={`Point ${i}`}
+              point={p}
+              radius={POINT_RADIUS}
+              strokeWidth={POINT_STROKE}
+              activeColor={colors.primary}
+              scaledImageWidth={scaledImageWidth}
+              scaledImageHeight={scaledImageHeight}
+            />
+          ))}
+          <SelectionPolygon
+            points={points}
+            color={colors.primary}
+            scaledImageHeight={scaledImageHeight}
+            scaledImageWidth={scaledImageWidth}
+          />
+        </Group>
+      </Canvas>
+      <Animated.View
+        style={[styles.pointsGestureHandlerContainer, translateToImageStyle]}
+      >
+        {points.map((p, i) => (
           <PointGestureHandler
-            key={`Point ${i}`}
-            absolutePoint={p}
-            pointRadius={pointSize}
-            pointStroke={pointStroke}
-            imageWidth={imageWidth}
-            imageHeight={imageHeight}
-            canvasDimensions={initialScaledImageDimensions}
+            key={`Touchable Point ${i}`}
+            point={p}
+            initialPointSize={POINT_SIZE}
+            scaledImageHeight={scaledImageHeight}
+            scaledImageWidth={scaledImageWidth}
           />
         ))}
       </Animated.View>
@@ -236,17 +173,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '100%',
-  },
-  canvasContainer: {
-    position: 'absolute',
-    pointerEvents: 'none',
-    width: '100%',
-    height: '100%',
-  },
-  imageBorder: {
-    position: 'absolute',
-    borderWidth: 3,
-    borderColor: 'blue',
   },
   pointsGestureHandlerContainer: {
     position: 'absolute',

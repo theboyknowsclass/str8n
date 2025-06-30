@@ -16,9 +16,3 @@ export {
   PanZoomContextType,
   usePanZoomContext,
 } from './PanZoomContext';
-export {
-  SelectionProvider,
-  SelectionContext,
-  SelectionContextType,
-  useSelectionContext,
-} from './SelectionContext';
