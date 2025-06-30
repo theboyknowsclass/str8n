@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { usePersistedSettingsStore, useSessionStateStore } from '@stores';
-import { usePageTemplateContext } from './usePageTemplateContext';
 import { useNavigation } from './useNavigation';
+import { usePageTemplateContext } from '@contexts';
 
 /**
  * Hook that automatically shows instructions when certain conditions are met.

@@ -1,5 +1,5 @@
 import { Vector } from '@types';
-import { createContext, RefObject, useRef } from 'react';
+import { createContext, RefObject, useContext, useRef } from 'react';
 import { GestureType } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/gesture';
 import { SharedValue, useSharedValue } from 'react-native-reanimated';
 
@@ -32,8 +32,8 @@ export const PanZoomContext = createContext<PanZoomContextType>({
  * @property initialScale - The initial scale factor for the image
  * @property initialTranslate - The initial translation vector for the image
  */
-interface PanZoomProviderProps {
-  children: React.ReactNode;
+export interface PanZoomContextProviderProps {
+  children?: React.ReactNode | React.ReactNode[];
   initialScale: number;
   initialTranslate: Vector;
 }
@@ -52,7 +52,7 @@ interface PanZoomProviderProps {
  * </PanZoomProvider>
  * ```
  */
-export const PanZoomProvider: React.FC<PanZoomProviderProps> = ({
+export const PanZoomContextProvider: React.FC<PanZoomContextProviderProps> = ({
   children,
   initialScale,
   initialTranslate,
@@ -71,4 +71,24 @@ export const PanZoomProvider: React.FC<PanZoomProviderProps> = ({
   return (
     <PanZoomContext.Provider value={value}>{children}</PanZoomContext.Provider>
   );
+};
+
+/**
+ * Hook to access the PanZoom context.
+ * Provides access to pan and zoom functionality and state.
+ *
+ * @returns PanZoomContextType object containing pan/zoom state
+ * @throws Error if used outside of PanZoomProvider
+ *
+ * @example
+ * ```typescript
+ * const { scale, translate, panGesture } = usePanZoomContext();
+ * ```
+ */
+export const usePanZoomContext = (): PanZoomContextType => {
+  const context = useContext(PanZoomContext);
+  if (context === undefined) {
+    throw new Error('usePanZoomContext must be used within a PanZoomProvider');
+  }
+  return context;
 };

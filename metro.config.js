@@ -5,6 +5,12 @@ const { getDefaultConfig } = require('expo/metro-config');
 /** @type {import('expo/metro-config').MetroConfig} */
 const config = getDefaultConfig(__dirname);
 
+// support for canvaskit-wasm for React Native SkiaAdd commentMore actions
+config.resolver.assetExts.push(
+  // Adds support for canvaskit-wasm
+  'wasm'
+);
+
 // support for SVGs in React Native
 const { transformer, resolver } = config;
 

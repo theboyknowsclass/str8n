@@ -1,16 +1,16 @@
-import { CheckerBoardBackground, TransformImageButton } from '@molecules';
-import { View, StyleSheet, ImageBackground } from 'react-native';
+import { TransformImageButton } from '@molecules';
+import { View, StyleSheet } from 'react-native';
 import { PageTemplate } from '@templates';
-import { usePageTemplateContext, useEdit } from '@hooks';
+import { useEdit } from '@hooks';
 import {
   InstructionsModal,
-  PanZoomControl,
-  SelectionPoints,
-  SelectionShape,
+  PanZoomGestureHandler,
+  SelectionControl,
 } from '@organisms';
 import { InstructionMode } from '@types';
-import { PanZoomProvider } from '@contexts/PanZoomContext';
-import { EditProvider } from '@contexts';
+import { PanZoomContextProvider } from '@contexts/PanZoomContext';
+import { SelectionProvider } from '@contexts/SelectionContext';
+import { usePageTemplateContext } from '@contexts';
 
 /**
  * Content component for the edit page.
@@ -30,15 +30,11 @@ import { EditProvider } from '@contexts';
 const EditContent: React.FC = () => {
   const { dimensions: contentDimensions, isReady } = usePageTemplateContext();
   const {
-    uri,
-    imageDimensions,
     checkerboardSize,
     initialScale,
     minScale,
     maxScale,
     initialTranslate,
-    borderWidth,
-    borderHeight,
   } = useEdit(contentDimensions);
 
   if (!isReady) {
@@ -47,25 +43,23 @@ const EditContent: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <EditProvider>
-        <PanZoomProvider
-          initialScale={initialScale}
-          initialTranslate={initialTranslate}
+      <PanZoomContextProvider
+        initialScale={initialScale}
+        initialTranslate={initialTranslate}
+      >
+        <PanZoomGestureHandler
+          contentSize={checkerboardSize}
+          width={contentDimensions.width}
+          height={contentDimensions.height}
+          minScale={minScale}
+          maxScale={maxScale}
         >
-          <PanZoomControl
-            contentSize={checkerboardSize}
-            controlSize={contentDimensions}
-            minScale={minScale}
-            maxScale={maxScale}
-          >
-            <SelectionPoints />
-          </PanZoomControl>
-          <SelectionShape
+          <SelectionControl
             width={contentDimensions.width}
             height={contentDimensions.height}
           />
-        </PanZoomProvider>
-      </EditProvider>
+        </PanZoomGestureHandler>
+      </PanZoomContextProvider>
     </View>
   );
 };
@@ -86,15 +80,17 @@ const EditContent: React.FC = () => {
  */
 export const Edit: React.FC = () => {
   return (
-    <PageTemplate>
-      <PageTemplate.ModalContent>
-        <InstructionsModal mode={InstructionMode.EDIT} />
-      </PageTemplate.ModalContent>
-      <PageTemplate.ActionItems>
-        <TransformImageButton />
-      </PageTemplate.ActionItems>
-      <EditContent />
-    </PageTemplate>
+    <SelectionProvider>
+      <PageTemplate>
+        <PageTemplate.ModalContent>
+          <InstructionsModal mode={InstructionMode.EDIT} />
+        </PageTemplate.ModalContent>
+        <PageTemplate.ActionItems>
+          <TransformImageButton />
+        </PageTemplate.ActionItems>
+        <EditContent />
+      </PageTemplate>
+    </SelectionProvider>
   );
 };
 
@@ -107,10 +103,5 @@ const styles = StyleSheet.create({
     display: 'flex',
     backgroundColor: 'transparent',
     borderRadius: 5,
-  },
-  checkerboard: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
   },
 });

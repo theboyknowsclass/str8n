@@ -1,17 +1,15 @@
 import {
+  PageTemplateContextProvider,
+  PageModalContextProvider,
   usePageTemplateContext,
   usePageModalContext,
-  useScreenDimensions,
-} from '@hooks';
+} from '@contexts';
 import { StyleSheet, View, LayoutChangeEvent, ViewStyle } from 'react-native';
 import { LoadingContainer, AnimatedBlurBackground } from '@molecules';
 import React, { ReactNode } from 'react';
-import {
-  PageTemplateContextProvider,
-  PageModalContextProvider,
-} from '@contexts';
 import { NavigationBar } from '@organisms';
 import { SafeAreaView } from '@atoms';
+import { useScreenDimensions } from '@hooks';
 
 /**
  * Props for the PageTemplate component.

@@ -1,8 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useSessionStateStore } from '../stores/useSessionStateStore';
-import { isModalPage, Page } from '../types/Pages';
-import { InstructionMode } from '../types/InstructionMode';
-import { usePageModalContext } from './usePageModalContext';
+import { isModalPage, Page, InstructionMode } from '@types';
+import { usePageModalContext } from '@contexts';
 import { useScreenDimensions } from './useScreenDimensions';
 
 /**

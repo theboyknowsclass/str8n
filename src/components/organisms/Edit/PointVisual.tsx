@@ -6,9 +6,9 @@ import {
   withTiming,
 } from 'react-native-reanimated';
 
-type SelectionPointVisualProps = {
+type PointVisualProps = {
   absolutePoint: MovablePoint;
-  pointSize: SharedValue<number>;
+  pointRadius: SharedValue<number>;
   pointStroke: SharedValue<number>;
   activeColor: string;
   imageWidth: number;
@@ -16,9 +16,9 @@ type SelectionPointVisualProps = {
   canvasDimensions: { width: number; height: number };
 };
 
-export const SelectionPointVisual: React.FC<SelectionPointVisualProps> = ({
+export const PointVisual: React.FC<PointVisualProps> = ({
   absolutePoint,
-  pointSize,
+  pointRadius,
   pointStroke,
   activeColor,
   imageWidth,
@@ -35,15 +35,17 @@ export const SelectionPointVisual: React.FC<SelectionPointVisualProps> = ({
   const color = useDerivedValue(() => {
     return absolutePoint.isActive.value
       ? activeColor
-      : 'rgba(255, 255, 255, 0.5)';
+      : 'rgba(255, 255, 255, 0.7)';
   }, [absolutePoint.isActive, activeColor]);
 
   const radius = useDerivedValue(() => {
     return withTiming(
-      absolutePoint.isActive.value ? pointSize.value * 1.2 : pointSize.value,
+      absolutePoint.isActive.value
+        ? pointRadius.value * 1.2
+        : pointRadius.value,
       { duration: 100 }
     );
-  }, [pointSize, absolutePoint.isActive]);
+  }, [pointRadius, absolutePoint.isActive]);
 
   const strokeWidth = useDerivedValue(() => {
     return withTiming(

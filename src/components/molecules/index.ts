@@ -8,8 +8,6 @@ export { CloseButton } from './buttons/CloseButton';
 export { TransformImageButton } from './buttons/TransformImageButton';
 export { LoadingContainer } from './LoadingContainer';
 export { SettingsToggle } from './buttons/SettingsToggle';
-export { TouchPoint } from './TouchPoint';
-export { CheckerBoardBackground } from './CheckerBoardBackground';
 export { AnimatedBlurBackground } from './AnimatedBlurBackground';
 export { ModalDialog } from './ModalDialog';
 export { ShowInstructionsButton } from './buttons/ShowInstructionsButton';

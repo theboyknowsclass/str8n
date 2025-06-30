@@ -1,6 +1,6 @@
 import { useOverlayStore, useSourceImageStore } from '@stores';
 import { MovablePoint } from '@types';
-import { createContext, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import { makeMutable } from 'react-native-reanimated';
 
 /**
@@ -8,23 +8,25 @@ import { makeMutable } from 'react-native-reanimated';
  * Provides shared values for absolute point coordinates used in image editing.
  * @property absolutePoints - Array of shared values representing absolute point coordinates
  */
-export interface EditContextType {
+export interface SelectionContextType {
   absolutePoints: MovablePoint[];
+  imageDimensions: { width: number; height: number };
 }
 
 /**
  * React context for edit functionality.
  * Provides shared state for absolute point coordinates across editing components.
  */
-export const EditContext = createContext<EditContextType>({
+export const SelectionContext = createContext<SelectionContextType>({
   absolutePoints: [],
-} as EditContextType);
+  imageDimensions: { width: 0, height: 0 },
+} as SelectionContextType);
 
 /**
  * Props for the EditProvider component.
  * @property children - React nodes to be wrapped by the provider
  */
-interface EditProviderProps {
+interface SelectionProviderProps {
   children: React.ReactNode;
 }
 
@@ -42,7 +44,9 @@ interface EditProviderProps {
  * </EditProvider>
  * ```
  */
-export const EditProvider: React.FC<EditProviderProps> = ({ children }) => {
+export const SelectionProvider: React.FC<SelectionProviderProps> = ({
+  children,
+}) => {
   const {
     sourceImage: {
       dimensions: { width, height },
@@ -60,7 +64,32 @@ export const EditProvider: React.FC<EditProviderProps> = ({ children }) => {
 
   const value = {
     absolutePoints,
+    imageDimensions: { width, height },
   };
 
-  return <EditContext.Provider value={value}>{children}</EditContext.Provider>;
+  return (
+    <SelectionContext.Provider value={value}>
+      {children}
+    </SelectionContext.Provider>
+  );
+};
+
+/**
+ * Hook to access the Edit context.
+ * Provides access to absolute point coordinates for image editing.
+ *
+ * @returns EditContextType object containing absolute point coordinates
+ * @throws Error if used outside of EditProvider
+ *
+ * @example
+ * ```typescript
+ * const { absolutePoints } = useEditContext();
+ * ```
+ */
+export const useSelectionContext = (): SelectionContextType => {
+  const context = useContext(SelectionContext);
+  if (context === undefined) {
+    throw new Error('useEditContext must be used within an EditProvider');
+  }
+  return context;
 };

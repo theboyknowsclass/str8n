@@ -2,51 +2,61 @@ import { useCallback, useMemo } from 'react';
 import { Dimensions } from '@types';
 import { View, Platform } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, {
-  useAnimatedStyle,
-  useDerivedValue,
-  useSharedValue,
-} from 'react-native-reanimated';
-import { usePanZoomContext } from '@hooks';
+import { useDerivedValue, useSharedValue } from 'react-native-reanimated';
+import { usePanZoomContext } from '@contexts';
 
 /**
- * Props for the PanZoomControl component.
- * @property children - React nodes to be wrapped by the pan/zoom controls
+ * Props for the PanZoomGestureHandler component.
+ * @property children - React nodes to be wrapped by the pan/zoom gesture controls
+ * @property width - The width of the control area
+ * @property height - The height of the control area
  * @property contentSize - The dimensions of the content being controlled
- * @property controlSize - The dimensions of the control area
  * @property maxScale - Maximum allowed scale factor (default: 1)
  * @property minScale - Minimum allowed scale factor (default: 0.1)
  */
-interface PanZoomProps {
+export interface PanZoomGestureHandlerProps {
   children?: React.ReactNode | React.ReactNode[];
+  width: number;
+  height: number;
   contentSize: Dimensions;
-  controlSize: Dimensions;
   maxScale?: number;
   minScale?: number;
 }
 
 /**
- * PanZoomControl component that provides pan and zoom functionality.
+ * PanZoomGestureHandler component that provides pan and zoom functionality through gesture detection.
  *
- * This component wraps content with gesture detection for panning and zooming.
- * It supports touch gestures on mobile and mouse wheel zooming on web.
- * The component maintains proper bounds checking and focal point preservation
- * during zoom operations.
+ * This component wraps content with gesture detection for panning and zooming operations.
+ * It supports:
+ * - Touch pan gestures on mobile devices
+ * - Pinch-to-zoom gestures on mobile devices
+ * - Mouse wheel zooming on web platforms
  *
- * @param props - PanZoomProps containing children and size configurations
+ * The component maintains proper bounds checking to prevent content from being panned
+ * outside the visible area and preserves focal points during zoom operations for
+ * intuitive user experience.
+ *
+ * @param props - PanZoomGestureHandlerProps containing children and size configurations
  * @returns JSX element containing the gesture-controlled content
  *
  * @example
  * ```typescript
- * <PanZoomControl contentSize={{ width: 1000, height: 800 }} controlSize={{ width: 400, height: 300 }}>
+ * <PanZoomGestureHandler
+ *   width={400}
+ *   height={300}
+ *   contentSize={{ width: 1000, height: 800 }}
+ *   maxScale={2}
+ *   minScale={0.5}
+ * >
  *   <Image source={imageSource} />
- * </PanZoomControl>
+ * </PanZoomGestureHandler>
  * ```
  */
-export const PanZoomControl: React.FC<PanZoomProps> = ({
+export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
   children,
+  width,
+  height,
   contentSize,
-  controlSize,
   maxScale = 1,
   minScale = 0.1,
 }) => {
@@ -56,22 +66,23 @@ export const PanZoomControl: React.FC<PanZoomProps> = ({
     panGesture: contextPanGesture,
   } = usePanZoomContext();
 
+  // save the scale and translate values to be used in the pinch gesture to prevent jittering
   const savedScale = useSharedValue(scale.value);
   const savedTranslate = useSharedValue(translate.value);
   const savedFocalPoint = useSharedValue({ x: 0, y: 0 });
 
-  const windowWidth = useDerivedValue(() => {
-    return controlSize.width / scale.value;
+  const scaledWidth = useDerivedValue(() => {
+    return width / scale.value;
   });
   const maxX = useDerivedValue(() => {
-    return -contentSize.width + windowWidth.value;
+    return -contentSize.width + scaledWidth.value;
   });
 
-  const windowHeight = useDerivedValue(() => {
-    return controlSize.height / scale.value;
+  const scaledHeight = useDerivedValue(() => {
+    return height / scale.value;
   });
   const maxY = useDerivedValue(() => {
-    return -contentSize.height + windowHeight.value;
+    return -contentSize.height + scaledHeight.value;
   });
 
   const updateTranslate = useCallback(
@@ -138,10 +149,10 @@ export const PanZoomControl: React.FC<PanZoomProps> = ({
 
           // update translate to keep the focal point in the same position
           const { x: focalX, y: focalY } = savedFocalPoint.value;
-          const newWindowWidth = controlSize.width / newScale;
-          const newWindowHeight = controlSize.height / newScale;
-          const newX = -focalX + newWindowWidth / 2;
-          const newY = -focalY + newWindowHeight / 2;
+          const newScaledWidth = width / newScale;
+          const newScaledHeight = height / newScale;
+          const newX = -focalX + newScaledWidth / 2;
+          const newY = -focalY + newScaledHeight / 2;
           updateTranslate(newX, newY);
         })
         .onEnd(() => {
@@ -152,8 +163,9 @@ export const PanZoomControl: React.FC<PanZoomProps> = ({
       savedScale,
       scale,
       updateTranslate,
-      controlSize,
       updateScale,
+      width,
+      height,
     ]
   );
 
@@ -170,8 +182,8 @@ export const PanZoomControl: React.FC<PanZoomProps> = ({
     const newScale = updateScale(scale.value * zoomFactor);
 
     // Update translate to keep the focal point in the same position
-    const newWindowWidth = controlSize.width / newScale;
-    const newWindowHeight = controlSize.height / newScale;
+    const newWindowWidth = width / newScale;
+    const newWindowHeight = height / newScale;
     const newX = -absoluteFocalX + newWindowWidth / 2;
     const newY = -absoluteFocalY + newWindowHeight / 2;
     updateTranslate(newX, newY);
@@ -182,35 +194,17 @@ export const PanZoomControl: React.FC<PanZoomProps> = ({
   // Combine both gestures
   const composedGesture = Gesture.Exclusive(panGesture, pinchGesture);
 
-  const layoutStyle = {
-    width: contentSize.width,
-    height: contentSize.height,
-    transformOrigin: 'top left',
-  };
-
-  const transformStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: scale.value },
-      { translateX: translate.value.x },
-      { translateY: translate.value.y },
-    ],
-  }));
-
   return (
     <View
       style={{
         position: 'relative',
-        width: controlSize.width,
-        height: controlSize.height,
+        width,
+        height,
         pointerEvents: 'box-none',
       }}
       {...(Platform.OS === 'web' ? { onWheel: handleWheel } : {})}
     >
-      <GestureDetector gesture={composedGesture}>
-        <Animated.View style={[layoutStyle, transformStyle]}>
-          {children}
-        </Animated.View>
-      </GestureDetector>
+      <GestureDetector gesture={composedGesture}>{children}</GestureDetector>
     </View>
   );
 };
