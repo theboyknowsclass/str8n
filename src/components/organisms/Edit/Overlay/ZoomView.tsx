@@ -19,6 +19,7 @@ import { usePageTemplateContext } from '@contexts';
 import { useEditControlContext } from '@contexts/EditControlContext';
 
 const ZOOM_VIEW_RADIUS = 128;
+const MIN_DISTANCE_FROM_POINT = ZOOM_VIEW_RADIUS + 48;
 
 export type ZoomViewProps = {
   width: number;
@@ -84,14 +85,40 @@ export const ZoomView: React.FC<ZoomViewProps> = ({ width, height, image }) => {
     },
     (point) => {
       if (point !== null) {
-        const absoluteX = point.absoluteX.value;
-        const absoluteY = point.absoluteY.value;
+        const absoluteX = point.absoluteX.value - contentOffset.x;
+        const absoluteY = point.absoluteY.value - contentOffset.y;
 
-        let x = absoluteX - contentOffset.x;
-        let y = absoluteY - contentOffset.y;
+        let x = absoluteX;
+        let y = absoluteY;
+
+        // try to make the zoom straight above the
+        y -= MIN_DISTANCE_FROM_POINT;
+
+        // min and max this to the bounds
+        y = Math.max(minZoomY, Math.min(maxZoomY, y));
+
+        // is the zoom point too close to the top edge
+        if (y <= minZoomY) {
+          // calculate the distance to the top edge
+          const yComp = absoluteY - y;
+
+          // calculate the x component we need to keep the zoom point at the same distance from the point
+          const xComp = Math.sqrt(MIN_DISTANCE_FROM_POINT ** 2 - yComp ** 2);
+
+          // calculate the distance to the right and left edges
+          const distanceToRight = maxZoomX - absoluteX;
+          const distanceToLeft = absoluteX - minZoomX;
+
+          if (distanceToRight < distanceToLeft) {
+            // move left
+            x -= xComp;
+          } else {
+            // move right
+            x += xComp;
+          }
+        }
 
         x = Math.max(minZoomX, Math.min(maxZoomX, x));
-        y = Math.max(minZoomY, Math.min(maxZoomY, y));
 
         translateX.value = x;
         translateY.value = y;
