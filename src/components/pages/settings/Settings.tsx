@@ -30,21 +30,23 @@ export const Settings: React.FC = () => {
   return (
     <ModalPageTemplate title="Settings">
       <View style={styles.contentContainer}>
-        <SettingsToggle
-          title="Crop to overlay polygon on transform"
-          isEnabled={cropToOverlay}
-          onToggle={setCropToOverlay}
-        />
-        <SettingsToggle
-          title="Show zoom view when moving points"
-          isEnabled={showZoomView}
-          onToggle={setShowZoomView}
-        />
-        <SettingsToggle
-          title="Always show instructions on startup"
-          isEnabled={alwaysShowInstructions}
-          onToggle={setAlwaysShowInstructions}
-        />
+        <View style={styles.settingsContainer}>
+          <SettingsToggle
+            title="Crop to overlay polygon on transform"
+            isEnabled={cropToOverlay}
+            onToggle={setCropToOverlay}
+          />
+          <SettingsToggle
+            title="Show zoom view when moving points"
+            isEnabled={showZoomView}
+            onToggle={setShowZoomView}
+          />
+          <SettingsToggle
+            title="Always show instructions on startup"
+            isEnabled={alwaysShowInstructions}
+            onToggle={setAlwaysShowInstructions}
+          />
+        </View>
       </View>
     </ModalPageTemplate>
   );
@@ -52,12 +54,16 @@ export const Settings: React.FC = () => {
 
 const styles = StyleSheet.create({
   contentContainer: {
+    width: '100%',
+    height: '100%',
+    marginTop: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  settingsContainer: {
     display: 'flex',
     flexDirection: 'column',
     gap: 16,
     height: '100%',
-    marginTop: 32,
-    marginLeft: 'auto',
-    marginRight: 'auto',
   },
 });

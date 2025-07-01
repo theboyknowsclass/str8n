@@ -57,26 +57,48 @@ export const usePersistedSettingsStore = create<PersistedSettingsState>()(
     isReady: false,
     setIsReady: (isReady: boolean) => set({ isReady }),
     setCropToOverlay: (cropToOverlay: boolean) => {
-      const { ...rest } = get();
-      const newSettings = { ...rest, cropToOverlay };
+      const { maintainExifMetadata, alwaysShowInstructions, showZoomView } =
+        get();
+      const newSettings = {
+        cropToOverlay,
+        maintainExifMetadata,
+        alwaysShowInstructions,
+        showZoomView,
+      };
       AsyncStorageService.storeSettings(newSettings);
       set({ cropToOverlay });
     },
     setMaintainExifMetadata: (maintainExifMetadata: boolean) => {
-      const { ...rest } = get();
-      const newSettings = { ...rest, maintainExifMetadata };
+      const { cropToOverlay, alwaysShowInstructions, showZoomView } = get();
+      const newSettings = {
+        cropToOverlay,
+        alwaysShowInstructions,
+        showZoomView,
+        maintainExifMetadata,
+      };
       AsyncStorageService.storeSettings(newSettings);
       set({ maintainExifMetadata });
     },
     setAlwaysShowInstructions: (alwaysShowInstructions: boolean) => {
-      const { ...rest } = get();
-      const newSettings = { ...rest, alwaysShowInstructions };
+      const { cropToOverlay, maintainExifMetadata, showZoomView } = get();
+      const newSettings = {
+        cropToOverlay,
+        maintainExifMetadata,
+        showZoomView,
+        alwaysShowInstructions,
+      };
       AsyncStorageService.storeSettings(newSettings);
       set({ alwaysShowInstructions });
     },
     setShowZoomView: (showZoomView: boolean) => {
-      const { ...rest } = get();
-      const newSettings = { ...rest, showZoomView };
+      const { cropToOverlay, maintainExifMetadata, alwaysShowInstructions } =
+        get();
+      const newSettings = {
+        cropToOverlay,
+        maintainExifMetadata,
+        alwaysShowInstructions,
+        showZoomView,
+      };
       AsyncStorageService.storeSettings(newSettings);
       set({ showZoomView });
     },
