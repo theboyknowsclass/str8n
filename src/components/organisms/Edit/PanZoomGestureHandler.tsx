@@ -1,8 +1,7 @@
 import { useCallback, useMemo, useRef } from 'react';
-import { Dimensions } from '@types';
 import { View, Platform } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { useDerivedValue, useSharedValue } from 'react-native-reanimated';
+import { useDerivedValue } from 'react-native-reanimated';
 import { usePanZoomContext } from '@contexts';
 
 /**
@@ -18,9 +17,6 @@ export interface PanZoomGestureHandlerProps {
   children?: React.ReactNode | React.ReactNode[];
   width: number;
   height: number;
-  contentSize: Dimensions;
-  maxScale?: number;
-  minScale?: number;
 }
 
 /**
@@ -56,14 +52,14 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
   children,
   width,
   height,
-  contentSize,
-  maxScale = 1,
-  minScale = 0.1,
 }) => {
   const {
     scale,
     translate,
     panGesture: contextPanGesture,
+    minScale,
+    maxScale,
+    contentSize,
   } = usePanZoomContext();
 
   // save the scale and translate values to be used in the pinch gesture to prevent jittering

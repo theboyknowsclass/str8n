@@ -1,7 +1,11 @@
-import { Vector } from '@types';
+import { Dimensions, Vector } from '@types';
 import { createContext, RefObject, useContext, useRef } from 'react';
 import { GestureType } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/gesture';
-import { SharedValue, useSharedValue } from 'react-native-reanimated';
+import {
+  SharedValue,
+  useDerivedValue,
+  useSharedValue,
+} from 'react-native-reanimated';
 
 /**
  * Context type for pan and zoom functionality.
@@ -14,10 +18,14 @@ import { SharedValue, useSharedValue } from 'react-native-reanimated';
 export interface PanZoomContextType {
   isReady: boolean;
   scale: SharedValue<number>;
+  minScale: number;
+  maxScale: number;
+  relativeScale: SharedValue<number>;
   translate: SharedValue<Vector>;
   initialScale: number;
   initialTranslate: Vector;
   panGesture: RefObject<GestureType | undefined>;
+  contentSize: Dimensions;
 }
 
 /**
@@ -38,6 +46,9 @@ export interface PanZoomContextProviderProps {
   children?: React.ReactNode | React.ReactNode[];
   initialScale: number;
   initialTranslate: Vector;
+  minScale: number;
+  maxScale: number;
+  contentSize: Dimensions;
 }
 
 /**
@@ -58,18 +69,28 @@ export const PanZoomContextProvider: React.FC<PanZoomContextProviderProps> = ({
   children,
   initialScale,
   initialTranslate,
+  minScale,
+  maxScale,
+  contentSize,
 }) => {
   const panGesture = useRef<GestureType | undefined>(undefined);
   const scale = useSharedValue(initialScale);
   const translate = useSharedValue(initialTranslate);
+  const relativeScale = useDerivedValue(() => {
+    return scale.value / initialScale;
+  });
 
   const value = {
     isReady: true,
     scale,
+    minScale,
+    maxScale,
     translate,
     initialScale,
     initialTranslate,
     panGesture,
+    contentSize,
+    relativeScale,
   };
 
   return (

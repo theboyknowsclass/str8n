@@ -1,21 +1,11 @@
 import { TransformImageButton } from '@molecules';
 import { View, StyleSheet } from 'react-native';
 import { PageTemplate } from '@templates';
-import {
-  InstructionsModal,
-  PanZoomGestureHandler,
-  SelectionControl,
-} from '@organisms';
-import { InstructionMode, MovablePoint } from '@types';
-import { PanZoomContextProvider } from '@contexts/PanZoomContext';
+import { InstructionsModal, EditControl } from '@organisms';
+import { InstructionMode } from '@types';
 import { usePageTemplateContext } from '@contexts';
-import { useOverlayStore, useSourceImageStore } from '@stores';
-import { makeMutable } from 'react-native-reanimated';
-import { getEditControlParams } from '@utils/editControlUtils';
-
-interface EditContentProps {
-  points: MovablePoint[];
-}
+import { EditControlContextProvider } from '@contexts/EditControlContext';
+import { useEdit } from './useEdit';
 
 /**
  * Content component for the edit page.
@@ -32,24 +22,11 @@ interface EditContentProps {
  * <EditContent />
  * ```
  */
-const EditContent: React.FC<EditContentProps> = ({ points }) => {
+const EditContent: React.FC = () => {
   const {
     dimensions: { width, height },
     isReady,
   } = usePageTemplateContext();
-
-  const { sourceImage } = useSourceImageStore();
-  const {
-    dimensions: { width: imageWidth, height: imageHeight },
-  } = sourceImage;
-
-  const {
-    checkerboardSize,
-    initialScale,
-    minScale,
-    maxScale,
-    initialTranslate,
-  } = getEditControlParams(width, height, imageWidth, imageHeight);
 
   if (!isReady) {
     return null;
@@ -57,26 +34,7 @@ const EditContent: React.FC<EditContentProps> = ({ points }) => {
 
   return (
     <View style={styles.container}>
-      <PanZoomContextProvider
-        initialScale={initialScale}
-        initialTranslate={initialTranslate}
-      >
-        <PanZoomGestureHandler
-          contentSize={checkerboardSize}
-          width={width}
-          height={height}
-          minScale={minScale}
-          maxScale={maxScale}
-        >
-          <SelectionControl
-            width={width}
-            height={height}
-            imageWidth={imageWidth}
-            imageHeight={imageHeight}
-            points={points}
-          />
-        </PanZoomGestureHandler>
-      </PanZoomContextProvider>
+      <EditControl width={width} height={height} />
     </View>
   );
 };
@@ -96,28 +54,24 @@ const EditContent: React.FC<EditContentProps> = ({ points }) => {
  * ```
  */
 export const Edit: React.FC = () => {
-  const points = useOverlayStore((state) => state.points);
-
-  // create mutable points for smooth animations
-  const movablePoints = points.map(
-    (p) =>
-      ({
-        x: makeMutable(p.x),
-        y: makeMutable(p.y),
-        isActive: makeMutable(false),
-      }) as MovablePoint
-  );
+  const { uri, dimensions, movablePoints } = useEdit();
 
   return (
-    <PageTemplate>
-      <PageTemplate.ModalContent>
-        <InstructionsModal mode={InstructionMode.EDIT} />
-      </PageTemplate.ModalContent>
-      <PageTemplate.ActionItems>
-        <TransformImageButton />
-      </PageTemplate.ActionItems>
-      <EditContent points={movablePoints} />
-    </PageTemplate>
+    <EditControlContextProvider
+      uri={uri}
+      imageSize={dimensions}
+      selectionPoints={movablePoints}
+    >
+      <PageTemplate>
+        <PageTemplate.ModalContent>
+          <InstructionsModal mode={InstructionMode.EDIT} />
+        </PageTemplate.ModalContent>
+        <PageTemplate.ActionItems>
+          <TransformImageButton />
+        </PageTemplate.ActionItems>
+        <EditContent />
+      </PageTemplate>
+    </EditControlContextProvider>
   );
 };
 
@@ -130,5 +84,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     backgroundColor: 'transparent',
     borderRadius: 5,
+  },
+  selectionControlContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
   },
 });

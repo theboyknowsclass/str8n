@@ -16,3 +16,9 @@ export {
   PanZoomContextType,
   usePanZoomContext,
 } from './PanZoomContext';
+export {
+  EditControlContextProvider,
+  EditControlContext,
+  EditControlContextType,
+  useEditControlContext,
+} from './EditControlContext';

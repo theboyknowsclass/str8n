@@ -10,10 +10,10 @@ interface Dimensions {
 }
 
 /**
- * Parameters for edit control calculations including checkerboard size, scale factors, and positioning
+ * Parameters for edit control calculations including imageWithBorder size, scale factors, and positioning
  */
 interface EditControlParams {
-  checkerboardSize: Dimensions;
+  imageWithBorderSize: Dimensions;
   initialScale: number;
   minScale: number;
   maxScale: number;
@@ -21,12 +21,12 @@ interface EditControlParams {
 }
 
 /**
- * Calculates the minimum checkerboard size needed to ensure a border around the image
+ * Calculates the minimum imageWithBorder size needed to ensure a border around the image
  * @param imageWidth - The width of the source image
  * @param imageHeight - The height of the source image
- * @returns The minimum dimensions for the checkerboard background
+ * @returns The minimum dimensions for the imageWithBorder background
  */
-const calculateMinCheckerboardSize = (
+const calculateMinImageWithBorderSize = (
   imageWidth: number,
   imageHeight: number
 ): Dimensions => ({
@@ -57,43 +57,46 @@ const calculateScaleFactors = (
 };
 
 /**
- * Calculates the final checkerboard size, ensuring it's at least as large as the minimum required
- * @param minCheckerboardSize - The minimum required checkerboard dimensions
+ * Calculates the final imageWithBorder size, ensuring it's at least as large as the minimum required
+ * @param minImageWithBorderSize - The minimum required imageWithBorder dimensions
  * @param width - The available width of the content area
  * @param height - The available height of the content area
  * @param minScale - The minimum scale factor
- * @returns The final checkerboard dimensions
+ * @returns The final imageWithBorder dimensions
  */
-const calculateCheckerboardSize = (
-  minCheckerboardSize: Dimensions,
+const calculateImageWithBorderSize = (
+  minImageWithBorderSize: Dimensions,
   width: number,
   height: number,
   minScale: number
 ): Dimensions => ({
-  width: Math.max(minCheckerboardSize.width, Math.round(width / minScale)),
-  height: Math.max(minCheckerboardSize.height, Math.round(height / minScale)),
+  width: Math.max(minImageWithBorderSize.width, Math.round(width / minScale)),
+  height: Math.max(
+    minImageWithBorderSize.height,
+    Math.round(height / minScale)
+  ),
 });
 
 /**
- * Calculates border dimensions to center the image within the checkerboard
- * @param checkerboardSize - The dimensions of the checkerboard
+ * Calculates border dimensions to center the image within the imageWithBorder
+ * @param imageWithBorderSize - The dimensions of the imageWithBorder
  * @param imageWidth - The width of the source image
  * @param imageHeight - The height of the source image
  * @returns The border dimensions for centering
  */
 const calculateBorderDimensions = (
-  checkerboardSize: Dimensions,
+  imageWithBorderSize: Dimensions,
   imageWidth: number,
   imageHeight: number
 ): Dimensions => ({
-  width: (checkerboardSize.width - imageWidth) / 2,
-  height: (checkerboardSize.height - imageHeight) / 2,
+  width: (imageWithBorderSize.width - imageWidth) / 2,
+  height: (imageWithBorderSize.height - imageHeight) / 2,
 });
 
 /**
  * Calculates the initial translation position for the image, incorporating window size conversion
  * and centering calculations
- * @param borderDimensions - The border dimensions for centering within the checkerboard
+ * @param borderDimensions - The border dimensions for centering within the imageWithBorder
  * @param width - The available width of the content area
  * @param height - The available height of the content area
  * @param initialScale - The initial scale factor
@@ -128,7 +131,7 @@ const calculateInitialTranslate = (
 };
 
 /**
- * Calculates all parameters needed for edit control, including checkerboard size, scale factors,
+ * Calculates all parameters needed for edit control, including imageWithBorder size, scale factors,
  * and initial positioning. This function orchestrates the complete calculation pipeline for
  * setting up an image editing interface with proper scaling and centering.
  *
@@ -136,7 +139,7 @@ const calculateInitialTranslate = (
  * @param height - The available height of the content area
  * @param imageWidth - The width of the source image
  * @param imageHeight - The height of the source image
- * @returns Complete edit control parameters including checkerboard size, scales, and positioning
+ * @returns Complete edit control parameters including imageWithBorder size, scales, and positioning
  */
 export const getEditControlParams = (
   width: number,
@@ -144,27 +147,31 @@ export const getEditControlParams = (
   imageWidth: number,
   imageHeight: number
 ): EditControlParams => {
-  const minCheckerboardSize = calculateMinCheckerboardSize(
+  const minImageWithBorderSize = calculateMinImageWithBorderSize(
     imageWidth,
     imageHeight
   );
+
   const { initialScale, minScale } = calculateScaleFactors(
     width,
     height,
     imageWidth,
     imageHeight
   );
-  const checkerboardSize = calculateCheckerboardSize(
-    minCheckerboardSize,
+
+  const imageWithBorderSize = calculateImageWithBorderSize(
+    minImageWithBorderSize,
     width,
     height,
     minScale
   );
+
   const borderDimensions = calculateBorderDimensions(
-    checkerboardSize,
+    imageWithBorderSize,
     imageWidth,
     imageHeight
   );
+
   const initialTranslate = calculateInitialTranslate(
     borderDimensions,
     width,
@@ -175,7 +182,7 @@ export const getEditControlParams = (
   );
 
   return {
-    checkerboardSize,
+    imageWithBorderSize,
     initialScale,
     minScale,
     maxScale: MAX_SCALE,

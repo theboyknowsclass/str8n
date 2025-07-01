@@ -87,6 +87,7 @@ export const PointGestureHandler: React.FC<PointGestureHandlerProps> = ({
 const styles = StyleSheet.create({
   touchPoint: {
     position: 'absolute',
+    pointerEvents: 'auto',
     zIndex: 4,
   },
 });
