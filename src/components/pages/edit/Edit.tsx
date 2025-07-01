@@ -85,9 +85,4 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderRadius: 5,
   },
-  selectionControlContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-  },
 });
