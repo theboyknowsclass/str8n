@@ -1,13 +1,6 @@
-import {
-  Canvas,
-  Group,
-  Image,
-  SkImage,
-  useImage,
-} from '@shopify/react-native-skia';
+import { Canvas, Group, Image, SkImage } from '@shopify/react-native-skia';
 import { CheckerBoard } from './CheckerBoard';
 import { View, StyleSheet } from 'react-native';
-import { useSourceImageStore } from '@stores';
 import { usePanZoomContext } from '@contexts';
 import { useTheme } from '@react-navigation/native';
 import { SharedValue, useDerivedValue } from 'react-native-reanimated';

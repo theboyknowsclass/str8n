@@ -6,18 +6,22 @@ import { Dimensions, Vector } from '@types';
  * Provides content dimensions, offset, and ready state management for page layout.
  * @property contentDimensions - The current dimensions of the content area
  * @property contentOffset - The offset vector for content positioning
- * @property isReady - Boolean indicating if the template is ready
+ * @property isTemplateReady - Boolean indicating if the template is ready
+ * @property isContentReady - Boolean indicating if the content is ready
  * @property setContentDimensions - Function to update the content dimensions
  * @property setContentOffset - Function to update the content offset
- * @property setIsReady - Function to update the ready state
+ * @property setIsTemplateReady - Function to update the template ready state
+ * @property setIsContentReady - Function to update the content ready state
  */
 export interface PageTemplateContextType {
   contentDimensions: Dimensions;
   contentOffset: Vector;
-  isReady: boolean;
+  isTemplateReady: boolean;
+  isContentReady: boolean;
   setContentDimensions: (dimensions: Dimensions) => void;
   setContentOffset: (offset: Vector) => void;
-  setIsReady: (isReady: boolean) => void;
+  setIsTemplateReady: (isTemplateReady: boolean) => void;
+  setIsContentReady: (isContentReady: boolean) => void;
 }
 
 /**
@@ -27,10 +31,12 @@ export interface PageTemplateContextType {
 export const PageTemplateContext = createContext<PageTemplateContextType>({
   contentDimensions: { width: 0, height: 0 },
   contentOffset: { x: 0, y: 0 },
+  isTemplateReady: false,
+  isContentReady: false,
   setContentDimensions: () => {},
   setContentOffset: () => {},
-  isReady: false,
-  setIsReady: () => {},
+  setIsTemplateReady: () => {},
+  setIsContentReady: () => {},
 });
 
 /**
@@ -66,15 +72,18 @@ export const PageTemplateContextProvider: React.FC<
     x: 0,
     y: 0,
   });
-  const [isReady, setIsReady] = useState(false);
+  const [isTemplateReady, setIsTemplateReady] = useState(false);
+  const [isContentReady, setIsContentReady] = useState(false);
 
   const value = {
     contentDimensions,
     contentOffset,
-    isReady,
+    isTemplateReady,
+    isContentReady,
     setContentDimensions,
     setContentOffset,
-    setIsReady,
+    setIsTemplateReady,
+    setIsContentReady,
   };
 
   return (
@@ -93,7 +102,7 @@ export const PageTemplateContextProvider: React.FC<
  *
  * @example
  * ```typescript
- * const { contentDimensions, contentOffset, isReady } = usePageTemplateContext();
+ * const { contentDimensions, contentOffset, isTemplateReady, isContentReady } = usePageTemplateContext();
  * ```
  */
 export const usePageTemplateContext = (): PageTemplateContextType => {

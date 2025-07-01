@@ -68,8 +68,12 @@ interface PageTemplateComponent extends React.FC<PageTemplateProps> {
  */
 const Page: React.FC<PageTemplateProps> = ({ children }) => {
   const { isLandscape } = useScreenDimensions();
-  const { setIsReady, setContentDimensions, setContentOffset, isReady } =
-    usePageTemplateContext();
+  const {
+    setIsTemplateReady,
+    setContentDimensions,
+    setContentOffset,
+    isTemplateReady,
+  } = usePageTemplateContext();
 
   // Extract action items and modal content from children
   const { otherChildren, actionItems, modalContent } =
@@ -87,7 +91,7 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
     const { width, height, x, y } = event.nativeEvent.layout;
     setContentDimensions({ width, height });
     setContentOffset({ x, y });
-    setIsReady(true);
+    setIsTemplateReady(true);
   };
 
   // child will only ever be one element
@@ -98,7 +102,9 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
       <SafeAreaView style={[contentContainerStyles]}>
         <NavigationBar isLandscape={isLandscape} />
         <View style={styles.mainContent} onLayout={onLayout}>
-          <LoadingContainer isReady={isReady}>{otherChildren}</LoadingContainer>
+          <LoadingContainer isReady={isTemplateReady}>
+            {otherChildren}
+          </LoadingContainer>
         </View>
         <ActionBar isLandscape={isLandscape}>{actionItems}</ActionBar>
       </SafeAreaView>

@@ -20,7 +20,7 @@ import { usePageTemplateContext } from '@contexts';
  * useAutoShowInstructions(); // Automatically shows instructions if conditions are met
  */
 export const useAutoShowInstructions = () => {
-  const { isReady } = usePageTemplateContext();
+  const { isTemplateReady } = usePageTemplateContext();
   const { hasDismissedInstructions } = useSessionStateStore();
   const { alwaysShowInstructions, isReady: isSettingsReady } =
     usePersistedSettingsStore();
@@ -29,7 +29,7 @@ export const useAutoShowInstructions = () => {
   useEffect(
     () => {
       if (
-        isReady &&
+        isTemplateReady &&
         isSettingsReady &&
         alwaysShowInstructions &&
         !hasDismissedInstructions
@@ -38,6 +38,6 @@ export const useAutoShowInstructions = () => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isReady, isSettingsReady] // only run when page is ready
+    [isTemplateReady, isSettingsReady] // only run when page is ready
   );
 };
