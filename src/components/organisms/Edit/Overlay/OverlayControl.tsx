@@ -5,14 +5,12 @@ import Animated, {
   useAnimatedStyle,
   useDerivedValue,
 } from 'react-native-reanimated';
-import { Canvas, Group, useImage } from '@shopify/react-native-skia';
+import { Canvas, Group } from '@shopify/react-native-skia';
 import { PointGestureHandler } from './PointGestureHandler';
 import { usePanZoomContext } from '@contexts';
 import { Point } from './Point';
 import { SelectionPolygon } from './SelectionPolygon';
 import { useEditControlContext } from '@contexts/EditControlContext';
-import { useSourceImageStore } from '@stores';
-import { POINT_RADIUS, POINT_SIZE, POINT_STROKE } from './constants';
 
 /**
  * Props for the OverlayControl component.
