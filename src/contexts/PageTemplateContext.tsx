@@ -1,30 +1,42 @@
 import React, { createContext, useState, ReactNode, useContext } from 'react';
-import { Dimensions } from '@types';
+import { Dimensions, Vector } from '@types';
 
 /**
  * Context type for page template functionality.
- * Provides dimensions and ready state management for page layout.
- * @property dimensions - The current dimensions of the page template
- * @property isReady - Boolean indicating if the template is ready
- * @property setDimensions - Function to update the template dimensions
- * @property setIsReady - Function to update the ready state
+ * Provides content dimensions, offset, and ready state management for page layout.
+ * @property contentDimensions - The current dimensions of the content area
+ * @property contentOffset - The offset vector for content positioning
+ * @property isTemplateReady - Boolean indicating if the template is ready
+ * @property isContentReady - Boolean indicating if the content is ready
+ * @property setContentDimensions - Function to update the content dimensions
+ * @property setContentOffset - Function to update the content offset
+ * @property setIsTemplateReady - Function to update the template ready state
+ * @property setIsContentReady - Function to update the content ready state
  */
 export interface PageTemplateContextType {
-  dimensions: Dimensions;
-  isReady: boolean;
-  setDimensions: (dimensions: Dimensions) => void;
-  setIsReady: (isReady: boolean) => void;
+  contentDimensions: Dimensions;
+  contentOffset: Vector;
+  isTemplateReady: boolean;
+  isContentReady: boolean;
+  setContentDimensions: (dimensions: Dimensions) => void;
+  setContentOffset: (offset: Vector) => void;
+  setIsTemplateReady: (isTemplateReady: boolean) => void;
+  setIsContentReady: (isContentReady: boolean) => void;
 }
 
 /**
  * React context for page template functionality.
- * Provides shared state for page dimensions and ready status across components.
+ * Provides shared state for content dimensions, offset, and ready status across components.
  */
 export const PageTemplateContext = createContext<PageTemplateContextType>({
-  dimensions: { width: 0, height: 0 },
-  setDimensions: () => {},
-  isReady: false,
-  setIsReady: () => {},
+  contentDimensions: { width: 0, height: 0 },
+  contentOffset: { x: 0, y: 0 },
+  isTemplateReady: false,
+  isContentReady: false,
+  setContentDimensions: () => {},
+  setContentOffset: () => {},
+  setIsTemplateReady: () => {},
+  setIsContentReady: () => {},
 });
 
 /**
@@ -37,7 +49,7 @@ interface PageTemplateProviderProps {
 
 /**
  * Provider component for page template functionality.
- * Manages page dimensions and ready state, providing them to child components.
+ * Manages content dimensions, offset, and ready state, providing them to child components.
  *
  * @param props - PageTemplateProviderProps containing children
  * @returns PageTemplateContext.Provider wrapping the children
@@ -52,17 +64,26 @@ interface PageTemplateProviderProps {
 export const PageTemplateContextProvider: React.FC<
   PageTemplateProviderProps
 > = ({ children }) => {
-  const [dimensions, setDimensions] = useState<Dimensions>({
+  const [contentDimensions, setContentDimensions] = useState<Dimensions>({
     width: 0,
     height: 0,
   });
-  const [isReady, setIsReady] = useState(false);
+  const [contentOffset, setContentOffset] = useState<Vector>({
+    x: 0,
+    y: 0,
+  });
+  const [isTemplateReady, setIsTemplateReady] = useState(false);
+  const [isContentReady, setIsContentReady] = useState(false);
 
   const value = {
-    dimensions,
-    isReady,
-    setDimensions,
-    setIsReady,
+    contentDimensions,
+    contentOffset,
+    isTemplateReady,
+    isContentReady,
+    setContentDimensions,
+    setContentOffset,
+    setIsTemplateReady,
+    setIsContentReady,
   };
 
   return (
@@ -81,7 +102,7 @@ export const PageTemplateContextProvider: React.FC<
  *
  * @example
  * ```typescript
- * const { dimensions, isReady } = usePageTemplateContext();
+ * const { contentDimensions, contentOffset, isTemplateReady, isContentReady } = usePageTemplateContext();
  * ```
  */
 export const usePageTemplateContext = (): PageTemplateContextType => {
