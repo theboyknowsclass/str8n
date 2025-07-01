@@ -55,10 +55,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     gap: 16,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    width: '100%',
     height: '100%',
     marginTop: 32,
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
 });
