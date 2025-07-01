@@ -18,15 +18,32 @@ import { StyleSheet, View } from 'react-native';
  * ```
  */
 export const Settings: React.FC = () => {
-  const { cropToOverlay, setCropToOverlay } = usePersistedSettingsStore();
+  const {
+    cropToOverlay,
+    setCropToOverlay,
+    alwaysShowInstructions,
+    setAlwaysShowInstructions,
+    showZoomView,
+    setShowZoomView,
+  } = usePersistedSettingsStore();
 
   return (
     <ModalPageTemplate title="Settings">
       <View style={styles.contentContainer}>
         <SettingsToggle
-          title="Crop to overlay"
+          title="Crop to overlay on transform"
           isEnabled={cropToOverlay}
           onToggle={setCropToOverlay}
+        />
+        <SettingsToggle
+          title="Show zoom view when moving corners"
+          isEnabled={showZoomView}
+          onToggle={setShowZoomView}
+        />
+        <SettingsToggle
+          title="Always show instructions on startup"
+          isEnabled={alwaysShowInstructions}
+          onToggle={setAlwaysShowInstructions}
         />
       </View>
     </ModalPageTemplate>

@@ -3,6 +3,8 @@ import { View } from 'react-native';
 import { useDerivedValue } from 'react-native-reanimated';
 import { OverlayControl } from './Overlay/OverlayControl';
 import { ImageView } from './Image/ImageView';
+import { ZoomView } from './Overlay/ZoomView';
+import { useImage } from '@shopify/react-native-skia';
 
 /**
  * Props for the SelectionControl component.
@@ -40,8 +42,11 @@ export const SelectionControl: React.FC<SelectionControlProps> = ({
   } = usePanZoomContext();
 
   const {
+    uri,
     imageSize: { width: imageWidth, height: imageHeight },
   } = useEditControlContext();
+
+  const image = useImage(uri);
 
   const initialScaledImageDimensions = {
     width: imageWidth * initialScale,
@@ -72,6 +77,9 @@ export const SelectionControl: React.FC<SelectionControlProps> = ({
       <ImageView
         width={width}
         height={height}
+        image={image}
+        imageWidth={imageWidth}
+        imageHeight={imageHeight}
         translateX={translateX}
         translateY={translateY}
       />
@@ -81,6 +89,7 @@ export const SelectionControl: React.FC<SelectionControlProps> = ({
         translateX={translateX}
         translateY={translateY}
       />
+      <ZoomView width={width} height={height} image={image} />
     </View>
   );
 };
