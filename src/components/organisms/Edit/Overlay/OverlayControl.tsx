@@ -8,19 +8,16 @@ import Animated, {
 import { Canvas, Group } from '@shopify/react-native-skia';
 import { PointGestureHandler } from './PointGestureHandler';
 import { usePanZoomContext } from '@contexts';
-import { Point as PointComponent } from './Point';
+import { Point } from './Point';
 import { SelectionPolygon } from './SelectionPolygon';
 import { useEditControlContext } from '@contexts/EditControlContext';
 
-const POINT_RADIUS = 26;
-const POINT_STROKE = 12;
-const POINT_SIZE = (POINT_RADIUS + POINT_STROKE) * 2;
-
 /**
- * Props for the SelectionShape component.
+ * Props for the OverlayControl component.
  * @property width - The width of the control area in pixels
  * @property height - The height of the control area in pixels
- * @property points - The points to display in relative coordinates (0-1)
+ * @property translateX - Shared animated value for horizontal translation
+ * @property translateY - Shared animated value for vertical translation
  */
 export type OverlayControlProps = {
   width: number;
@@ -30,19 +27,22 @@ export type OverlayControlProps = {
 };
 
 /**
- * SelectionShape component that renders an animated polygon overlay.
+ * OverlayControl component that renders an animated polygon overlay.
  *
  * This component displays a visual representation of the current selection
  * area as a polygon shape. It responds to pan/zoom transformations and
  * updates in real-time as the user manipulates the selection points.
  * The shape is rendered as an SVG polygon with animated properties.
  *
- * @param props - SelectionShapeProps containing width and height
+ * UX constants like point radius, stroke width, and line width are now
+ * controlled internally and no longer need to be passed as props.
+ *
+ * @param props - OverlayControlProps containing dimensions and translation values
  * @returns JSX element containing the animated selection shape
  *
  * @example
  * ```typescript
- * <SelectionShape width={400} height={300} />
+ * <OverlayControl width={400} height={300} translateX={translateX} translateY={translateY} />
  * ```
  */
 export const OverlayControl: React.FC<OverlayControlProps> = ({
@@ -52,8 +52,7 @@ export const OverlayControl: React.FC<OverlayControlProps> = ({
   translateY,
 }) => {
   const { colors } = useTheme();
-
-  const { scale: panZoomScale } = usePanZoomContext();
+  const { scale } = usePanZoomContext();
 
   const {
     imageSize: { width: imageWidth, height: imageHeight },
@@ -65,30 +64,21 @@ export const OverlayControl: React.FC<OverlayControlProps> = ({
   });
 
   const scaledImageWidth = useDerivedValue(() => {
-    return imageWidth * panZoomScale.value;
+    return imageWidth * scale.value;
   });
   const scaledImageHeight = useDerivedValue(() => {
-    return imageHeight * panZoomScale.value;
+    return imageHeight * scale.value;
   });
 
   const overlayTransformStyle = useAnimatedStyle(() => {
     return {
       top: translateY.value,
       left: translateX.value,
-      // width: scaledImageWidth.value,
-      // height: scaledImageHeight.value,
     };
   });
 
   return (
-    // <View style={styles.container}>
-    //   <ImageView
-    //     width={width}
-    //     height={height}
-    //     translateX={translateX}
-    //     translateY={translateY}
-    //   />
-    <View>
+    <View collapsable={false}>
       <Canvas
         style={{
           width,
@@ -97,11 +87,9 @@ export const OverlayControl: React.FC<OverlayControlProps> = ({
       >
         <Group transform={overlayTransform}>
           {points.map((p, i) => (
-            <PointComponent
+            <Point
               key={`Point ${i}`}
               point={p}
-              radius={POINT_RADIUS}
-              strokeWidth={POINT_STROKE}
               activeColor={colors.primary}
               scaledImageWidth={scaledImageWidth}
               scaledImageHeight={scaledImageHeight}
@@ -120,14 +108,12 @@ export const OverlayControl: React.FC<OverlayControlProps> = ({
           <PointGestureHandler
             key={`Touchable Point ${i}`}
             point={p}
-            initialPointSize={POINT_SIZE}
             scaledImageHeight={scaledImageHeight}
             scaledImageWidth={scaledImageWidth}
           />
         ))}
       </Animated.View>
     </View>
-    // </View>
   );
 };
 

@@ -18,16 +18,35 @@ import { StyleSheet, View } from 'react-native';
  * ```
  */
 export const Settings: React.FC = () => {
-  const { cropToOverlay, setCropToOverlay } = usePersistedSettingsStore();
+  const {
+    cropToOverlay,
+    setCropToOverlay,
+    alwaysShowInstructions,
+    setAlwaysShowInstructions,
+    showZoomView,
+    setShowZoomView,
+  } = usePersistedSettingsStore();
 
   return (
     <ModalPageTemplate title="Settings">
       <View style={styles.contentContainer}>
-        <SettingsToggle
-          title="Crop to overlay"
-          isEnabled={cropToOverlay}
-          onToggle={setCropToOverlay}
-        />
+        <View style={styles.settingsContainer}>
+          <SettingsToggle
+            title="Crop to overlay polygon on transform"
+            isEnabled={cropToOverlay}
+            onToggle={setCropToOverlay}
+          />
+          <SettingsToggle
+            title="Show zoom view when moving points"
+            isEnabled={showZoomView}
+            onToggle={setShowZoomView}
+          />
+          <SettingsToggle
+            title="Always show instructions on startup"
+            isEnabled={alwaysShowInstructions}
+            onToggle={setAlwaysShowInstructions}
+          />
+        </View>
       </View>
     </ModalPageTemplate>
   );
@@ -35,13 +54,16 @@ export const Settings: React.FC = () => {
 
 const styles = StyleSheet.create({
   contentContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 16,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
     width: '100%',
     height: '100%',
     marginTop: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  settingsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 16,
+    height: '100%',
   },
 });

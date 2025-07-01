@@ -21,6 +21,8 @@ export const useEdit = (): UseEdit => {
         x: makeMutable(p.x),
         y: makeMutable(p.y),
         isActive: makeMutable(false),
+        absoluteX: makeMutable(0),
+        absoluteY: makeMutable(0),
       }) as MovablePoint
   );
 

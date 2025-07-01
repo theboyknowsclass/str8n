@@ -7,7 +7,7 @@ import {
 import { StyleSheet, View, LayoutChangeEvent, ViewStyle } from 'react-native';
 import { LoadingContainer, AnimatedBlurBackground } from '@molecules';
 import React, { ReactNode } from 'react';
-import { NavigationBar } from '@organisms';
+import { NavigationBar, ActionBar } from '@organisms';
 import { SafeAreaView } from '@atoms';
 import { useScreenDimensions } from '@hooks';
 
@@ -68,7 +68,12 @@ interface PageTemplateComponent extends React.FC<PageTemplateProps> {
  */
 const Page: React.FC<PageTemplateProps> = ({ children }) => {
   const { isLandscape } = useScreenDimensions();
-  const { setIsReady, setDimensions, isReady } = usePageTemplateContext();
+  const {
+    setIsTemplateReady,
+    setContentDimensions,
+    setContentOffset,
+    isTemplateReady,
+  } = usePageTemplateContext();
 
   // Extract action items and modal content from children
   const { otherChildren, actionItems, modalContent } =
@@ -82,19 +87,11 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
     } as ViewStyle,
   ];
 
-  const actionBarStyles = [
-    styles.actionBarBase,
-    {
-      flexDirection: isLandscape ? 'column' : 'row',
-      paddingTop: isLandscape ? 0 : 16,
-      paddingLeft: isLandscape ? 16 : 0,
-    } as ViewStyle,
-  ];
-
   const onLayout = (event: LayoutChangeEvent) => {
-    const { width, height } = event.nativeEvent.layout;
-    setDimensions({ width, height });
-    setIsReady(true);
+    const { width, height, x, y } = event.nativeEvent.layout;
+    setContentDimensions({ width, height });
+    setContentOffset({ x, y });
+    setIsTemplateReady(true);
   };
 
   // child will only ever be one element
@@ -103,11 +100,13 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
   return (
     <View style={[styles.rootContainer]}>
       <SafeAreaView style={[contentContainerStyles]}>
-        <NavigationBar />
+        <NavigationBar isLandscape={isLandscape} />
         <View style={styles.mainContent} onLayout={onLayout}>
-          <LoadingContainer isReady={isReady}>{otherChildren}</LoadingContainer>
+          <LoadingContainer isReady={isTemplateReady}>
+            {otherChildren}
+          </LoadingContainer>
         </View>
-        <View style={actionBarStyles}>{actionItems}</View>
+        <ActionBar isLandscape={isLandscape}>{actionItems}</ActionBar>
       </SafeAreaView>
       <Modal>{modalChild}</Modal>
     </View>
@@ -190,11 +189,6 @@ const styles = StyleSheet.create({
   mainContent: {
     flex: 1,
     position: 'relative',
-  },
-  actionBarBase: {
-    display: 'flex',
-    flexGrow: 0,
-    justifyContent: 'space-evenly',
   },
 });
 

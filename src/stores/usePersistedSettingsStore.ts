@@ -19,6 +19,7 @@ type PersistedSettingsState = PersistedSettings & {
   setCropToOverlay: (cropToOverlay: boolean) => void;
   setMaintainExifMetadata: (maintainExifMetadata: boolean) => void;
   setAlwaysShowInstructions: (alwaysShowInstructions: boolean) => void;
+  setShowZoomView: (showZoomView: boolean) => void;
   isReady: boolean;
   setIsReady: (isReady: boolean) => void;
 };
@@ -52,37 +53,54 @@ export const usePersistedSettingsStore = create<PersistedSettingsState>()(
     cropToOverlay: false,
     maintainExifMetadata: false,
     alwaysShowInstructions: true,
+    showZoomView: true,
     isReady: false,
     setIsReady: (isReady: boolean) => set({ isReady }),
     setCropToOverlay: (cropToOverlay: boolean) => {
-      const { maintainExifMetadata, alwaysShowInstructions } = get();
+      const { maintainExifMetadata, alwaysShowInstructions, showZoomView } =
+        get();
       const newSettings = {
         cropToOverlay,
         maintainExifMetadata,
         alwaysShowInstructions,
+        showZoomView,
       };
       AsyncStorageService.storeSettings(newSettings);
       set({ cropToOverlay });
     },
     setMaintainExifMetadata: (maintainExifMetadata: boolean) => {
-      const { cropToOverlay, alwaysShowInstructions } = get();
+      const { cropToOverlay, alwaysShowInstructions, showZoomView } = get();
       const newSettings = {
         cropToOverlay,
-        maintainExifMetadata,
         alwaysShowInstructions,
+        showZoomView,
+        maintainExifMetadata,
       };
       AsyncStorageService.storeSettings(newSettings);
       set({ maintainExifMetadata });
     },
     setAlwaysShowInstructions: (alwaysShowInstructions: boolean) => {
-      const { cropToOverlay, maintainExifMetadata } = get();
+      const { cropToOverlay, maintainExifMetadata, showZoomView } = get();
       const newSettings = {
         cropToOverlay,
         maintainExifMetadata,
+        showZoomView,
         alwaysShowInstructions,
       };
       AsyncStorageService.storeSettings(newSettings);
       set({ alwaysShowInstructions });
+    },
+    setShowZoomView: (showZoomView: boolean) => {
+      const { cropToOverlay, maintainExifMetadata, alwaysShowInstructions } =
+        get();
+      const newSettings = {
+        cropToOverlay,
+        maintainExifMetadata,
+        alwaysShowInstructions,
+        showZoomView,
+      };
+      AsyncStorageService.storeSettings(newSettings);
+      set({ showZoomView });
     },
   })
 );

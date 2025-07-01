@@ -1,7 +1,6 @@
-import { Canvas, Group, Image, useImage } from '@shopify/react-native-skia';
+import { Canvas, Group, Image, SkImage } from '@shopify/react-native-skia';
 import { CheckerBoard } from './CheckerBoard';
 import { View, StyleSheet } from 'react-native';
-import { useSourceImageStore } from '@stores';
 import { usePanZoomContext } from '@contexts';
 import { useTheme } from '@react-navigation/native';
 import { SharedValue, useDerivedValue } from 'react-native-reanimated';
@@ -16,6 +15,9 @@ import { SharedValue, useDerivedValue } from 'react-native-reanimated';
 type ImageViewProps = {
   width: number;
   height: number;
+  image: SkImage | null;
+  imageWidth: number;
+  imageHeight: number;
   translateX: SharedValue<number>;
   translateY: SharedValue<number>;
 };
@@ -37,17 +39,14 @@ type ImageViewProps = {
 export const ImageView: React.FC<ImageViewProps> = ({
   width,
   height,
+  image,
+  imageWidth,
+  imageHeight,
   translateX,
   translateY,
 }) => {
   const { dark } = useTheme();
-  const { sourceImage } = useSourceImageStore();
-  const {
-    uri,
-    dimensions: { width: imageWidth, height: imageHeight },
-  } = sourceImage;
 
-  const image = useImage(uri);
   const { scale, initialScale, contentSize, relativeScale } =
     usePanZoomContext();
 
