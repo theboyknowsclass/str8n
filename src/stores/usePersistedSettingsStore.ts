@@ -19,6 +19,7 @@ type PersistedSettingsState = PersistedSettings & {
   setCropToOverlay: (cropToOverlay: boolean) => void;
   setMaintainExifMetadata: (maintainExifMetadata: boolean) => void;
   setAlwaysShowInstructions: (alwaysShowInstructions: boolean) => void;
+  setShowZoomView: (showZoomView: boolean) => void;
   isReady: boolean;
   setIsReady: (isReady: boolean) => void;
 };
@@ -52,37 +53,32 @@ export const usePersistedSettingsStore = create<PersistedSettingsState>()(
     cropToOverlay: false,
     maintainExifMetadata: false,
     alwaysShowInstructions: true,
+    showZoomView: true,
     isReady: false,
     setIsReady: (isReady: boolean) => set({ isReady }),
     setCropToOverlay: (cropToOverlay: boolean) => {
-      const { maintainExifMetadata, alwaysShowInstructions } = get();
-      const newSettings = {
-        cropToOverlay,
-        maintainExifMetadata,
-        alwaysShowInstructions,
-      };
+      const { ...rest } = get();
+      const newSettings = { ...rest, cropToOverlay };
       AsyncStorageService.storeSettings(newSettings);
       set({ cropToOverlay });
     },
     setMaintainExifMetadata: (maintainExifMetadata: boolean) => {
-      const { cropToOverlay, alwaysShowInstructions } = get();
-      const newSettings = {
-        cropToOverlay,
-        maintainExifMetadata,
-        alwaysShowInstructions,
-      };
+      const { ...rest } = get();
+      const newSettings = { ...rest, maintainExifMetadata };
       AsyncStorageService.storeSettings(newSettings);
       set({ maintainExifMetadata });
     },
     setAlwaysShowInstructions: (alwaysShowInstructions: boolean) => {
-      const { cropToOverlay, maintainExifMetadata } = get();
-      const newSettings = {
-        cropToOverlay,
-        maintainExifMetadata,
-        alwaysShowInstructions,
-      };
+      const { ...rest } = get();
+      const newSettings = { ...rest, alwaysShowInstructions };
       AsyncStorageService.storeSettings(newSettings);
       set({ alwaysShowInstructions });
+    },
+    setShowZoomView: (showZoomView: boolean) => {
+      const { ...rest } = get();
+      const newSettings = { ...rest, showZoomView };
+      AsyncStorageService.storeSettings(newSettings);
+      set({ showZoomView });
     },
   })
 );

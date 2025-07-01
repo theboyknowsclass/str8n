@@ -24,7 +24,7 @@ import { useEdit } from './useEdit';
  */
 const EditContent: React.FC = () => {
   const {
-    dimensions: { width, height },
+    contentDimensions: { width, height },
     isReady,
   } = usePageTemplateContext();
 

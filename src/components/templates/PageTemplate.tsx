@@ -68,7 +68,8 @@ interface PageTemplateComponent extends React.FC<PageTemplateProps> {
  */
 const Page: React.FC<PageTemplateProps> = ({ children }) => {
   const { isLandscape } = useScreenDimensions();
-  const { setIsReady, setDimensions, isReady } = usePageTemplateContext();
+  const { setIsReady, setContentDimensions, setContentOffset, isReady } =
+    usePageTemplateContext();
 
   // Extract action items and modal content from children
   const { otherChildren, actionItems, modalContent } =
@@ -92,8 +93,9 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
   ];
 
   const onLayout = (event: LayoutChangeEvent) => {
-    const { width, height } = event.nativeEvent.layout;
-    setDimensions({ width, height });
+    const { width, height, x, y } = event.nativeEvent.layout;
+    setContentDimensions({ width, height });
+    setContentOffset({ x, y });
     setIsReady(true);
   };
 

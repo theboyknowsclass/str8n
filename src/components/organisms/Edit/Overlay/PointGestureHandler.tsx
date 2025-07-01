@@ -82,7 +82,6 @@ export const PointGestureHandler: React.FC<PointGestureHandlerProps> = ({
     })
     .onUpdate((e) => {
       'worklet';
-
       // calculate new position in relative coordinates
       const newX =
         savedPosition.current.x + e.translationX / scaledImageWidth.value;
@@ -91,6 +90,8 @@ export const PointGestureHandler: React.FC<PointGestureHandlerProps> = ({
 
       point.x.value = Math.max(0, Math.min(1, newX));
       point.y.value = Math.max(0, Math.min(1, newY));
+      point.absoluteX.value = e.absoluteX;
+      point.absoluteY.value = e.absoluteY;
     })
     .onEnd(() => {
       'worklet';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Circle, Line } from '@shopify/react-native-skia';
+import { Circle, SkImage } from '@shopify/react-native-skia';
 import { MovablePoint } from '@types';
 import {
   SharedValue,
@@ -19,6 +19,7 @@ import { Crosshair } from './Crosshair';
  */
 type PointProps = {
   point: MovablePoint;
+  image: SkImage | null;
   strokeWidth: number;
   radius: number;
   activeColor: string;
@@ -42,6 +43,7 @@ type PointProps = {
  * ```
  */
 export const Point: React.FC<PointProps> = ({
+  image,
   point,
   strokeWidth,
   radius,
