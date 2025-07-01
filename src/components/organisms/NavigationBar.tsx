@@ -4,7 +4,6 @@ import {
   ShowInstructionsButton,
   ThemeToggle,
 } from '@molecules';
-import { useScreenDimensions } from '@hooks';
 import { View, StyleSheet, ViewStyle } from 'react-native';
 
 /**
@@ -14,16 +13,17 @@ import { View, StyleSheet, ViewStyle } from 'react-native';
  * instructions, and theme toggle. The layout adapts to landscape/portrait
  * orientation for optimal user experience.
  *
+ * @param isLandscape - Boolean indicating if the device is in landscape mode
  * @returns JSX element containing the navigation bar with action buttons
  *
  * @example
  * ```typescript
- * <NavigationBar />
+ * <NavigationBar isLandscape={true} />
  * ```
  */
-export const NavigationBar: React.FC = () => {
-  const { isLandscape } = useScreenDimensions();
-
+export const NavigationBar: React.FC<{ isLandscape: boolean }> = ({
+  isLandscape,
+}) => {
   const navigationBarStyles = [
     styles.navigationBarBase,
     getNavigationBarStyles(isLandscape),

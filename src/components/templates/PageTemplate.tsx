@@ -7,7 +7,7 @@ import {
 import { StyleSheet, View, LayoutChangeEvent, ViewStyle } from 'react-native';
 import { LoadingContainer, AnimatedBlurBackground } from '@molecules';
 import React, { ReactNode } from 'react';
-import { NavigationBar } from '@organisms';
+import { NavigationBar, ActionBar } from '@organisms';
 import { SafeAreaView } from '@atoms';
 import { useScreenDimensions } from '@hooks';
 
@@ -83,15 +83,6 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
     } as ViewStyle,
   ];
 
-  const actionBarStyles = [
-    styles.actionBarBase,
-    {
-      flexDirection: isLandscape ? 'column' : 'row',
-      paddingTop: isLandscape ? 0 : 16,
-      paddingLeft: isLandscape ? 16 : 0,
-    } as ViewStyle,
-  ];
-
   const onLayout = (event: LayoutChangeEvent) => {
     const { width, height, x, y } = event.nativeEvent.layout;
     setContentDimensions({ width, height });
@@ -105,11 +96,11 @@ const Page: React.FC<PageTemplateProps> = ({ children }) => {
   return (
     <View style={[styles.rootContainer]}>
       <SafeAreaView style={[contentContainerStyles]}>
-        <NavigationBar />
+        <NavigationBar isLandscape={isLandscape} />
         <View style={styles.mainContent} onLayout={onLayout}>
           <LoadingContainer isReady={isReady}>{otherChildren}</LoadingContainer>
         </View>
-        <View style={actionBarStyles}>{actionItems}</View>
+        <ActionBar isLandscape={isLandscape}>{actionItems}</ActionBar>
       </SafeAreaView>
       <Modal>{modalChild}</Modal>
     </View>
@@ -192,11 +183,6 @@ const styles = StyleSheet.create({
   mainContent: {
     flex: 1,
     position: 'relative',
-  },
-  actionBarBase: {
-    display: 'flex',
-    flexGrow: 0,
-    justifyContent: 'space-evenly',
   },
 });
 
