@@ -1,8 +1,12 @@
+import { Vector } from '@types';
+
 const BORDER_PERCENTAGE = 0.2;
 const MAX_SCALE = 2;
 
 /**
  * Represents width and height dimensions
+ * @property width - The width dimension
+ * @property height - The height dimension
  */
 interface Dimensions {
   width: number;
@@ -11,6 +15,11 @@ interface Dimensions {
 
 /**
  * Parameters for edit control calculations including imageWithBorder size, scale factors, and positioning
+ * @property imageWithBorderSize - The calculated size of the image with border
+ * @property initialScale - The initial scale factor for the image
+ * @property minScale - The minimum allowed scale factor
+ * @property maxScale - The maximum allowed scale factor
+ * @property initialTranslate - The initial translation coordinates for positioning
  */
 interface EditControlParams {
   imageWithBorderSize: Dimensions;
@@ -47,7 +56,7 @@ const calculateScaleFactors = (
   height: number,
   imageWidth: number,
   imageHeight: number
-) => {
+): { initialScale: number; minScale: number } => {
   const widthScale = width / imageWidth;
   const heightScale = height / imageHeight;
   const initialScale = Math.min(widthScale, heightScale);
@@ -111,7 +120,7 @@ const calculateInitialTranslate = (
   initialScale: number,
   imageWidth: number,
   imageHeight: number
-) => {
+): Vector => {
   // Calculate the absolute window size in image coordinates
   const absoluteWindowSize = {
     width: width / initialScale,
