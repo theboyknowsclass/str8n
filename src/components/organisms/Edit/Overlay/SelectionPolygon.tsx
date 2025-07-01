@@ -25,6 +25,9 @@ type SelectionPolygonProps = {
  * This component uses Skia to draw lines between the selection points, forming a polygon overlay
  * on the image. The lines are animated to follow the points as they move.
  *
+ * When a point is active (being moved), the lines are adjusted to create a gap around the active
+ * point, providing a cleaner view for precise point placement.
+ *
  * @param props - SelectionPolygonProps containing points, color, and scaling info
  * @returns JSX element containing the polygon
  *
@@ -67,7 +70,7 @@ export const SelectionPolygon: React.FC<SelectionPolygonProps> = ({
       }
 
       if (p2.isActive.value) {
-        // move p1 by the scaled point size along the line
+        // move p2 by the scaled point size along the line
         const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
         const newX = p2.x - pointRadius * Math.cos(angle);
         const newY = p2.y - pointRadius * Math.sin(angle);
