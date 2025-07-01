@@ -2,15 +2,23 @@ export {
   PageTemplateContextProvider,
   PageTemplateContext,
   PageTemplateContextType,
+  usePageTemplateContext,
 } from './PageTemplateContext';
 export {
   PageModalContextProvider,
   PageModalContext,
   PageModalContextType,
+  usePageModalContext,
 } from './PageModalContext';
 export {
-  PanZoomProvider,
+  PanZoomContextProvider as PanZoomProvider,
   PanZoomContext,
   PanZoomContextType,
+  usePanZoomContext,
 } from './PanZoomContext';
-export { EditProvider, EditContext, EditContextType } from './EditContext';
+export {
+  EditControlContextProvider,
+  EditControlContext,
+  EditControlContextType,
+  useEditControlContext,
+} from './EditControlContext';

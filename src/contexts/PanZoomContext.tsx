@@ -1,7 +1,11 @@
-import { Vector } from '@types';
-import { createContext, RefObject, useRef } from 'react';
+import { Dimensions, Vector } from '@types';
+import { createContext, RefObject, useContext, useRef } from 'react';
 import { GestureType } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/gesture';
-import { SharedValue, useSharedValue } from 'react-native-reanimated';
+import {
+  SharedValue,
+  useDerivedValue,
+  useSharedValue,
+} from 'react-native-reanimated';
 
 /**
  * Context type for pan and zoom functionality.
@@ -14,8 +18,14 @@ import { SharedValue, useSharedValue } from 'react-native-reanimated';
 export interface PanZoomContextType {
   isReady: boolean;
   scale: SharedValue<number>;
+  minScale: number;
+  maxScale: number;
+  relativeScale: SharedValue<number>;
   translate: SharedValue<Vector>;
+  initialScale: number;
+  initialTranslate: Vector;
   panGesture: RefObject<GestureType | undefined>;
+  contentSize: Dimensions;
 }
 
 /**
@@ -32,10 +42,13 @@ export const PanZoomContext = createContext<PanZoomContextType>({
  * @property initialScale - The initial scale factor for the image
  * @property initialTranslate - The initial translation vector for the image
  */
-interface PanZoomProviderProps {
-  children: React.ReactNode;
+export interface PanZoomContextProviderProps {
+  children?: React.ReactNode | React.ReactNode[];
   initialScale: number;
   initialTranslate: Vector;
+  minScale: number;
+  maxScale: number;
+  contentSize: Dimensions;
 }
 
 /**
@@ -52,23 +65,55 @@ interface PanZoomProviderProps {
  * </PanZoomProvider>
  * ```
  */
-export const PanZoomProvider: React.FC<PanZoomProviderProps> = ({
+export const PanZoomContextProvider: React.FC<PanZoomContextProviderProps> = ({
   children,
   initialScale,
   initialTranslate,
+  minScale,
+  maxScale,
+  contentSize,
 }) => {
   const panGesture = useRef<GestureType | undefined>(undefined);
   const scale = useSharedValue(initialScale);
   const translate = useSharedValue(initialTranslate);
+  const relativeScale = useDerivedValue(() => {
+    return scale.value / initialScale;
+  });
 
   const value = {
     isReady: true,
     scale,
+    minScale,
+    maxScale,
     translate,
+    initialScale,
+    initialTranslate,
     panGesture,
+    contentSize,
+    relativeScale,
   };
 
   return (
     <PanZoomContext.Provider value={value}>{children}</PanZoomContext.Provider>
   );
+};
+
+/**
+ * Hook to access the PanZoom context.
+ * Provides access to pan and zoom functionality and state.
+ *
+ * @returns PanZoomContextType object containing pan/zoom state
+ * @throws Error if used outside of PanZoomProvider
+ *
+ * @example
+ * ```typescript
+ * const { scale, translate, panGesture } = usePanZoomContext();
+ * ```
+ */
+export const usePanZoomContext = (): PanZoomContextType => {
+  const context = useContext(PanZoomContext);
+  if (context === undefined) {
+    throw new Error('usePanZoomContext must be used within a PanZoomProvider');
+  }
+  return context;
 };

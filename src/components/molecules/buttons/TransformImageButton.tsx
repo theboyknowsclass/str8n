@@ -1,5 +1,8 @@
 import { IconButton } from '@atoms';
 import { useNavigation } from '../../../hooks/useNavigation';
+import { useEditControlContext } from '@contexts';
+import { useOverlayStore } from '@stores';
+import { orderPointsByCorner } from '@utils/transformUtils';
 
 /**
  * TransformImageButton component that initiates image transformation.
@@ -17,8 +20,18 @@ import { useNavigation } from '../../../hooks/useNavigation';
  */
 export const TransformImageButton: React.FC = () => {
   const { navigate } = useNavigation();
+  const { selectionPoints } = useEditControlContext();
+  const { setPoints } = useOverlayStore();
 
   const onTransformImagePress = async () => {
+    setPoints(
+      orderPointsByCorner(
+        selectionPoints.map((p) => ({
+          x: p.x.value,
+          y: p.y.value,
+        }))
+      )
+    );
     navigate('transform');
   };
 

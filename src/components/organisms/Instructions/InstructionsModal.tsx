@@ -1,4 +1,4 @@
-import { usePageModalContext } from '@hooks';
+import { usePageModalContext } from '@contexts';
 import { useSessionStateStore } from '@stores';
 import { ModalDialog } from '@molecules';
 import { Instructions } from './Instructions';
