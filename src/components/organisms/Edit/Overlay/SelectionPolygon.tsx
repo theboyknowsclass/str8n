@@ -1,8 +1,7 @@
 import { Points } from '@shopify/react-native-skia';
 import { MovablePoint } from '@types';
 import { SharedValue, useDerivedValue } from 'react-native-reanimated';
-
-const LINE_WIDTH = 3;
+import { LINE_WIDTH, POINT_RADIUS } from './constants';
 
 /**
  * Props for the SelectionPolygon component.
@@ -16,7 +15,6 @@ type SelectionPolygonProps = {
   color: string;
   scaledImageHeight: SharedValue<number>;
   scaledImageWidth: SharedValue<number>;
-  pointRadius: number;
 };
 
 /**
@@ -27,6 +25,8 @@ type SelectionPolygonProps = {
  *
  * When a point is active (being moved), the lines are adjusted to create a gap around the active
  * point, providing a cleaner view for precise point placement.
+ *
+ * The point radius and line width are now controlled by UX constants and no longer need to be passed as props.
  *
  * @param props - SelectionPolygonProps containing points, color, and scaling info
  * @returns JSX element containing the polygon
@@ -41,7 +41,6 @@ export const SelectionPolygon: React.FC<SelectionPolygonProps> = ({
   color,
   scaledImageHeight,
   scaledImageWidth,
-  pointRadius,
 }) => {
   const scaledPoints = useDerivedValue(() => {
     return points.map((p) => ({
@@ -59,8 +58,8 @@ export const SelectionPolygon: React.FC<SelectionPolygonProps> = ({
       if (p1.isActive.value) {
         // move p1 by the scaled point size along the line
         const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-        const newX = p1.x + pointRadius * Math.cos(angle);
-        const newY = p1.y + pointRadius * Math.sin(angle);
+        const newX = p1.x + POINT_RADIUS * Math.cos(angle);
+        const newY = p1.y + POINT_RADIUS * Math.sin(angle);
 
         p1 = {
           x: newX,
@@ -72,8 +71,8 @@ export const SelectionPolygon: React.FC<SelectionPolygonProps> = ({
       if (p2.isActive.value) {
         // move p2 by the scaled point size along the line
         const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-        const newX = p2.x - pointRadius * Math.cos(angle);
-        const newY = p2.y - pointRadius * Math.sin(angle);
+        const newX = p2.x - POINT_RADIUS * Math.cos(angle);
+        const newY = p2.y - POINT_RADIUS * Math.sin(angle);
 
         p2 = {
           x: newX,

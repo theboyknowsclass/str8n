@@ -17,9 +17,7 @@ import {
 } from '@shopify/react-native-skia';
 import { usePageTemplateContext } from '@contexts';
 import { useEditControlContext } from '@contexts/EditControlContext';
-
-const ZOOM_VIEW_RADIUS = 128;
-const MIN_DISTANCE_FROM_POINT = ZOOM_VIEW_RADIUS + 48;
+import { MIN_DISTANCE_FROM_POINT, ZOOM_VIEW_RADIUS } from './constants';
 
 export type ZoomViewProps = {
   width: number;

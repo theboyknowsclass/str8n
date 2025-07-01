@@ -1,5 +1,5 @@
 import React from 'react';
-import { Circle, SkImage } from '@shopify/react-native-skia';
+import { Circle } from '@shopify/react-native-skia';
 import { MovablePoint } from '@types';
 import {
   SharedValue,
@@ -7,21 +7,17 @@ import {
   withTiming,
 } from 'react-native-reanimated';
 import { Crosshair } from './Crosshair';
+import { POINT_RADIUS, POINT_STROKE } from './constants';
 
 /**
  * Props for the Point component.
  * @property point - The MovablePoint object representing the point's position and state
- * @property strokeWidth - The width of the point's stroke
- * @property radius - The radius of the point
  * @property activeColor - The color to use when the point is active
  * @property scaledImageWidth - Shared animated value for the scaled image width
  * @property scaledImageHeight - Shared animated value for the scaled image height
  */
 type PointProps = {
   point: MovablePoint;
-  image: SkImage | null;
-  strokeWidth: number;
-  radius: number;
   activeColor: string;
   scaledImageWidth: SharedValue<number>;
   scaledImageHeight: SharedValue<number>;
@@ -34,19 +30,19 @@ type PointProps = {
  * transitions for active/inactive state, size, and color. When active, it also displays
  * a crosshair at the center for precise positioning. Used in the selection overlay.
  *
+ * The point radius and stroke width are now controlled by UX constants and no longer
+ * need to be passed as props.
+ *
  * @param props - PointProps containing point data, styling, and scaling info
  * @returns JSX element containing the point and optional crosshair
  *
  * @example
  * ```tsx
- * <Point point={p} radius={20} strokeWidth={8} activeColor={'#00f'} scaledImageWidth={w} scaledImageHeight={h} />
+ * <Point point={p} activeColor={'#00f'} scaledImageWidth={w} scaledImageHeight={h} />
  * ```
  */
 export const Point: React.FC<PointProps> = ({
-  image,
   point,
-  strokeWidth,
-  radius,
   activeColor,
   scaledImageWidth,
   scaledImageHeight,
@@ -63,16 +59,22 @@ export const Point: React.FC<PointProps> = ({
   }, [point.isActive, activeColor]);
 
   const currentRadius = useDerivedValue(() => {
-    return withTiming(point.isActive.value ? radius * 1.2 : radius, {
-      duration: 100,
-    });
-  }, [radius, point.isActive]);
+    return withTiming(
+      point.isActive.value ? POINT_RADIUS * 1.2 : POINT_RADIUS,
+      {
+        duration: 100,
+      }
+    );
+  }, [point.isActive]);
 
   const currentStrokeWidth = useDerivedValue(() => {
-    return withTiming(point.isActive.value ? strokeWidth * 1.2 : strokeWidth, {
-      duration: 100,
-    });
-  }, [strokeWidth, point.isActive]);
+    return withTiming(
+      point.isActive.value ? POINT_STROKE * 1.2 : POINT_STROKE,
+      {
+        duration: 100,
+      }
+    );
+  }, [point.isActive]);
 
   return (
     <>
@@ -89,7 +91,6 @@ export const Point: React.FC<PointProps> = ({
         cx={cx}
         cy={cy}
         isActive={point.isActive}
-        radius={radius}
         activeColor={activeColor}
       />
     </>

@@ -12,16 +12,14 @@ import { Point } from './Point';
 import { SelectionPolygon } from './SelectionPolygon';
 import { useEditControlContext } from '@contexts/EditControlContext';
 import { useSourceImageStore } from '@stores';
-
-const POINT_RADIUS = 26;
-const POINT_STROKE = 12;
-const POINT_SIZE = (POINT_RADIUS + POINT_STROKE) * 2;
+import { POINT_RADIUS, POINT_SIZE, POINT_STROKE } from './constants';
 
 /**
- * Props for the SelectionShape component.
+ * Props for the OverlayControl component.
  * @property width - The width of the control area in pixels
  * @property height - The height of the control area in pixels
- * @property points - The points to display in relative coordinates (0-1)
+ * @property translateX - Shared animated value for horizontal translation
+ * @property translateY - Shared animated value for vertical translation
  */
 export type OverlayControlProps = {
   width: number;
@@ -38,12 +36,15 @@ export type OverlayControlProps = {
  * updates in real-time as the user manipulates the selection points.
  * The shape is rendered as an SVG polygon with animated properties.
  *
- * @param props - SelectionShapeProps containing width and height
+ * UX constants like point radius, stroke width, and line width are now
+ * controlled internally and no longer need to be passed as props.
+ *
+ * @param props - OverlayControlProps containing dimensions and translation values
  * @returns JSX element containing the animated selection shape
  *
  * @example
  * ```typescript
- * <OverlayControl width={400} height={300} />
+ * <OverlayControl width={400} height={300} translateX={translateX} translateY={translateY} />
  * ```
  */
 export const OverlayControl: React.FC<OverlayControlProps> = ({
@@ -53,11 +54,7 @@ export const OverlayControl: React.FC<OverlayControlProps> = ({
   translateY,
 }) => {
   const { colors } = useTheme();
-
   const { scale } = usePanZoomContext();
-
-  const { sourceImage } = useSourceImageStore();
-  const image = useImage(sourceImage.uri);
 
   const {
     imageSize: { width: imageWidth, height: imageHeight },
@@ -95,9 +92,6 @@ export const OverlayControl: React.FC<OverlayControlProps> = ({
             <Point
               key={`Point ${i}`}
               point={p}
-              image={image}
-              radius={POINT_RADIUS}
-              strokeWidth={POINT_STROKE}
               activeColor={colors.primary}
               scaledImageWidth={scaledImageWidth}
               scaledImageHeight={scaledImageHeight}
@@ -108,7 +102,6 @@ export const OverlayControl: React.FC<OverlayControlProps> = ({
             color={colors.primary}
             scaledImageHeight={scaledImageHeight}
             scaledImageWidth={scaledImageWidth}
-            pointRadius={POINT_RADIUS}
           />
         </Group>
       </Canvas>
@@ -117,7 +110,6 @@ export const OverlayControl: React.FC<OverlayControlProps> = ({
           <PointGestureHandler
             key={`Touchable Point ${i}`}
             point={p}
-            initialPointSize={POINT_SIZE}
             scaledImageHeight={scaledImageHeight}
             scaledImageWidth={scaledImageWidth}
           />

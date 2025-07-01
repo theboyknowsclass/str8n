@@ -8,17 +8,16 @@ import { StyleSheet } from 'react-native';
 import { MovablePoint, Point } from '@types';
 import { usePanZoomContext } from '@contexts';
 import { useRef } from 'react';
+import { POINT_SIZE } from './constants';
 
 /**
  * Props for the PointGestureHandler component.
  * @property point - The MovablePoint object to manipulate
- * @property initialPointSize - The initial size of the touchable area
  * @property scaledImageHeight - Shared animated value for the scaled image height
  * @property scaledImageWidth - Shared animated value for the scaled image width
  */
 type PointGestureHandlerProps = {
   point: MovablePoint;
-  initialPointSize: number;
   scaledImageHeight: SharedValue<number>;
   scaledImageWidth: SharedValue<number>;
 };
@@ -29,17 +28,18 @@ type PointGestureHandlerProps = {
  * This component uses react-native-gesture-handler and reanimated to allow users to drag
  * points interactively, updating their position in relative coordinates. Used in the selection overlay.
  *
- * @param props - PointGestureHandlerProps containing point, size, and scaling info
+ * The point size is now controlled by UX constants and no longer needs to be passed as a prop.
+ *
+ * @param props - PointGestureHandlerProps containing point and scaling info
  * @returns JSX element containing the gesture handler
  *
  * @example
  * ```tsx
- * <PointGestureHandler point={p} initialPointSize={40} scaledImageWidth={w} scaledImageHeight={h} />
+ * <PointGestureHandler point={p} scaledImageWidth={w} scaledImageHeight={h} />
  * ```
  */
 export const PointGestureHandler: React.FC<PointGestureHandlerProps> = ({
   point,
-  initialPointSize,
   scaledImageHeight,
   scaledImageWidth,
 }) => {
@@ -59,11 +59,11 @@ export const PointGestureHandler: React.FC<PointGestureHandlerProps> = ({
 
   const animatedStyles = useAnimatedStyle(() => {
     return {
-      top: cy.value - initialPointSize / 2,
-      left: cx.value - initialPointSize / 2,
-      width: initialPointSize,
-      height: initialPointSize,
-      borderRadius: initialPointSize / 2,
+      top: cy.value - POINT_SIZE / 2,
+      left: cx.value - POINT_SIZE / 2,
+      width: POINT_SIZE,
+      height: POINT_SIZE,
+      borderRadius: POINT_SIZE / 2,
     };
   });
 
