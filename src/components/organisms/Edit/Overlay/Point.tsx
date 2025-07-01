@@ -6,6 +6,15 @@ import {
   withTiming,
 } from 'react-native-reanimated';
 
+/**
+ * Props for the Point component.
+ * @property point - The MovablePoint object representing the point's position and state
+ * @property strokeWidth - The width of the point's stroke
+ * @property radius - The radius of the point
+ * @property activeColor - The color to use when the point is active
+ * @property scaledImageWidth - Shared animated value for the scaled image width
+ * @property scaledImageHeight - Shared animated value for the scaled image height
+ */
 type PointProps = {
   point: MovablePoint;
   strokeWidth: number;
@@ -15,6 +24,20 @@ type PointProps = {
   scaledImageHeight: SharedValue<number>;
 };
 
+/**
+ * Point component that renders an animated, interactive point on the image overlay.
+ *
+ * This component uses Skia to render a circle representing a draggable point, with animated
+ * transitions for active/inactive state, size, and color. Used in the selection overlay.
+ *
+ * @param props - PointProps containing point data, styling, and scaling info
+ * @returns JSX element containing the point
+ *
+ * @example
+ * ```tsx
+ * <Point point={p} radius={20} strokeWidth={8} activeColor={'#00f'} scaledImageWidth={w} scaledImageHeight={h} />
+ * ```
+ */
 export const Point: React.FC<PointProps> = ({
   point,
   strokeWidth,

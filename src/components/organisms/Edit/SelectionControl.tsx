@@ -4,11 +4,29 @@ import { useDerivedValue } from 'react-native-reanimated';
 import { OverlayControl } from './Overlay/OverlayControl';
 import { ImageView } from './Image/ImageView';
 
+/**
+ * Props for the SelectionControl component.
+ * @property width - The width of the control area in pixels
+ * @property height - The height of the control area in pixels
+ */
 export type SelectionControlProps = {
   width: number;
   height: number;
 };
 
+/**
+ * SelectionControl component that manages the overlay and image view for selection editing.
+ *
+ * This component coordinates the image view and overlay controls, synchronizing pan/zoom and selection state.
+ *
+ * @param props - SelectionControlProps containing width and height
+ * @returns JSX element containing the selection controls
+ *
+ * @example
+ * ```tsx
+ * <SelectionControl width={400} height={300} />
+ * ```
+ */
 export const SelectionControl: React.FC<SelectionControlProps> = ({
   width,
   height,

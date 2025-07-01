@@ -1,6 +1,12 @@
 import React from 'react';
 import { Skia, SkPath, Group, Path } from '@shopify/react-native-skia';
 
+/**
+ * Props for the CheckerBoard component.
+ * @property width - The width of the checkerboard in pixels
+ * @property height - The height of the checkerboard in pixels
+ * @property isDarkMode - Whether to use dark mode colors
+ */
 export interface CheckerBoardProps {
   width: number;
   height: number;
@@ -13,6 +19,20 @@ const CHECKER_BOARD_DARK_ALT_COLOR = '#222222';
 const CHECKER_BOARD_LIGHT_COLOR = '#eeeeee';
 const CHECKER_BOARD_LIGHT_ALT_COLOR = '#cccccc';
 
+/**
+ * CheckerBoard component that renders a checkered background pattern using Skia.
+ *
+ * This component is used to visually indicate transparency or background in image editing.
+ * It adapts its color scheme based on the dark mode setting.
+ *
+ * @param props - CheckerBoardProps containing width, height, and isDarkMode
+ * @returns JSX element containing the checkerboard pattern
+ *
+ * @example
+ * ```tsx
+ * <CheckerBoard width={400} height={300} isDarkMode={false} />
+ * ```
+ */
 export const CheckerBoard: React.FC<CheckerBoardProps> = ({
   width,
   height,

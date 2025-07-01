@@ -25,10 +25,8 @@ type UseNavigation = {
  * @returns UseNavigation object containing navigation methods
  *
  * @example
- * ```typescript
  * const { navigate, goBack, dismiss } = useNavigation();
  * navigate('edit');
- * ```
  */
 export const useNavigation = (): UseNavigation => {
   const router = useRouter();

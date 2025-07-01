@@ -9,6 +9,13 @@ import { MovablePoint, Point } from '@types';
 import { usePanZoomContext } from '@contexts';
 import { useRef } from 'react';
 
+/**
+ * Props for the PointGestureHandler component.
+ * @property point - The MovablePoint object to manipulate
+ * @property initialPointSize - The initial size of the touchable area
+ * @property scaledImageHeight - Shared animated value for the scaled image height
+ * @property scaledImageWidth - Shared animated value for the scaled image width
+ */
 type PointGestureHandlerProps = {
   point: MovablePoint;
   initialPointSize: number;
@@ -16,6 +23,20 @@ type PointGestureHandlerProps = {
   scaledImageWidth: SharedValue<number>;
 };
 
+/**
+ * PointGestureHandler component that enables drag gestures for a point on the overlay.
+ *
+ * This component uses react-native-gesture-handler and reanimated to allow users to drag
+ * points interactively, updating their position in relative coordinates. Used in the selection overlay.
+ *
+ * @param props - PointGestureHandlerProps containing point, size, and scaling info
+ * @returns JSX element containing the gesture handler
+ *
+ * @example
+ * ```tsx
+ * <PointGestureHandler point={p} initialPointSize={40} scaledImageWidth={w} scaledImageHeight={h} />
+ * ```
+ */
 export const PointGestureHandler: React.FC<PointGestureHandlerProps> = ({
   point,
   initialPointSize,

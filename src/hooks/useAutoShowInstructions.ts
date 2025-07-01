@@ -5,7 +5,10 @@ import { usePageTemplateContext } from '@contexts';
 
 /**
  * Hook that automatically shows instructions when certain conditions are met.
- * Checks if instructions should be shown based on user settings and session state.
+ *
+ * This hook checks if instructions should be shown based on user settings and session state.
+ * It is typically used at the top level of a page or component to ensure users see instructions
+ * when appropriate (e.g., on first use or when 'always show instructions' is enabled).
  *
  * Conditions for showing instructions:
  * - Page template is ready
@@ -14,9 +17,7 @@ import { usePageTemplateContext } from '@contexts';
  * - User hasn't dismissed instructions in current session
  *
  * @example
- * ```typescript
  * useAutoShowInstructions(); // Automatically shows instructions if conditions are met
- * ```
  */
 export const useAutoShowInstructions = () => {
   const { isReady } = usePageTemplateContext();

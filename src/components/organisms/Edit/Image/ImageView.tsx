@@ -6,6 +6,13 @@ import { usePanZoomContext } from '@contexts';
 import { useTheme } from '@react-navigation/native';
 import { SharedValue, useDerivedValue } from 'react-native-reanimated';
 
+/**
+ * Props for the ImageView component.
+ * @property width - The width of the view in pixels
+ * @property height - The height of the view in pixels
+ * @property translateX - Shared animated value for X translation
+ * @property translateY - Shared animated value for Y translation
+ */
 type ImageViewProps = {
   width: number;
   height: number;
@@ -13,6 +20,20 @@ type ImageViewProps = {
   translateY: SharedValue<number>;
 };
 
+/**
+ * ImageView component that renders the source image and checkerboard background with pan/zoom support.
+ *
+ * This component uses Skia to render the image and a checkerboard background, applying animated transforms
+ * for panning and zooming. It is used as the main image display in the editing interface.
+ *
+ * @param props - ImageViewProps containing width, height, translateX, and translateY
+ * @returns JSX element containing the image and background
+ *
+ * @example
+ * ```tsx
+ * <ImageView width={400} height={300} translateX={x} translateY={y} />
+ * ```
+ */
 export const ImageView: React.FC<ImageViewProps> = ({
   width,
   height,
