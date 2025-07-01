@@ -8,7 +8,7 @@ import Animated, {
 import { Canvas, Group } from '@shopify/react-native-skia';
 import { PointGestureHandler } from './PointGestureHandler';
 import { usePanZoomContext } from '@contexts';
-import { Point as PointComponent } from './Point';
+import { Point } from './Point';
 import { SelectionPolygon } from './SelectionPolygon';
 import { useEditControlContext } from '@contexts/EditControlContext';
 
@@ -53,7 +53,7 @@ export const OverlayControl: React.FC<OverlayControlProps> = ({
 }) => {
   const { colors } = useTheme();
 
-  const { scale: panZoomScale } = usePanZoomContext();
+  const { scale } = usePanZoomContext();
 
   const {
     imageSize: { width: imageWidth, height: imageHeight },
@@ -65,29 +65,20 @@ export const OverlayControl: React.FC<OverlayControlProps> = ({
   });
 
   const scaledImageWidth = useDerivedValue(() => {
-    return imageWidth * panZoomScale.value;
+    return imageWidth * scale.value;
   });
   const scaledImageHeight = useDerivedValue(() => {
-    return imageHeight * panZoomScale.value;
+    return imageHeight * scale.value;
   });
 
   const overlayTransformStyle = useAnimatedStyle(() => {
     return {
       top: translateY.value,
       left: translateX.value,
-      // width: scaledImageWidth.value,
-      // height: scaledImageHeight.value,
     };
   });
 
   return (
-    // <View style={styles.container}>
-    //   <ImageView
-    //     width={width}
-    //     height={height}
-    //     translateX={translateX}
-    //     translateY={translateY}
-    //   />
     <View>
       <Canvas
         style={{
@@ -97,7 +88,7 @@ export const OverlayControl: React.FC<OverlayControlProps> = ({
       >
         <Group transform={overlayTransform}>
           {points.map((p, i) => (
-            <PointComponent
+            <Point
               key={`Point ${i}`}
               point={p}
               radius={POINT_RADIUS}
@@ -112,6 +103,7 @@ export const OverlayControl: React.FC<OverlayControlProps> = ({
             color={colors.primary}
             scaledImageHeight={scaledImageHeight}
             scaledImageWidth={scaledImageWidth}
+            pointRadius={POINT_RADIUS}
           />
         </Group>
       </Canvas>

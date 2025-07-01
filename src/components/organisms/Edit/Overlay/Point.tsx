@@ -1,10 +1,12 @@
-import { Circle } from '@shopify/react-native-skia';
+import React from 'react';
+import { Circle, Line } from '@shopify/react-native-skia';
 import { MovablePoint } from '@types';
 import {
   SharedValue,
   useDerivedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { Crosshair } from './Crosshair';
 
 /**
  * Props for the Point component.
@@ -28,10 +30,11 @@ type PointProps = {
  * Point component that renders an animated, interactive point on the image overlay.
  *
  * This component uses Skia to render a circle representing a draggable point, with animated
- * transitions for active/inactive state, size, and color. Used in the selection overlay.
+ * transitions for active/inactive state, size, and color. When active, it also displays
+ * a crosshair at the center for precise positioning. Used in the selection overlay.
  *
  * @param props - PointProps containing point data, styling, and scaling info
- * @returns JSX element containing the point
+ * @returns JSX element containing the point and optional crosshair
  *
  * @example
  * ```tsx
@@ -70,14 +73,23 @@ export const Point: React.FC<PointProps> = ({
   }, [strokeWidth, point.isActive]);
 
   return (
-    <Circle
-      cx={cx}
-      cy={cy}
-      r={currentRadius}
-      style="stroke"
-      color={color}
-      strokeWidth={currentStrokeWidth}
-      opacity={0.75}
-    />
+    <>
+      <Circle
+        cx={cx}
+        cy={cy}
+        r={currentRadius}
+        style="stroke"
+        color={color}
+        strokeWidth={currentStrokeWidth}
+        opacity={0.75}
+      />
+      <Crosshair
+        cx={cx}
+        cy={cy}
+        isActive={point.isActive}
+        radius={radius}
+        activeColor={activeColor}
+      />
+    </>
   );
 };

@@ -16,6 +16,7 @@ type SelectionPolygonProps = {
   color: string;
   scaledImageHeight: SharedValue<number>;
   scaledImageWidth: SharedValue<number>;
+  pointRadius: number;
 };
 
 /**
@@ -37,24 +38,66 @@ export const SelectionPolygon: React.FC<SelectionPolygonProps> = ({
   color,
   scaledImageHeight,
   scaledImageWidth,
+  pointRadius,
 }) => {
   const scaledPoints = useDerivedValue(() => {
     return points.map((p) => ({
       x: p.x.value * scaledImageWidth.value,
       y: p.y.value * scaledImageHeight.value,
+      isActive: p.isActive,
     }));
   }, [points, scaledImageWidth, scaledImageHeight]);
 
+  const linePoints = useDerivedValue(() => {
+    const getLinePoints = (point1Index: number, point2Index: number) => {
+      let p1 = scaledPoints.value[point1Index];
+      let p2 = scaledPoints.value[point2Index];
+
+      if (p1.isActive.value) {
+        // move p1 by the scaled point size along the line
+        const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+        const newX = p1.x + pointRadius * Math.cos(angle);
+        const newY = p1.y + pointRadius * Math.sin(angle);
+
+        p1 = {
+          x: newX,
+          y: newY,
+          isActive: p1.isActive,
+        };
+      }
+
+      if (p2.isActive.value) {
+        // move p1 by the scaled point size along the line
+        const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+        const newX = p2.x - pointRadius * Math.cos(angle);
+        const newY = p2.y - pointRadius * Math.sin(angle);
+
+        p2 = {
+          x: newX,
+          y: newY,
+          isActive: p2.isActive,
+        };
+      }
+
+      return [p1, p2];
+    };
+
+    return getLinePoints(0, 1)
+      .concat(getLinePoints(1, 2))
+      .concat(getLinePoints(2, 3))
+      .concat(getLinePoints(3, 0));
+  }, [scaledPoints]);
+
   const pathPoints = useDerivedValue(() => {
     return [
-      scaledPoints.value[0],
-      scaledPoints.value[1],
-      scaledPoints.value[1],
-      scaledPoints.value[2],
-      scaledPoints.value[2],
-      scaledPoints.value[3],
-      scaledPoints.value[3],
-      scaledPoints.value[0],
+      linePoints.value[0],
+      linePoints.value[1],
+      linePoints.value[2],
+      linePoints.value[3],
+      linePoints.value[4],
+      linePoints.value[5],
+      linePoints.value[6],
+      linePoints.value[7],
     ];
   }, [scaledPoints]);
 
