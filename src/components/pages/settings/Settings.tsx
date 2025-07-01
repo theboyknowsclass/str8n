@@ -31,12 +31,12 @@ export const Settings: React.FC = () => {
     <ModalPageTemplate title="Settings">
       <View style={styles.contentContainer}>
         <SettingsToggle
-          title="Crop to overlay on transform"
+          title="Crop to overlay polygon on transform"
           isEnabled={cropToOverlay}
           onToggle={setCropToOverlay}
         />
         <SettingsToggle
-          title="Show zoom view when moving corners"
+          title="Show zoom view when moving points"
           isEnabled={showZoomView}
           onToggle={setShowZoomView}
         />

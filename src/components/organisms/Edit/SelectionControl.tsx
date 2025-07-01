@@ -5,6 +5,7 @@ import { OverlayControl } from './Overlay/OverlayControl';
 import { ImageView } from './Image/ImageView';
 import { ZoomView } from './Overlay/ZoomView';
 import { useImage } from '@shopify/react-native-skia';
+import { usePersistedSettingsStore } from '@stores';
 
 /**
  * Props for the SelectionControl component.
@@ -40,6 +41,8 @@ export const SelectionControl: React.FC<SelectionControlProps> = ({
     initialTranslate,
     relativeScale,
   } = usePanZoomContext();
+
+  const { showZoomView } = usePersistedSettingsStore();
 
   const {
     uri,
@@ -89,7 +92,7 @@ export const SelectionControl: React.FC<SelectionControlProps> = ({
         translateX={translateX}
         translateY={translateY}
       />
-      <ZoomView width={width} height={height} image={image} />
+      {showZoomView && <ZoomView width={width} height={height} image={image} />}
     </View>
   );
 };
