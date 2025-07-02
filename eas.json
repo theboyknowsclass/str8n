@@ -18,7 +18,8 @@
   "submit": {
     "production": {
       "ios": {
-        "companyName": "Ineffable Consulting Ltd"
+        "companyName": "Ineffable Consulting Ltd",
+        "ascAppId": "6747818231"
       }
     }
   }
