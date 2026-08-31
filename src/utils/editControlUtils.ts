@@ -20,10 +20,10 @@ interface Dimensions {
  * @property minScale - The minimum allowed scale factor
  * @property maxScale - The maximum allowed scale factor
  * @property initialTranslate - The initial translation coordinates for positioning
- * @property initialTopLeft - Offset centering the image within imageWithBorderSize
- * at initialScale; needed alongside initialTranslate/initialScale to convert
- * between PanZoomContext's raw translate and the actual Skia-space translate
- * (see panZoomTransformUtils.ts)
+ * @property initialTopLeft - Offset centering the image within the content
+ * area's viewport at initialScale; needed alongside initialTranslate/
+ * initialScale to convert between PanZoomContext's raw translate and the
+ * actual Skia-space translate (see panZoomTransformUtils.ts)
  */
 interface EditControlParams {
   imageWithBorderSize: Dimensions;
@@ -145,12 +145,12 @@ const calculateInitialTranslate = (
 };
 
 /**
- * Calculates how far the image, scaled to initialScale and centered, extends
- * beyond the content area's viewport on each side (positive when the scaled
- * image is larger than the viewport). This is not the image's screen-space
- * position - it's the magnitude deriveSkiaTranslate (panZoomTransformUtils.ts)
- * subtracts from the pan/zoom translate to keep the image centered as scale
- * changes.
+ * Calculates half the difference between the image (scaled to initialScale)
+ * and the content area's viewport, on each axis: positive if the scaled
+ * image is larger than the viewport, negative if it's smaller (inset), zero
+ * if they match exactly. This is not the image's screen-space position -
+ * it's the value deriveSkiaTranslate (panZoomTransformUtils.ts) subtracts
+ * from the pan/zoom translate to keep the image centered as scale changes.
  * @param width - The available width of the content area
  * @param height - The available height of the content area
  * @param imageWidth - The width of the source image

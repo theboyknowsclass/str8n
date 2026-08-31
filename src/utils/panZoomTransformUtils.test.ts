@@ -26,11 +26,10 @@ const screenPositionOf = (
   };
 };
 
-// A representative, non-trivial set of mount-time constants: a scaled image
-// larger than its bordered content area (so initialTopLeft is nonzero and
-// positive - see calculateInitialTopLeft in editControlUtils.ts), mounted
-// away from scale=1 and translate=(0,0). Every scenario below is a variation
-// on this same starting setup.
+// A representative, non-trivial set of mount-time constants: a nonzero
+// initialTopLeft (see calculateInitialTopLeft in editControlUtils.ts),
+// mounted away from scale=1 and translate=(0,0). Every scenario below is a
+// variation on this same starting setup.
 const constants = {
   initialTranslate: { x: -30, y: -15 },
   initialTopLeft: { x: 40, y: 25 },
