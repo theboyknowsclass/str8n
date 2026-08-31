@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { View, Platform } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useDerivedValue } from 'react-native-reanimated';
@@ -185,9 +185,14 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
     updateTranslate(newX, newY);
   };
 
-  useEffect(() => {
-    contextPanGestureRef.current = panGesture;
-  }, [contextPanGestureRef, panGesture]);
+  // Assigned synchronously during render, not in an effect: PointGestureHandler
+  // (a descendant, rendered as `children` below) reads
+  // parentPanGesture.current directly in its own render body via
+  // `usePanZoomContext()`, and effects only run after the whole subtree has
+  // committed. Deferring this to an effect would leave it undefined for
+  // every render of PointGestureHandler up to the first one caused by
+  // something else, silently breaking blocksExternalGesture.
+  contextPanGestureRef.current = panGesture;
 
   // Combine both gestures
   const composedGesture = Gesture.Exclusive(panGesture, pinchGesture);
