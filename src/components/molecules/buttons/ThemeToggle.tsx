@@ -1,6 +1,6 @@
 import React from 'react';
 import { useThemeStore } from '@stores';
-import { DarkTheme, DefaultTheme } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme } from 'expo-router/react-navigation';
 import { IconButton } from '@atoms';
 
 /**

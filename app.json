@@ -7,11 +7,6 @@
     "orientation": "default",
     "icon": "./assets/icon-with-border-inverse-1024.png",
     "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/splash-icon-1024.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#00BCD4"
-    },
     "plugins": [
       "expo-router",
       [
@@ -47,7 +42,8 @@
       ],
       "expo-asset",
       "expo-image",
-      "expo-sharing"
+      "expo-sharing",
+      "expo-status-bar"
     ],
     "ios": {
       "supportsTablet": true,

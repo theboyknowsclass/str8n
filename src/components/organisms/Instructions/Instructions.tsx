@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from 'expo-router/react-navigation';
 import { InstructionMode } from '@types';
 import { useInstructions } from './useInstructions';
 import { AlwaysShowToggleSwitch } from './AlwaysShowToggleSwitch';

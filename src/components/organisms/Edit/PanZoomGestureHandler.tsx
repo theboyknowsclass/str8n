@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { View, Platform } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useDerivedValue } from 'react-native-reanimated';
@@ -56,7 +56,7 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
   const {
     scale,
     translate,
-    panGesture: contextPanGesture,
+    panGesture: contextPanGestureRef,
     minScale,
     maxScale,
     contentSize,
@@ -120,8 +120,8 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
         .onEnd(() => {
           'worklet';
         })
-        .withRef(contextPanGesture),
-    [contextPanGesture, savedTranslate, scale, updateTranslate, translate]
+        .withRef(contextPanGestureRef),
+    [contextPanGestureRef, savedTranslate, scale, updateTranslate, translate]
   );
 
   const pinchGesture = useMemo(
@@ -185,7 +185,9 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
     updateTranslate(newX, newY);
   };
 
-  contextPanGesture.current = panGesture;
+  useEffect(() => {
+    contextPanGestureRef.current = panGesture;
+  }, [contextPanGestureRef, panGesture]);
 
   // Combine both gestures
   const composedGesture = Gesture.Exclusive(panGesture, pinchGesture);

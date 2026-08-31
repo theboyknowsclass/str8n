@@ -2,7 +2,7 @@ import { Canvas, Group, Image, SkImage } from '@shopify/react-native-skia';
 import { CheckerBoard } from './CheckerBoard';
 import { View, StyleSheet } from 'react-native';
 import { usePanZoomContext } from '@contexts';
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from 'expo-router/react-navigation';
 import { SharedValue, useDerivedValue } from 'react-native-reanimated';
 
 /**

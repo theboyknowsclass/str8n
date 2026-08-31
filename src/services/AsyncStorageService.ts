@@ -1,4 +1,4 @@
-import { Theme } from '@react-navigation/native';
+import { Theme } from 'expo-router/react-navigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PersistedSettings } from '@types';
 

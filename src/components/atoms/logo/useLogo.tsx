@@ -7,7 +7,7 @@ import {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from 'expo-router/react-navigation';
 
 /**
  * Starting coordinates for the logo animation points.
@@ -144,8 +144,14 @@ export const useLogo = (size: number, variant: 'icon' | 'logo'): UseLogo => {
 
   const { colors, dark } = useTheme();
 
-  const foreground = dark || isIcon ? colors.primary : colors.background;
-  const background = dark || isIcon ? colors.background : colors.primary;
+  // Theme colors in this app are always plain hex strings, never
+  // PlatformColor/DynamicColorIOS, so ColorValue narrows safely to string.
+  const foreground = (
+    dark || isIcon ? colors.primary : colors.background
+  ) as string;
+  const background = (
+    dark || isIcon ? colors.background : colors.primary
+  ) as string;
 
   const strokeWidth = isLogo ? 30 : 60;
   const radius = isLogo ? 80 : 120;
