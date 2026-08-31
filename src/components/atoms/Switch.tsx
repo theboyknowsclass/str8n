@@ -1,5 +1,5 @@
 import { useTheme } from 'expo-router/react-navigation';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import Animated, {
   interpolate,
@@ -93,15 +93,25 @@ export const Switch: React.FC<SwitchProps> = ({
 
   const translateX = useSharedValue(isOn ? TRACK_WIDTH - TRACK_HEIGHT : 0);
 
-  // Keeps value and both animated values in sync whenever isOn (or the
-  // theme colors) changes for any reason other than pressing this switch -
-  // e.g. an external state change. value is set directly (it's not itself
-  // animated), while the visuals animate with withTiming, not a plain
-  // assignment, so a self-triggered re-run (isOn flipping as a result of
-  // this same press's onToggle call reaching back down as a new prop)
-  // re-targets the same in-flight animation smoothly instead of jump-
-  // cutting the one onSwitchPress already started.
+  // The isOn *prop* is only fresh as of the last render, so two presses in
+  // the same render cycle (e.g. a fast double-tap, before React re-renders
+  // with the new isOn) would both compute their "next" value from the same
+  // stale prop and fail to toggle on the second press. currentIsOn is a
+  // ref instead, updated synchronously both here and in onSwitchPress
+  // below, so it's always immediately current regardless of React's
+  // render/prop-update timing.
+  const currentIsOn = useRef(isOn);
+
+  // Keeps currentIsOn, value, and both animated values in sync whenever
+  // isOn (or the theme colors) changes for any reason other than pressing
+  // this switch - e.g. an external state change. value is set directly
+  // (it's not itself animated), while the visuals animate with withTiming,
+  // not a plain assignment, so a self-triggered re-run (isOn flipping as a
+  // result of this same press's onToggle call reaching back down as a new
+  // prop) re-targets the same in-flight animation smoothly instead of
+  // jump-cutting the one onSwitchPress already started.
   useEffect(() => {
+    currentIsOn.current = isOn;
     value.value = isOn;
     trackBackgroundColor.value = withTiming(
       isOn ? primaryColor : inActiveColor,
@@ -125,12 +135,13 @@ export const Switch: React.FC<SwitchProps> = ({
    * Toggles the switch state and animates both color and position changes
    */
   const onSwitchPress = () => {
-    // isOn (not value.value) is the single source of truth for what a press
-    // means: value only exists as an animation-driving SharedValue and is
-    // always *set* from isOn here, never read-and-flipped from its own
-    // state, so it can't drift out of sync with isOn if something other
-    // than a press ever changes isOn from outside.
-    const newValue = !isOn;
+    // currentIsOn.current (not the isOn prop, and not value.value) is the
+    // single source of truth for what a press means: it's always
+    // immediately up to date (unlike isOn, which lags a render behind) and
+    // is only ever set from isOn (unlike value, which existed purely to
+    // read-and-flip and could drift). See the comment on currentIsOn above.
+    const newValue = !currentIsOn.current;
+    currentIsOn.current = newValue;
     value.value = newValue;
 
     // Interpolate color between off and on states
