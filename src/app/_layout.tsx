@@ -105,6 +105,10 @@ export const RootLayout = () => {
               name="instructions"
               options={{ headerShown: false, presentation: 'fullScreenModal' }}
             />
+            <Stack.Screen
+              name="paywall"
+              options={{ headerShown: false, presentation: 'fullScreenModal' }}
+            />
           </Stack>
         </GestureHandlerRootView>
       </ThemeProvider>

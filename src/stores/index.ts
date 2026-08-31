@@ -5,4 +5,4 @@ export { useOverlayStore } from './useOverlayStore';
 export { useThemeStore } from './useThemeStore';
 export { usePersistedSettingsStore } from './usePersistedSettingsStore';
 export { useSessionStateStore } from './useSessionStateStore';
-export { useEntitlementStore } from './useEntitlementStore';
+export { useEntitlementStore, applyCustomerInfo } from './useEntitlementStore';

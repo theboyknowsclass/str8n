@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 import Purchases from 'react-native-purchases';
-import { useEntitlementStore } from '@stores';
-import { EntitlementTier, ENTITLEMENT_IDENTIFIERS } from '@types';
+import { useEntitlementStore, applyCustomerInfo } from '@stores';
+import { EntitlementTier } from '@types';
 
 /**
  * Return type for the useInitializeEntitlement hook.
@@ -47,17 +47,7 @@ export const useInitializeEntitlement = (): UseInitializeEntitlement => {
       try {
         Purchases.configure({ apiKey });
         const customerInfo = await Purchases.getCustomerInfo();
-        const { active } = customerInfo.entitlements;
-
-        if (active[ENTITLEMENT_IDENTIFIERS[EntitlementTier.AutoMultiPoint]]) {
-          setTier(EntitlementTier.AutoMultiPoint);
-        } else if (
-          active[ENTITLEMENT_IDENTIFIERS[EntitlementTier.Auto4Point]]
-        ) {
-          setTier(EntitlementTier.Auto4Point);
-        } else {
-          setTier(EntitlementTier.Free);
-        }
+        applyCustomerInfo(customerInfo);
       } catch (error) {
         console.error('Error loading entitlement', error);
         setTier(EntitlementTier.Free);

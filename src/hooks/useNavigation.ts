@@ -95,6 +95,9 @@ export const useNavigation = (): UseNavigation => {
         // About page is not implemented yet, redirect to settings or home
         router.push('/settings');
         break;
+      case 'paywall':
+        router.push('/paywall');
+        break;
       default:
         router.push('/');
     }

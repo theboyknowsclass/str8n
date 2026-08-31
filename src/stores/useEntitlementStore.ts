@@ -1,5 +1,6 @@
-import { EntitlementTier } from '@types';
+import { EntitlementTier, ENTITLEMENT_IDENTIFIERS } from '@types';
 import { create } from 'zustand';
+import type { CustomerInfo } from 'react-native-purchases';
 
 /**
  * Entitlement state interface that tracks the user's current subscription tier.
@@ -32,3 +33,22 @@ export const useEntitlementStore = create<EntitlementState>()((set) => ({
   setTier: (tier: EntitlementTier) => set({ tier }),
   setIsReady: (isReady: boolean) => set({ isReady }),
 }));
+
+/**
+ * Maps a RevenueCat CustomerInfo's active entitlements onto our tier ladder
+ * and applies the result to the store. Shared by the boot-time initializer
+ * (useInitializeEntitlement) and the paywall's purchase/restore callbacks -
+ * both need to resolve the exact same CustomerInfo -> tier logic.
+ */
+export const applyCustomerInfo = (customerInfo: CustomerInfo): void => {
+  const { active } = customerInfo.entitlements;
+  const { setTier } = useEntitlementStore.getState();
+
+  if (active[ENTITLEMENT_IDENTIFIERS[EntitlementTier.AutoMultiPoint]]) {
+    setTier(EntitlementTier.AutoMultiPoint);
+  } else if (active[ENTITLEMENT_IDENTIFIERS[EntitlementTier.Auto4Point]]) {
+    setTier(EntitlementTier.Auto4Point);
+  } else {
+    setTier(EntitlementTier.Free);
+  }
+};

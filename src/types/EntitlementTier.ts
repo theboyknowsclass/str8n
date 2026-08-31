@@ -23,3 +23,10 @@ export const ENTITLEMENT_IDENTIFIERS: Record<
   [EntitlementTier.Auto4Point]: 'auto_4_point',
   [EntitlementTier.AutoMultiPoint]: 'auto_multi_point',
 };
+
+/** Product-facing display label for each tier, e.g. for the Settings screen. */
+export const ENTITLEMENT_TIER_LABELS: Record<EntitlementTier, string> = {
+  [EntitlementTier.Free]: 'Free',
+  [EntitlementTier.Auto4Point]: 'Auto 4-Point',
+  [EntitlementTier.AutoMultiPoint]: 'Auto Multi-Point',
+};
