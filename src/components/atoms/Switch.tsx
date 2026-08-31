@@ -19,10 +19,13 @@ const DURATION = 400; // Animation duration in milliseconds
 
 /**
  * Props for the Switch component.
- * @property value - SharedValue<boolean> that controls the switch state (on/off)
- * @property isOn - Plain boolean mirroring value's current state, for render-time
- * use (accessibility label, initial animated values) - reading a shared value's
- * `.value` during render is unsafe, since mutating it doesn't trigger a re-render
+ * @property isOn - The switch's current state (on/off); the single source of
+ * truth for what the switch displays and what a press toggles it to
+ * @property value - SharedValue<boolean> kept in sync with isOn, exposed so
+ * other worklets/consumers (e.g. a parent reading it after onPress) can
+ * observe the switch's state without needing a React re-render. Never read
+ * during render - reading a shared value's `.value` during render is
+ * unsafe, since mutating it doesn't trigger a re-render
  * @property onPress - Callback function called when the switch is pressed
  * @property duration - Optional animation duration in milliseconds
  * @property trackColors - Optional custom colors for on/off states
@@ -90,14 +93,16 @@ export const Switch: React.FC<SwitchProps> = ({
 
   const translateX = useSharedValue(isOn ? TRACK_WIDTH - TRACK_HEIGHT : 0);
 
-  // Keeps both animated values in sync whenever isOn (or the theme colors)
-  // changes for any reason other than pressing this switch - e.g. an
-  // external state change. Animated with withTiming, not a plain
+  // Keeps value and both animated values in sync whenever isOn (or the
+  // theme colors) changes for any reason other than pressing this switch -
+  // e.g. an external state change. value is set directly (it's not itself
+  // animated), while the visuals animate with withTiming, not a plain
   // assignment, so a self-triggered re-run (isOn flipping as a result of
   // this same press's onToggle call reaching back down as a new prop)
   // re-targets the same in-flight animation smoothly instead of jump-
   // cutting the one onSwitchPress already started.
   useEffect(() => {
+    value.value = isOn;
     trackBackgroundColor.value = withTiming(
       isOn ? primaryColor : inActiveColor,
       { duration }
@@ -106,6 +111,7 @@ export const Switch: React.FC<SwitchProps> = ({
       duration,
     });
   }, [
+    value,
     primaryColor,
     inActiveColor,
     isOn,
