@@ -1,6 +1,7 @@
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from 'expo-router/react-navigation';
 import React from 'react';
 import {
+  ColorValue,
   Text as RNText,
   TextProps as RNTextProps,
   StyleSheet,
@@ -13,7 +14,7 @@ import {
  */
 interface TextProps extends RNTextProps {
   /** The color of the text */
-  color?: string;
+  color?: ColorValue;
   /** The size of the text */
   size?: 'small' | 'medium' | 'large' | 'larger';
 }

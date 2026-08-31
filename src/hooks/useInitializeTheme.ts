@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useThemeStore } from '@stores';
 import { useColorScheme } from 'react-native';
-import { DarkTheme, DefaultTheme, Theme } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, Theme } from 'expo-router/react-navigation';
 import { AsyncStorageService } from '@services';
 
 /**

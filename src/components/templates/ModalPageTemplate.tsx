@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { CloseButton } from '@molecules';
 import { SafeAreaView, Text } from '@atoms';
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from 'expo-router/react-navigation';
 
 /**
  * Props for the ModalPageTemplate component.

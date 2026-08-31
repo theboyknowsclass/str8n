@@ -1,4 +1,4 @@
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from 'expo-router/react-navigation';
 import React, { useEffect } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import Animated, {
@@ -67,6 +67,9 @@ export const Switch: React.FC<SwitchProps> = ({
     dark,
     colors: { primary },
   } = useTheme();
+  // Theme colors in this app are always plain hex strings, never
+  // PlatformColor/DynamicColorIOS, so ColorValue narrows safely to string.
+  const primaryColor = primary as string;
 
   // Define the inactive color based on theme (darker for dark theme, lighter for light theme)
   const inActiveColor = dark
@@ -75,12 +78,12 @@ export const Switch: React.FC<SwitchProps> = ({
 
   // Shared values for animations
   const trackBackgroundColor = useSharedValue(
-    value.value ? primary : inActiveColor
+    value.value ? primaryColor : inActiveColor
   );
 
   useEffect(() => {
-    trackBackgroundColor.value = value.value ? primary : inActiveColor;
-  }, [primary, inActiveColor, value, trackBackgroundColor]);
+    trackBackgroundColor.value = value.value ? primaryColor : inActiveColor;
+  }, [primaryColor, inActiveColor, value, trackBackgroundColor]);
 
   const translateX = useSharedValue(
     value.value ? TRACK_WIDTH - TRACK_HEIGHT : 0
@@ -98,7 +101,7 @@ export const Switch: React.FC<SwitchProps> = ({
     const color = interpolateColor(
       Number(value.value),
       [0, 1],
-      [inActiveColor, primary]
+      [inActiveColor, primaryColor]
     );
 
     // Interpolate thumb position between left and right

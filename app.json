@@ -7,12 +7,6 @@
     "orientation": "default",
     "icon": "./assets/icon-with-border-inverse-1024.png",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon-1024.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#00BCD4"
-    },
     "plugins": [
       "expo-router",
       [
@@ -45,7 +39,11 @@
         {
           "photosPermission": "The app needs to access your photos to allow you to select and upload images."
         }
-      ]
+      ],
+      "expo-asset",
+      "expo-image",
+      "expo-sharing",
+      "expo-status-bar"
     ],
     "ios": {
       "supportsTablet": true,
@@ -63,8 +61,7 @@
     },
     "android": {
       "package": "com.ineffable.str8n",
-      "versionCode": 1,
-      "edgeToEdgeEnabled": true
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png",

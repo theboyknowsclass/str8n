@@ -1,4 +1,4 @@
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from 'expo-router/react-navigation';
 import { useEffect, useMemo } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import Animated, {

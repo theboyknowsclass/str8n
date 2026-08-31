@@ -1,4 +1,4 @@
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from 'expo-router/react-navigation';
 import { StyleSheet, View } from 'react-native';
 import Animated, {
   SharedValue,
@@ -52,6 +52,10 @@ export const OverlayControl: React.FC<OverlayControlProps> = ({
   translateY,
 }) => {
   const { colors } = useTheme();
+  // Theme colors in this app are always plain hex strings, never
+  // PlatformColor/DynamicColorIOS. Skia's Color type doesn't accept
+  // React Native's OpaqueColorValue, so this must narrow to string.
+  const primaryColor = colors.primary as string;
   const { scale } = usePanZoomContext();
 
   const {
@@ -90,14 +94,14 @@ export const OverlayControl: React.FC<OverlayControlProps> = ({
             <Point
               key={`Point ${i}`}
               point={p}
-              activeColor={colors.primary}
+              activeColor={primaryColor}
               scaledImageWidth={scaledImageWidth}
               scaledImageHeight={scaledImageHeight}
             />
           ))}
           <SelectionPolygon
             points={points}
-            color={colors.primary}
+            color={primaryColor}
             scaledImageHeight={scaledImageHeight}
             scaledImageWidth={scaledImageWidth}
           />

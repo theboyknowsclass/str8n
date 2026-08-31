@@ -1,4 +1,4 @@
-import { DefaultTheme, Theme } from '@react-navigation/native';
+import { DefaultTheme, Theme } from 'expo-router/react-navigation';
 import { create } from 'zustand';
 import { AsyncStorageService } from '@services';
 

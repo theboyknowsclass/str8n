@@ -1,5 +1,5 @@
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from 'expo-router/react-navigation';
 import {
   IconType,
   isMaterialIcon,

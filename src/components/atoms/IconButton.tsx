@@ -5,7 +5,7 @@ import {
   TouchableOpacityProps,
   ViewStyle,
 } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from 'expo-router/react-navigation';
 import { IconType } from '@types';
 import { Icon } from './Icon';
 import { LoadingSpinner } from './LoadingSpinner';

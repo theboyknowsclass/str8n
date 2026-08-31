@@ -1,4 +1,4 @@
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from 'expo-router/react-navigation';
 import React from 'react';
 import {
   TouchableOpacity,
@@ -115,16 +115,18 @@ export const TextButton: React.FC<TextButtonProps> = ({
     };
   };
 
-  const getTextColor = () => {
+  // Theme colors in this app are always plain hex strings, never
+  // PlatformColor/DynamicColorIOS, so ColorValue narrows safely to string.
+  const getTextColor = (): string => {
     switch (variant) {
       case 'primary':
-        return colors.text;
+        return colors.text as string;
       case 'secondary':
-        return colors.text;
+        return colors.text as string;
       case 'outline':
-        return colors.primary;
+        return colors.primary as string;
       default:
-        return colors.text;
+        return colors.text as string;
     }
   };
 

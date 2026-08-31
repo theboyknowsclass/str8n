@@ -75,9 +75,9 @@ export const useAnimatedBlurBackground = ({
   const opacity = useSharedValue(isVisible ? targetOpacity : 0);
 
   // Timeout reference for fade out delay
-  const timeoutRef = useRef<
-    NodeJS.Timeout | string | number | undefined | null
-  >(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined | null>(
+    null
+  );
 
   // Cleanup timeout on unmount
   useEffect(() => {

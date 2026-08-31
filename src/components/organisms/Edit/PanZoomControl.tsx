@@ -12,8 +12,7 @@ import {
  * Inherits all props from PanZoomGestureHandlerProps and PanZoomContextProviderProps.
  */
 interface PanZoomControlProps
-  extends PanZoomGestureHandlerProps,
-    PanZoomContextProviderProps {}
+  extends PanZoomGestureHandlerProps, PanZoomContextProviderProps {}
 
 /**
  * PanZoomControl component that provides pan/zoom context and gesture handling for its children.

@@ -5,7 +5,7 @@ import { useAutoShowInstructions, useScreenDimensions } from '@hooks';
 import { InstructionsModal } from '@organisms';
 import { InstructionMode } from '@types';
 import { Logo, Text } from '@atoms';
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from 'expo-router/react-navigation';
 
 /**
  * Content component for the import page.

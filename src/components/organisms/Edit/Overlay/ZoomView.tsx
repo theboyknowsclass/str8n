@@ -1,4 +1,4 @@
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from 'expo-router/react-navigation';
 import { StyleSheet, View } from 'react-native';
 import {
   useAnimatedReaction,
@@ -39,7 +39,10 @@ export const ZoomView: React.FC<ZoomViewProps> = ({ width, height, image }) => {
   const minZoomY = contentOffset.y + 24;
   const maxZoomY = minZoomY + height - 2 * ZOOM_VIEW_RADIUS;
 
-  const accentColor = colors.primary;
+  // Theme colors in this app are always plain hex strings, never
+  // PlatformColor/DynamicColorIOS. Skia's Color type doesn't accept
+  // React Native's OpaqueColorValue, so this must narrow to string.
+  const accentColor = colors.primary as string;
 
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);

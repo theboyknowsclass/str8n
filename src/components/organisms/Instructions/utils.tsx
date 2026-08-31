@@ -1,3 +1,4 @@
+import { ColorValue } from 'react-native';
 import { Instruction } from '@types';
 import { InstructionRow } from './InstructionRow';
 import { Text } from '@atoms';
@@ -22,7 +23,7 @@ import { Text } from '@atoms';
 export const getInstructionRows = (
   instructions: Instruction[],
   showSteps: boolean,
-  titleColor: string
+  titleColor: ColorValue
 ): React.ReactNode[] => {
   if (!showSteps) {
     return instructions.map((instruction) => {

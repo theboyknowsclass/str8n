@@ -1,7 +1,7 @@
 import { LoadingSpinner, Text } from '@atoms';
 import { useScreenDimensions, useTransformImage } from '@hooks';
 import { ModalPageTemplate } from '@templates';
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from 'expo-router/react-navigation';
 import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 

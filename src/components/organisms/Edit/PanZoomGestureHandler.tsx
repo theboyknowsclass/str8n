@@ -56,7 +56,7 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
   const {
     scale,
     translate,
-    panGesture: contextPanGesture,
+    panGesture: contextPanGestureRef,
     minScale,
     maxScale,
     contentSize,
@@ -120,8 +120,8 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
         .onEnd(() => {
           'worklet';
         })
-        .withRef(contextPanGesture),
-    [contextPanGesture, savedTranslate, scale, updateTranslate, translate]
+        .withRef(contextPanGestureRef),
+    [contextPanGestureRef, savedTranslate, scale, updateTranslate, translate]
   );
 
   const pinchGesture = useMemo(
@@ -185,7 +185,14 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
     updateTranslate(newX, newY);
   };
 
-  contextPanGesture.current = panGesture;
+  // Assigned synchronously during render, not in an effect: PointGestureHandler
+  // (a descendant, rendered as `children` below) reads
+  // parentPanGesture.current directly in its own render body via
+  // `usePanZoomContext()`, and effects only run after the whole subtree has
+  // committed. Deferring this to an effect would leave it undefined for
+  // every render of PointGestureHandler up to the first one caused by
+  // something else, silently breaking blocksExternalGesture.
+  contextPanGestureRef.current = panGesture;
 
   // Combine both gestures
   const composedGesture = Gesture.Exclusive(panGesture, pinchGesture);
