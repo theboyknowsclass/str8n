@@ -53,11 +53,13 @@ export type SwitchProps = {
  *
  * @example
  * ```typescript
- * const switchValue = useSharedValue(false);
+ * const [isOn, setIsOn] = useState(false);
+ * const switchValue = useSharedValue(isOn);
  *
  * <Switch
  *   value={switchValue}
- *   onPress={() => console.log('Switch toggled')}
+ *   isOn={isOn}
+ *   onPress={() => setIsOn((prev) => !prev)}
  * />
  * ```
  */
