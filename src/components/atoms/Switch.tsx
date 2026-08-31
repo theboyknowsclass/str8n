@@ -99,17 +99,22 @@ export const Switch: React.FC<SwitchProps> = ({
   // below, so it's always immediately current regardless of React's
   // render/prop-update timing.
   const currentIsOn = useRef(isOn);
+  // Sync it during render too, not only in the effect below: a plain ref
+  // write during render is safe (unlike a Reanimated shared value's
+  // .value), and without this there's a narrow commit-to-effect window
+  // where an external isOn change has rendered but the effect hasn't run
+  // yet - a press in that window would toggle from a stale base state.
+  currentIsOn.current = isOn;
 
-  // Keeps currentIsOn, value, and both animated values in sync whenever
-  // isOn (or the theme colors) changes for any reason other than pressing
-  // this switch - e.g. an external state change. value is set directly
-  // (it's not itself animated), while the visuals animate with withTiming,
-  // not a plain assignment, so a self-triggered re-run (isOn flipping as a
-  // result of this same press's onToggle call reaching back down as a new
-  // prop) re-targets the same in-flight animation smoothly instead of
+  // Keeps value and both animated values in sync whenever isOn (or the
+  // theme colors) changes for any reason other than pressing this switch -
+  // e.g. an external state change. value is set directly (it's not itself
+  // animated), while the visuals animate with withTiming, not a plain
+  // assignment, so a self-triggered re-run (isOn flipping as a result of
+  // this same press's onToggle call reaching back down as a new prop)
+  // re-targets the same in-flight animation smoothly instead of
   // jump-cutting the one onSwitchPress already started.
   useEffect(() => {
-    currentIsOn.current = isOn;
     value.value = isOn;
     trackBackgroundColor.value = withTiming(
       isOn ? primaryColor : inActiveColor,
