@@ -28,14 +28,12 @@ const DURATION = 400; // Animation duration in milliseconds
  * unsafe, since mutating it doesn't trigger a re-render
  * @property onPress - Callback function called when the switch is pressed
  * @property duration - Optional animation duration in milliseconds
- * @property trackColors - Optional custom colors for on/off states
  */
 export type SwitchProps = {
   value: SharedValue<boolean>;
   isOn: boolean;
   onPress: () => void;
   duration?: number;
-  trackColors?: { on: string; off: string };
 };
 
 /**
