@@ -60,11 +60,21 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
     minScale,
     maxScale,
     contentSize,
+    initialScale,
+    initialTranslate,
   } = usePanZoomContext();
 
-  // save the scale and translate values to be used in the pinch gesture to prevent jittering
-  const savedScale = useRef(scale.value);
-  const savedTranslate = useRef(translate.value);
+  // save the scale and translate values to be used in the pinch gesture to
+  // prevent jittering. Seeded from the plain initialScale/initialTranslate
+  // values (not scale.value/translate.value) since reading a shared value's
+  // .value during render is unsafe - scale/translate are guaranteed to still
+  // equal these at first mount anyway (PanZoomContextProvider seeds them
+  // with the same values), and both refs are overwritten by the real
+  // current value in the pinch/pan gestures' onStart before ever being read
+  // there. (handleWheel below reads scale.value directly instead of
+  // savedScale.current, since it isn't part of the pinch gesture sequence.)
+  const savedScale = useRef(initialScale);
+  const savedTranslate = useRef(initialTranslate);
   const savedFocalPoint = useRef({ x: 0, y: 0 });
 
   const scaledWidth = useDerivedValue(() => {

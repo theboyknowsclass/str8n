@@ -1,5 +1,5 @@
 import { useTheme } from 'expo-router/react-navigation';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import Animated, {
   interpolate,
@@ -18,21 +18,26 @@ const TRACK_PADDING = 5; // Padding inside the track for the thumb
 const DURATION = 400; // Animation duration in milliseconds
 
 /**
- * Props for the AnimatedSwitch component.
- * @property value - SharedValue<boolean> that controls the switch state (on/off)
+ * Props for the Switch component.
+ * @property isOn - The switch's current state (on/off); the single source of
+ * truth for what the switch displays and what a press toggles it to
+ * @property value - SharedValue<boolean> kept in sync with isOn, exposed so
+ * other worklets/consumers (e.g. a parent reading it after onPress) can
+ * observe the switch's state without needing a React re-render. Never read
+ * during render - reading a shared value's `.value` during render is
+ * unsafe, since mutating it doesn't trigger a re-render
  * @property onPress - Callback function called when the switch is pressed
  * @property duration - Optional animation duration in milliseconds
- * @property trackColors - Optional custom colors for on/off states
  */
 export type SwitchProps = {
   value: SharedValue<boolean>;
+  isOn: boolean;
   onPress: () => void;
   duration?: number;
-  trackColors?: { on: string; off: string };
 };
 
 /**
- * AnimatedSwitch component that provides a smooth animated toggle switch.
+ * Switch component that provides a smooth animated toggle switch.
  *
  * This component creates a custom animated toggle switch with smooth color
  * transitions and thumb movement. It uses React Native Reanimated for
@@ -44,21 +49,24 @@ export type SwitchProps = {
  * - Theme-aware colors (uses primary color for on state)
  * - Responsive to dark/light theme changes
  *
- * @param props - AnimatedSwitchProps containing the switch state and callbacks
+ * @param props - SwitchProps containing the switch state and callbacks
  * @returns JSX element containing the animated switch
  *
  * @example
  * ```typescript
- * const switchValue = useSharedValue(false);
+ * const [isOn, setIsOn] = useState(false);
+ * const switchValue = useSharedValue(isOn);
  *
- * <AnimatedSwitch
+ * <Switch
  *   value={switchValue}
- *   onPress={() => console.log('Switch toggled')}
+ *   isOn={isOn}
+ *   onPress={() => setIsOn((prev) => !prev)}
  * />
  * ```
  */
 export const Switch: React.FC<SwitchProps> = ({
   value,
+  isOn,
   onPress,
   duration = DURATION,
 }) => {
@@ -78,35 +86,77 @@ export const Switch: React.FC<SwitchProps> = ({
 
   // Shared values for animations
   const trackBackgroundColor = useSharedValue(
-    value.value ? primaryColor : inActiveColor
+    isOn ? primaryColor : inActiveColor
   );
 
+  const translateX = useSharedValue(isOn ? TRACK_WIDTH - TRACK_HEIGHT : 0);
+
+  // The isOn *prop* is only fresh as of the last render, so two presses in
+  // the same render cycle (e.g. a fast double-tap, before React re-renders
+  // with the new isOn) would both compute their "next" value from the same
+  // stale prop and fail to toggle on the second press. currentIsOn is a
+  // ref instead, updated synchronously both here and in onSwitchPress
+  // below, so it's always immediately current regardless of React's
+  // render/prop-update timing.
+  const currentIsOn = useRef(isOn);
+  // Sync it during render too, not only in the effect below: a plain ref
+  // write during render is safe (unlike a Reanimated shared value's
+  // .value), and without this there's a narrow commit-to-effect window
+  // where an external isOn change has rendered but the effect hasn't run
+  // yet - a press in that window would toggle from a stale base state.
+  currentIsOn.current = isOn;
+
+  // Keeps value and both animated values in sync whenever isOn (or the
+  // theme colors) changes for any reason other than pressing this switch -
+  // e.g. an external state change. value is set directly (it's not itself
+  // animated), while the visuals animate with withTiming, not a plain
+  // assignment, so a self-triggered re-run (isOn flipping as a result of
+  // this same press's onToggle call reaching back down as a new prop)
+  // re-targets the same in-flight animation smoothly instead of
+  // jump-cutting the one onSwitchPress already started.
   useEffect(() => {
-    trackBackgroundColor.value = value.value ? primaryColor : inActiveColor;
-  }, [primaryColor, inActiveColor, value, trackBackgroundColor]);
-
-  const translateX = useSharedValue(
-    value.value ? TRACK_WIDTH - TRACK_HEIGHT : 0
-  );
+    value.value = isOn;
+    trackBackgroundColor.value = withTiming(
+      isOn ? primaryColor : inActiveColor,
+      { duration }
+    );
+    translateX.value = withTiming(isOn ? TRACK_WIDTH - TRACK_HEIGHT : 0, {
+      duration,
+    });
+  }, [
+    value,
+    primaryColor,
+    inActiveColor,
+    isOn,
+    trackBackgroundColor,
+    translateX,
+    duration,
+  ]);
 
   /**
    * Handle switch press events
    * Toggles the switch state and animates both color and position changes
    */
   const onSwitchPress = () => {
-    // Toggle the switch value
-    value.value = !value.value;
+    // currentIsOn.current (not the isOn prop, and not value.value) is the
+    // single source of truth for what a press means: it's always
+    // immediately up to date (unlike isOn, which lags a render behind) and
+    // is only ever set from isOn (unlike value, which existed purely to
+    // read-and-flip and could drift). See the comment on currentIsOn above.
+    const newValue = !currentIsOn.current;
+    currentIsOn.current = newValue;
+    value.value = newValue;
 
     // Interpolate color between off and on states
     const color = interpolateColor(
-      Number(value.value),
+      Number(newValue),
       [0, 1],
       [inActiveColor, primaryColor]
     );
 
     // Interpolate thumb position between left and right
     const moveValue = interpolate(
-      Number(value.value),
+      Number(newValue),
       [0, 1],
       [0, TRACK_WIDTH - TRACK_HEIGHT]
     );
@@ -142,8 +192,9 @@ export const Switch: React.FC<SwitchProps> = ({
   return (
     <Pressable
       onPress={onSwitchPress}
-      accessibilityLabel={`Switch ${value.value ? 'on' : 'off'}`}
+      accessibilityLabel={`Switch ${isOn ? 'on' : 'off'}`}
       accessibilityRole="switch"
+      accessibilityState={{ checked: isOn }}
     >
       {/* Track container - holds the background color and thumb */}
       <Animated.View style={[switchStyles.track, trackAnimatedStyle]}>
