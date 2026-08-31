@@ -179,6 +179,15 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
     // Prevent default scrolling behavior
     e.preventDefault();
 
+    // e.clientX/clientY are relative to the browser viewport, not this
+    // element - convert to element-relative coordinates so the focal point
+    // matches what the pinch gesture's e.focalX/focalY represent natively
+    // (relative to the view the gesture is attached to). Without this, wheel
+    // zoom mis-centers whenever the edit control isn't at the window origin.
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const focalX = e.clientX - rect.left;
+    const focalY = e.clientY - rect.top;
+
     // Same "zoom around a point" formula as the pinch gesture above, using
     // the mouse cursor position as the focal point.
     const oldScale = scale.value;
@@ -187,8 +196,8 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
 
     const { x: oldTranslateX, y: oldTranslateY } = translate.value;
     const scaleDelta = 1 / newScale - 1 / oldScale;
-    const newX = e.clientX * scaleDelta + oldTranslateX;
-    const newY = e.clientY * scaleDelta + oldTranslateY;
+    const newX = focalX * scaleDelta + oldTranslateX;
+    const newY = focalY * scaleDelta + oldTranslateY;
     updateTranslate(newX, newY);
   };
 
