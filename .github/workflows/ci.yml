@@ -33,7 +33,7 @@ jobs:
       run: npm ci
     
     - name: Run npm audit
-      run: npm audit --omit=dev
+      run: npm audit --omit=dev --audit-level=high
     
     - name: Run TypeScript strict checks
       run: npm run type-check:strict

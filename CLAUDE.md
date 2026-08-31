@@ -57,9 +57,17 @@ Components follow an atomic-design layout under `src/components/`: `atoms` → `
 
 State is managed with Zustand stores under `src/stores/` (overlay points, source/transformed image, persisted settings), and cross-cutting UI state (pan/zoom, edit control sizing) is threaded via React Context in `src/contexts/`.
 
-### New Architecture is enabled
+### New Architecture is mandatory
 
-`app.json` sets `newArchEnabled: true`. Native-module dependencies (`react-native-fast-opencv`, `@shopify/react-native-skia`, reanimated, gesture-handler) all need New Architecture compatibility — check this specifically when bumping any of them. `@shopify/react-native-skia` is currently pinned to a prerelease (`v2.0.0-next.4`); treat it as the highest-risk dependency in any Expo/RN version bump.
+As of Expo SDK 55, the New Architecture can no longer be disabled and the `newArchEnabled` app config key was removed (there is nothing to toggle in `app.json` anymore). Native-module dependencies (`react-native-fast-opencv`, `@shopify/react-native-skia`, reanimated, gesture-handler) all need New Architecture compatibility — check this specifically when bumping any of them.
+
+### Theming uses `expo-router/react-navigation`, not `@react-navigation/*`
+
+As of SDK 56, `expo-router` is no longer compatible with `@react-navigation/*` as direct dependencies. This app never used React Navigation for actual routing (routing is all `expo-router`) — it only used `@react-navigation/native`'s `ThemeProvider`/`useTheme`/`DarkTheme`/`DefaultTheme`/`Theme` for theming. Those are now imported from `'expo-router/react-navigation'` instead; do not add `@react-navigation/*` packages back as direct dependencies.
+
+### Dependency upgrades must go through `expo install`
+
+Add new dependencies with `npx expo install <package>`, not plain `npm install`, so the resolved version matches what the installed Expo SDK expects. After any dependency change, run `npx expo-doctor` — plain `npm install`/`npm audit fix` can silently pull in a transitively-mismatched version (this has previously caused a duplicated, mismatched `react-native` in the tree). When bumping the Expo SDK itself, do it one major version at a time (`npx expo install expo@<next-major>` then `npx expo install --fix`), verifying `expo-doctor`, `npm run check`, and `npm run build:web` at each step before moving to the next — SDK majors have repeatedly shipped breaking changes here (e.g. `expo-file-system`'s API rewrite in SDK 54, React Native's stricter `ColorValue` type, ESLint rule changes in `eslint-config-expo`).
 
 ### Build/release
 
