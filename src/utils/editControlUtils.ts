@@ -20,13 +20,18 @@ interface Dimensions {
  * @property minScale - The minimum allowed scale factor
  * @property maxScale - The maximum allowed scale factor
  * @property initialTranslate - The initial translation coordinates for positioning
+ * @property initialTopLeft - Offset centering the image within imageWithBorderSize
+ * at initialScale; needed alongside initialTranslate/initialScale to convert
+ * between PanZoomContext's raw translate and the actual Skia-space translate
+ * (see panZoomTransformUtils.ts)
  */
 interface EditControlParams {
   imageWithBorderSize: Dimensions;
   initialScale: number;
   minScale: number;
   maxScale: number;
-  initialTranslate: { x: number; y: number };
+  initialTranslate: Vector;
+  initialTopLeft: Vector;
 }
 
 /**
@@ -140,6 +145,36 @@ const calculateInitialTranslate = (
 };
 
 /**
+ * Calculates the offset that centers the image within its imageWithBorder
+ * area at initialScale - i.e. how far the image's top-left corner sits from
+ * the viewport's top-left corner when the image is scaled to initialScale
+ * with no additional pan/zoom applied.
+ * @param width - The available width of the content area
+ * @param height - The available height of the content area
+ * @param imageWidth - The width of the source image
+ * @param imageHeight - The height of the source image
+ * @param initialScale - The initial scale factor
+ * @returns The initial top-left offset {x, y}
+ */
+const calculateInitialTopLeft = (
+  width: number,
+  height: number,
+  imageWidth: number,
+  imageHeight: number,
+  initialScale: number
+): Vector => {
+  const initialScaledImageDimensions = {
+    width: imageWidth * initialScale,
+    height: imageHeight * initialScale,
+  };
+
+  return {
+    x: (initialScaledImageDimensions.width - width) / 2,
+    y: (initialScaledImageDimensions.height - height) / 2,
+  };
+};
+
+/**
  * Calculates all parameters needed for edit control, including imageWithBorder size, scale factors,
  * and initial positioning. This function orchestrates the complete calculation pipeline for
  * setting up an image editing interface with proper scaling and centering.
@@ -190,11 +225,20 @@ export const getEditControlParams = (
     imageHeight
   );
 
+  const initialTopLeft = calculateInitialTopLeft(
+    width,
+    height,
+    imageWidth,
+    imageHeight,
+    initialScale
+  );
+
   return {
     imageWithBorderSize,
     initialScale,
     minScale,
     maxScale: MAX_SCALE,
     initialTranslate,
+    initialTopLeft,
   };
 };

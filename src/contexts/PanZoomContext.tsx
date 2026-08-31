@@ -24,6 +24,7 @@ export interface PanZoomContextType {
   translate: SharedValue<Vector>;
   initialScale: number;
   initialTranslate: Vector;
+  initialTopLeft: Vector;
   panGesture: RefObject<GestureType | undefined>;
   contentSize: Dimensions;
 }
@@ -46,6 +47,7 @@ export interface PanZoomContextProviderProps {
   children?: React.ReactNode | React.ReactNode[];
   initialScale: number;
   initialTranslate: Vector;
+  initialTopLeft: Vector;
   minScale: number;
   maxScale: number;
   contentSize: Dimensions;
@@ -69,6 +71,7 @@ export const PanZoomContextProvider: React.FC<PanZoomContextProviderProps> = ({
   children,
   initialScale,
   initialTranslate,
+  initialTopLeft,
   minScale,
   maxScale,
   contentSize,
@@ -88,6 +91,7 @@ export const PanZoomContextProvider: React.FC<PanZoomContextProviderProps> = ({
     translate,
     initialScale,
     initialTranslate,
+    initialTopLeft,
     panGesture,
     contentSize,
     relativeScale,
