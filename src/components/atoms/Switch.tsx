@@ -20,12 +20,16 @@ const DURATION = 400; // Animation duration in milliseconds
 /**
  * Props for the AnimatedSwitch component.
  * @property value - SharedValue<boolean> that controls the switch state (on/off)
+ * @property isOn - Plain boolean mirroring value's current state, for render-time
+ * use (accessibility label, initial animated values) - reading a shared value's
+ * `.value` during render is unsafe, since mutating it doesn't trigger a re-render
  * @property onPress - Callback function called when the switch is pressed
  * @property duration - Optional animation duration in milliseconds
  * @property trackColors - Optional custom colors for on/off states
  */
 export type SwitchProps = {
   value: SharedValue<boolean>;
+  isOn: boolean;
   onPress: () => void;
   duration?: number;
   trackColors?: { on: string; off: string };
@@ -59,6 +63,7 @@ export type SwitchProps = {
  */
 export const Switch: React.FC<SwitchProps> = ({
   value,
+  isOn,
   onPress,
   duration = DURATION,
 }) => {
@@ -78,16 +83,14 @@ export const Switch: React.FC<SwitchProps> = ({
 
   // Shared values for animations
   const trackBackgroundColor = useSharedValue(
-    value.value ? primaryColor : inActiveColor
+    isOn ? primaryColor : inActiveColor
   );
 
   useEffect(() => {
-    trackBackgroundColor.value = value.value ? primaryColor : inActiveColor;
-  }, [primaryColor, inActiveColor, value, trackBackgroundColor]);
+    trackBackgroundColor.value = isOn ? primaryColor : inActiveColor;
+  }, [primaryColor, inActiveColor, isOn, trackBackgroundColor]);
 
-  const translateX = useSharedValue(
-    value.value ? TRACK_WIDTH - TRACK_HEIGHT : 0
-  );
+  const translateX = useSharedValue(isOn ? TRACK_WIDTH - TRACK_HEIGHT : 0);
 
   /**
    * Handle switch press events
@@ -142,7 +145,7 @@ export const Switch: React.FC<SwitchProps> = ({
   return (
     <Pressable
       onPress={onSwitchPress}
-      accessibilityLabel={`Switch ${value.value ? 'on' : 'off'}`}
+      accessibilityLabel={`Switch ${isOn ? 'on' : 'off'}`}
       accessibilityRole="switch"
     >
       {/* Track container - holds the background color and thumb */}
