@@ -1,6 +1,7 @@
 export { useScreenDimensions } from './useScreenDimensions';
 export { useInitializeTheme } from './useInitializeTheme';
 export { useInitializeSettings } from './useInitializeSettings';
+export { useInitializeEntitlement } from './useInitializeEntitlement';
 export { useTransformImage } from './useTransformImage';
 export { useShareImage } from './useShareImage';
 export { useAutoShowInstructions } from './useAutoShowInstructions';
