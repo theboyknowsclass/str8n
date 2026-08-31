@@ -7,11 +7,15 @@ import type { Vector } from '@types';
 /**
  * Computes the on-screen position of a fixed image-pixel-space point, given
  * PanZoomContext's raw translate/scale state. This mirrors what ImageView.tsx
- * actually renders (Group transform = [translate, scale], applied to Skia
- * content already positioned via deriveSkiaTranslate) - it composes the same
- * two transforms the real render path does, so these tests check "does the
- * pixel that should stay under your finger actually stay under your finger"
- * end to end, not just "does each transform match what I wrote in isolation".
+ * actually renders: its Group transform is
+ * `[{translateX}, {translateY}, {scale}]`, and per Skia's transform
+ * composition (matrix multiplication in array order, so the last entry
+ * applies to a point first) that means scale is applied to the content point
+ * before the derived Skia translate - screen = content*scale + skiaTranslate,
+ * not (content + skiaTranslate)*scale. This composes the same two transforms
+ * the real render path does, so these tests check "does the pixel that
+ * should stay under your finger actually stay under your finger" end to end,
+ * not just "does each transform match what I wrote in isolation".
  */
 const screenPositionOf = (
   contentPoint: Vector,
@@ -21,8 +25,8 @@ const screenPositionOf = (
 ): Vector => {
   const skiaTranslate = deriveSkiaTranslate(rawTranslate, rawScale, constants);
   return {
-    x: (contentPoint.x + skiaTranslate.x) * rawScale,
-    y: (contentPoint.y + skiaTranslate.y) * rawScale,
+    x: contentPoint.x * rawScale + skiaTranslate.x,
+    y: contentPoint.y * rawScale + skiaTranslate.y,
   };
 };
 
@@ -79,15 +83,17 @@ describe("Given the Edit screen's two-layer pan/zoom transform (PanZoomContext r
       (oldTranslate, oldScale, newScale, focalPoint) => {
         // Given a content-space point currently sitting under the focal
         // point (reconstructed by inverting the full transform pipeline at
-        // the "before" state, exactly as a real gesture would encounter it)
+        // the "before" state, exactly as a real gesture would encounter it):
+        // screen = content*scale + skiaTranslate, so content = (screen -
+        // skiaTranslate) / scale.
         const skiaTranslateOld = deriveSkiaTranslate(
           oldTranslate,
           oldScale,
           constants
         );
         const contentPoint: Vector = {
-          x: focalPoint.x / oldScale - skiaTranslateOld.x,
-          y: focalPoint.y / oldScale - skiaTranslateOld.y,
+          x: (focalPoint.x - skiaTranslateOld.x) / oldScale,
+          y: (focalPoint.y - skiaTranslateOld.y) / oldScale,
         };
         const before = screenPositionOf(
           contentPoint,
@@ -103,8 +109,7 @@ describe("Given the Edit screen's two-layer pan/zoom transform (PanZoomContext r
           focalPoint,
           oldTranslate,
           oldScale,
-          newScale,
-          constants
+          newScale
         );
 
         // Then re-deriving the Skia translate and re-rendering the same
@@ -127,8 +132,7 @@ describe("Given the Edit screen's two-layer pan/zoom transform (PanZoomContext r
         { x: 100, y: 100 },
         oldTranslate,
         1,
-        1,
-        constants
+        1
       );
       expect(result.x).toBeCloseTo(oldTranslate.x, 6);
       expect(result.y).toBeCloseTo(oldTranslate.y, 6);

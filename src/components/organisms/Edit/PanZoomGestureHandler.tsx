@@ -63,13 +63,7 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
     contentSize,
     initialScale,
     initialTranslate,
-    initialTopLeft,
   } = usePanZoomContext();
-
-  const zoomConstants = useMemo(
-    () => ({ initialTranslate, initialTopLeft, initialScale }),
-    [initialTranslate, initialTopLeft, initialScale]
-  );
 
   // save the scale and translate values to be used in the pinch gesture to
   // prevent jittering. Seeded from the plain initialScale/initialTranslate
@@ -163,20 +157,17 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
           const newScale = updateScale(oldScale * eventScale);
 
           // Keep the focal point (the pinch's starting midpoint) visually
-          // stationary on screen as scale changes. This has to go through
-          // computeZoomAroundPointTranslate rather than a simple formula on
-          // translate/scale directly, because what's actually drawn on
-          // screen is a second, derived transform (see
-          // panZoomTransformUtils.ts) - solving the simple "zoom around a
-          // point" formula against the raw translate/scale here doesn't
-          // keep the right point fixed once that derivation is accounted
-          // for, which is what produced the "wrong center" bug.
+          // stationary on screen as scale changes, via the standard
+          // "zoom around a point" formula (see panZoomTransformUtils.ts for
+          // why this applies directly to the raw translate, even though
+          // what's actually drawn goes through a second, derived transform -
+          // the mount-time constants in that derivation cancel out
+          // algebraically for this particular calculation).
           const newTranslate = computeZoomAroundPointTranslate(
             savedFocalPoint.current,
             savedTranslate.current,
             oldScale,
-            newScale,
-            zoomConstants
+            newScale
           );
           updateTranslate(newTranslate.x, newTranslate.y);
         })
@@ -191,7 +182,6 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
       translate,
       updateTranslate,
       updateScale,
-      zoomConstants,
     ]
   );
 
@@ -218,8 +208,7 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
       { x: focalX, y: focalY },
       translate.value,
       oldScale,
-      newScale,
-      zoomConstants
+      newScale
     );
     updateTranslate(newTranslate.x, newTranslate.y);
   };
