@@ -33,9 +33,9 @@ export interface PanZoomContextType {
  * React context for pan and zoom functionality.
  * Provides shared state for image scaling and translation across components.
  */
-export const PanZoomContext = createContext<PanZoomContextType>({
-  isReady: false,
-} as PanZoomContextType);
+export const PanZoomContext = createContext<PanZoomContextType | undefined>(
+  undefined
+);
 
 /**
  * Props for the PanZoomProvider component.
