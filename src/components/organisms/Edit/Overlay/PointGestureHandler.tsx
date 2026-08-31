@@ -45,10 +45,11 @@ export const PointGestureHandler: React.FC<PointGestureHandlerProps> = ({
 }) => {
   const { panGesture: parentPanGesture } = usePanZoomContext();
 
-  const savedPosition = useRef<Point>({
-    x: point.x.value,
-    y: point.y.value,
-  });
+  // Seeded with a static placeholder rather than reading point.x.value/
+  // point.y.value here (unsafe during render) - the real current position is
+  // written into this ref inside the pan gesture's onStart below, always
+  // before savedPosition.current is ever read in onUpdate.
+  const savedPosition = useRef<Point>({ x: 0, y: 0 });
 
   const cx = useDerivedValue(() => {
     return point.x.value * scaledImageWidth.value;
