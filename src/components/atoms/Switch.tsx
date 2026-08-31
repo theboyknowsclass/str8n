@@ -86,11 +86,31 @@ export const Switch: React.FC<SwitchProps> = ({
     isOn ? primaryColor : inActiveColor
   );
 
-  useEffect(() => {
-    trackBackgroundColor.value = isOn ? primaryColor : inActiveColor;
-  }, [primaryColor, inActiveColor, isOn, trackBackgroundColor]);
-
   const translateX = useSharedValue(isOn ? TRACK_WIDTH - TRACK_HEIGHT : 0);
+
+  // Keeps both animated values in sync whenever isOn (or the theme colors)
+  // changes for any reason other than pressing this switch - e.g. an
+  // external state change. Animated with withTiming, not a plain
+  // assignment, so a self-triggered re-run (isOn flipping as a result of
+  // this same press's onToggle call reaching back down as a new prop)
+  // re-targets the same in-flight animation smoothly instead of jump-
+  // cutting the one onSwitchPress already started.
+  useEffect(() => {
+    trackBackgroundColor.value = withTiming(
+      isOn ? primaryColor : inActiveColor,
+      { duration }
+    );
+    translateX.value = withTiming(isOn ? TRACK_WIDTH - TRACK_HEIGHT : 0, {
+      duration,
+    });
+  }, [
+    primaryColor,
+    inActiveColor,
+    isOn,
+    trackBackgroundColor,
+    translateX,
+    duration,
+  ]);
 
   /**
    * Handle switch press events

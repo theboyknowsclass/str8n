@@ -69,8 +69,10 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
   // values (not scale.value/translate.value) since reading a shared value's
   // .value during render is unsafe - scale/translate are guaranteed to still
   // equal these at first mount anyway (PanZoomContextProvider seeds them
-  // with the same values), and both refs get overwritten by the real
-  // current value in each gesture's onStart before ever being read.
+  // with the same values), and both refs are overwritten by the real
+  // current value in the pinch/pan gestures' onStart before ever being read
+  // there. (handleWheel below reads scale.value directly instead of
+  // savedScale.current, since it isn't part of the pinch gesture sequence.)
   const savedScale = useRef(initialScale);
   const savedTranslate = useRef(initialTranslate);
   const savedFocalPoint = useRef({ x: 0, y: 0 });
@@ -177,9 +179,13 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
     // Prevent default scrolling behavior
     e.preventDefault();
 
-    // Use mouse pointer position as focal point
-    const absoluteFocalX = e.clientX / savedScale.current;
-    const absoluteFocalY = e.clientY / savedScale.current;
+    // Use mouse pointer position as focal point. Reads scale.value directly
+    // (safe here - this runs inside a wheel event handler, not during
+    // render) rather than savedScale.current, which is only kept fresh by
+    // the pinch gesture's onStart and would otherwise go stale across
+    // repeated wheel-zoom events on web.
+    const absoluteFocalX = e.clientX / scale.value;
+    const absoluteFocalY = e.clientY / scale.value;
 
     // Calculate zoom factor based on wheel delta
     const zoomFactor = e.deltaY > 0 ? 0.95 : 1.05;
