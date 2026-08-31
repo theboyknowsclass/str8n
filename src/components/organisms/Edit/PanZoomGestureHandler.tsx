@@ -131,6 +131,7 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
         .onStart((e) => {
           'worklet';
           savedScale.current = scale.value;
+          savedTranslate.current = translate.value;
           savedFocalPoint.current = {
             x: e.focalX,
             y: e.focalY,
@@ -141,14 +142,23 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
 
           // update scale
           const { scale: eventScale } = e;
-          const newScale = updateScale(savedScale.current * eventScale);
+          const oldScale = savedScale.current;
+          const newScale = updateScale(oldScale * eventScale);
 
-          // update translate to keep the focal point in the same position
+          // Update translate to keep the focal point (the pinch's starting
+          // midpoint) visually stationary on screen as scale changes, via
+          // the standard "zoom around a point" formula: the new translate
+          // is the old translate plus how far the focal point itself moves
+          // in content-space when scale changes from old to new.
+          // (The previous formula - newX = -focalX + (width/newScale)/2 -
+          // ignored the existing translate entirely and always recentered
+          // the view on the focal point instead of keeping it fixed, which
+          // is what produced the "wrong center"/"jumps to top-left" bug.)
           const { x: focalX, y: focalY } = savedFocalPoint.current;
-          const newScaledWidth = width / newScale;
-          const newScaledHeight = height / newScale;
-          const newX = -focalX + newScaledWidth / 2;
-          const newY = -focalY + newScaledHeight / 2;
+          const { x: oldTranslateX, y: oldTranslateY } = savedTranslate.current;
+          const scaleDelta = 1 / newScale - 1 / oldScale;
+          const newX = focalX * scaleDelta + oldTranslateX;
+          const newY = focalY * scaleDelta + oldTranslateY;
           updateTranslate(newX, newY);
         })
         .onEnd(() => {
@@ -157,11 +167,11 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
     [
       savedFocalPoint,
       savedScale,
+      savedTranslate,
       scale,
+      translate,
       updateTranslate,
       updateScale,
-      width,
-      height,
     ]
   );
 
@@ -169,19 +179,16 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
     // Prevent default scrolling behavior
     e.preventDefault();
 
-    // Use mouse pointer position as focal point
-    const absoluteFocalX = e.clientX / savedScale.current;
-    const absoluteFocalY = e.clientY / savedScale.current;
-
-    // Calculate zoom factor based on wheel delta
+    // Same "zoom around a point" formula as the pinch gesture above, using
+    // the mouse cursor position as the focal point.
+    const oldScale = scale.value;
     const zoomFactor = e.deltaY > 0 ? 0.95 : 1.05;
-    const newScale = updateScale(scale.value * zoomFactor);
+    const newScale = updateScale(oldScale * zoomFactor);
 
-    // Update translate to keep the focal point in the same position
-    const newWindowWidth = width / newScale;
-    const newWindowHeight = height / newScale;
-    const newX = -absoluteFocalX + newWindowWidth / 2;
-    const newY = -absoluteFocalY + newWindowHeight / 2;
+    const { x: oldTranslateX, y: oldTranslateY } = translate.value;
+    const scaleDelta = 1 / newScale - 1 / oldScale;
+    const newX = e.clientX * scaleDelta + oldTranslateX;
+    const newY = e.clientY * scaleDelta + oldTranslateY;
     updateTranslate(newX, newY);
   };
 
