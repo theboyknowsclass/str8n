@@ -18,7 +18,7 @@ const TRACK_PADDING = 5; // Padding inside the track for the thumb
 const DURATION = 400; // Animation duration in milliseconds
 
 /**
- * Props for the AnimatedSwitch component.
+ * Props for the Switch component.
  * @property value - SharedValue<boolean> that controls the switch state (on/off)
  * @property isOn - Plain boolean mirroring value's current state, for render-time
  * use (accessibility label, initial animated values) - reading a shared value's
@@ -36,7 +36,7 @@ export type SwitchProps = {
 };
 
 /**
- * AnimatedSwitch component that provides a smooth animated toggle switch.
+ * Switch component that provides a smooth animated toggle switch.
  *
  * This component creates a custom animated toggle switch with smooth color
  * transitions and thumb movement. It uses React Native Reanimated for
@@ -48,14 +48,14 @@ export type SwitchProps = {
  * - Theme-aware colors (uses primary color for on state)
  * - Responsive to dark/light theme changes
  *
- * @param props - AnimatedSwitchProps containing the switch state and callbacks
+ * @param props - SwitchProps containing the switch state and callbacks
  * @returns JSX element containing the animated switch
  *
  * @example
  * ```typescript
  * const switchValue = useSharedValue(false);
  *
- * <AnimatedSwitch
+ * <Switch
  *   value={switchValue}
  *   onPress={() => console.log('Switch toggled')}
  * />
@@ -117,19 +117,24 @@ export const Switch: React.FC<SwitchProps> = ({
    * Toggles the switch state and animates both color and position changes
    */
   const onSwitchPress = () => {
-    // Toggle the switch value
-    value.value = !value.value;
+    // isOn (not value.value) is the single source of truth for what a press
+    // means: value only exists as an animation-driving SharedValue and is
+    // always *set* from isOn here, never read-and-flipped from its own
+    // state, so it can't drift out of sync with isOn if something other
+    // than a press ever changes isOn from outside.
+    const newValue = !isOn;
+    value.value = newValue;
 
     // Interpolate color between off and on states
     const color = interpolateColor(
-      Number(value.value),
+      Number(newValue),
       [0, 1],
       [inActiveColor, primaryColor]
     );
 
     // Interpolate thumb position between left and right
     const moveValue = interpolate(
-      Number(value.value),
+      Number(newValue),
       [0, 1],
       [0, TRACK_WIDTH - TRACK_HEIGHT]
     );
