@@ -33,8 +33,7 @@ export const EditControlContext = createContext<EditControlContextType>({
  *
  * @property {React.ReactNode | React.ReactNode[]} children - React children to be wrapped by the context provider
  */
-export interface EditControlContextProviderProps
-  extends EditControlContextType {
+export interface EditControlContextProviderProps extends EditControlContextType {
   children?: React.ReactNode | React.ReactNode[];
 }
 

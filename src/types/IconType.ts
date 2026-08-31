@@ -7,9 +7,7 @@ import { SvgIconType } from './SvgIconType';
  * This includes Material Design icons, Material Community icons, and custom SVG icons.
  */
 export type IconType =
-  | MaterialIconType
-  | MaterialCommunityIconType
-  | SvgIconType;
+  MaterialIconType | MaterialCommunityIconType | SvgIconType;
 
 // Re-export all icon types and utilities for convenience
 export * from './MaterialIconType';
