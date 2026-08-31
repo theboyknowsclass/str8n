@@ -3,6 +3,7 @@
   "esModuleInterop": true,
   "compilerOptions": {
     "strict": true,
+    "types": ["jest"],
     "paths": {
       "@templates": ["./src/components/templates/index.ts"],
       "@organisms": ["./src/components/organisms/index.ts"],
