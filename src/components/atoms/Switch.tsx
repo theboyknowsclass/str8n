@@ -194,6 +194,7 @@ export const Switch: React.FC<SwitchProps> = ({
       onPress={onSwitchPress}
       accessibilityLabel={`Switch ${isOn ? 'on' : 'off'}`}
       accessibilityRole="switch"
+      accessibilityState={{ checked: isOn }}
     >
       {/* Track container - holds the background color and thumb */}
       <Animated.View style={[switchStyles.track, trackAnimatedStyle]}>
