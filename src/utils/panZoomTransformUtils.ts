@@ -1,4 +1,4 @@
-import { Vector } from '@types';
+import type { Vector } from '@types';
 
 /**
  * The Edit screen's pan/zoom state (PanZoomContext's `scale`/`translate`) is

@@ -145,10 +145,12 @@ const calculateInitialTranslate = (
 };
 
 /**
- * Calculates the offset that centers the image within its imageWithBorder
- * area at initialScale - i.e. how far the image's top-left corner sits from
- * the viewport's top-left corner when the image is scaled to initialScale
- * with no additional pan/zoom applied.
+ * Calculates how far the image, scaled to initialScale and centered, extends
+ * beyond the content area's viewport on each side (positive when the scaled
+ * image is larger than the viewport). This is not the image's screen-space
+ * position - it's the magnitude deriveSkiaTranslate (panZoomTransformUtils.ts)
+ * subtracts from the pan/zoom translate to keep the image centered as scale
+ * changes.
  * @param width - The available width of the content area
  * @param height - The available height of the content area
  * @param imageWidth - The width of the source image
