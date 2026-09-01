@@ -202,23 +202,24 @@ export class DetectionService {
     }
 
     const minArea = MIN_DETECTED_AREA_FRACTION * width * height;
-    const areasByIndex: { index: number; area: number }[] = [];
+    // Fetch each contour exactly once - contours.get(i) allocates a Mat, and
+    // fetching the same index again later (e.g. once for its area, again for
+    // approxPolyDP) would needlessly double that allocation/cleanup cost.
+    const contoursByArea: { contour: cv.Mat; area: number }[] = [];
     for (let i = 0; i < contourCount; i++) {
       const contour = contours.get(i);
       itemsToDelete.push(contour);
-      areasByIndex.push({ index: i, area: cv.contourArea(contour) });
+      contoursByArea.push({ contour, area: cv.contourArea(contour) });
     }
-    const largestIndicesFirst = areasByIndex
+    const largestFirst = contoursByArea
       .sort((a, b) => b.area - a.area)
       .slice(0, MAX_CONTOURS_TO_TEST);
 
-    for (const { index, area } of largestIndicesFirst) {
+    for (const { contour, area } of largestFirst) {
       if (area < minArea) {
         continue;
       }
 
-      const contour = contours.get(index);
-      itemsToDelete.push(contour);
       const perimeter = cv.arcLength(contour, true);
       const approx = new cv.Mat();
       itemsToDelete.push(approx);
