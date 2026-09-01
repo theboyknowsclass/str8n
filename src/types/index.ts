@@ -27,3 +27,9 @@ export { Instruction } from './Instruction';
 export { InstructionMode } from './InstructionMode';
 export { Page, isModalPage, isNonModalPage, isPage } from './Pages';
 export { MovablePoint } from './MovablePoint';
+export {
+  EntitlementTier,
+  ENTITLEMENT_IDENTIFIERS,
+  ENTITLEMENT_TIER_LABELS,
+  getNextTierOfferingIdentifier,
+} from './EntitlementTier';

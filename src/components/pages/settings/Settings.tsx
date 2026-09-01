@@ -1,6 +1,8 @@
-import { SettingsToggle } from '@molecules';
+import { SettingsToggle, SettingsNavigationRow } from '@molecules';
 import { ModalPageTemplate } from '@templates';
-import { usePersistedSettingsStore } from '@stores';
+import { usePersistedSettingsStore, useEntitlementStore } from '@stores';
+import { ENTITLEMENT_TIER_LABELS } from '@types';
+import { useNavigation } from '@hooks';
 import { StyleSheet, View } from 'react-native';
 
 /**
@@ -26,11 +28,18 @@ export const Settings: React.FC = () => {
     showZoomView,
     setShowZoomView,
   } = usePersistedSettingsStore();
+  const { tier } = useEntitlementStore();
+  const { navigate } = useNavigation();
 
   return (
     <ModalPageTemplate title="Settings">
       <View style={styles.contentContainer}>
         <View style={styles.settingsContainer}>
+          <SettingsNavigationRow
+            title="Subscription"
+            value={ENTITLEMENT_TIER_LABELS[tier]}
+            onPress={() => navigate('paywall')}
+          />
           <SettingsToggle
             title="Crop to overlay polygon on transform"
             isEnabled={cropToOverlay}

@@ -14,6 +14,7 @@ const modalPageNameArray = [
   'instructions',
   'settings',
   'about',
+  'paywall',
 ] as const;
 
 // Set for O(1) lookup performance when checking if a string is a valid non-modal page name

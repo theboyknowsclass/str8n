@@ -2,7 +2,11 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
 import { ThemeProvider } from 'expo-router/react-navigation';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { useInitializeTheme, useInitializeSettings } from '@hooks';
+import {
+  useInitializeTheme,
+  useInitializeSettings,
+  useInitializeEntitlement,
+} from '@hooks';
 
 import {
   Orbitron_400Regular,
@@ -53,16 +57,30 @@ export const RootLayout = () => {
   });
   const { theme, isReady: isThemeReady } = useInitializeTheme();
   const isSettingsReady = useInitializeSettings();
+  const isEntitlementReady = useInitializeEntitlement();
 
   useEffect(() => {
-    // If the fonts are loaded, the theme is ready, and the settings are ready, hide the splash screen
-    if (loaded && !error && isThemeReady && isSettingsReady) {
+    // If the fonts are loaded, the theme is ready, the settings are ready, and
+    // the entitlement tier is ready, hide the splash screen
+    if (
+      loaded &&
+      !error &&
+      isThemeReady &&
+      isSettingsReady &&
+      isEntitlementReady
+    ) {
       SplashScreen.hideAsync();
     }
-  }, [loaded, error, isThemeReady, isSettingsReady]);
+  }, [loaded, error, isThemeReady, isSettingsReady, isEntitlementReady]);
 
-  // If the fonts are not loaded, the theme is not ready, or the settings are not ready don't render anything
-  if (!loaded || error || !isThemeReady || !isSettingsReady) {
+  // If any of fonts, theme, settings, or entitlement aren't ready, don't render anything
+  if (
+    !loaded ||
+    error ||
+    !isThemeReady ||
+    !isSettingsReady ||
+    !isEntitlementReady
+  ) {
     return null;
   }
 
@@ -85,6 +103,10 @@ export const RootLayout = () => {
             />
             <Stack.Screen
               name="instructions"
+              options={{ headerShown: false, presentation: 'fullScreenModal' }}
+            />
+            <Stack.Screen
+              name="paywall"
               options={{ headerShown: false, presentation: 'fullScreenModal' }}
             />
           </Stack>
