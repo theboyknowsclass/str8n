@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { useEntitlementStore } from '@stores';
 
 /**
- * Return type for the useInitializeEntitlement hook.
- * @property isReady - Boolean indicating if entitlement initialization is complete
+ * Return type for the useInitializeEntitlement hook: whether entitlement
+ * initialization is complete.
  */
 type UseInitializeEntitlement = boolean;
 

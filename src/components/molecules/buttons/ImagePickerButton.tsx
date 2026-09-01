@@ -1,8 +1,7 @@
 import { IconButton } from '@atoms';
 import { ImagePickerService } from '@services';
 import { useSourceImageStore } from '@stores';
-import { useAutoDetectCorners } from '@hooks';
-import { useNavigation } from '../../../hooks/useNavigation';
+import { useAutoDetectCorners, useNavigation } from '@hooks';
 
 /**
  * ImagePickerButton component that allows users to select images from their library.
