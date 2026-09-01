@@ -1,11 +1,15 @@
+import { useState } from 'react';
 import Animated, {
   SharedValue,
+  runOnJS,
   useAnimatedProps,
+  useAnimatedReaction,
+  useDerivedValue,
 } from 'react-native-reanimated';
-import { Polygon } from 'react-native-svg';
-import { useGetDerivedX, useGetDerivedY } from './useLogo';
+import { Line, Polygon } from 'react-native-svg';
+import { LogoStartPoints, useGetDerivedX, useGetDerivedY } from './useLogo';
 
-const AnimatedPolygon = Animated.createAnimatedComponent(Polygon);
+const AnimatedLine = Animated.createAnimatedComponent(Line);
 
 /**
  * Props for the Path component.
@@ -24,14 +28,26 @@ type PathProps = {
 };
 
 /**
- * Path component that renders an animated polygon for the logo.
+ * Path component that renders the logo's four corner-connecting edges,
+ * plus the fill behind them.
  *
- * This component creates an animated polygon that forms part of the STR8N logo.
- * It uses React Native Reanimated to smoothly animate the polygon points based
- * on the animation progress, creating a dynamic visual effect.
+ * The stroke is drawn as four separate Line elements (numeric x1/y1/x2/y2
+ * props) rather than a single Polygon with a dynamically-computed "points"
+ * string: on native, react-native-reanimated's useAnimatedProps does not
+ * reliably update a Polygon/Polyline's points string (a known, unresolved
+ * upstream issue - software-mansion/react-native-reanimated#6065), while
+ * numeric SVG props like Circle's cx/cy (see Point.tsx) animate correctly.
+ *
+ * The fill still needs an actual Polygon (Line has no fill), so its points
+ * are pushed through a plain React state update via useAnimatedReaction +
+ * runOnJS instead of useAnimatedProps - a normal React re-render, not
+ * reliant on the same native animated-props bridge that doesn't update a
+ * points string reliably. This trades perfect 60fps UI-thread smoothness for
+ * the fill specifically, which isn't noticeable at this animation's slow,
+ * eased pace.
  *
  * @param props - PathProps containing styling and animation parameters
- * @returns JSX element containing the animated polygon
+ * @returns JSX element containing the filled polygon and its animated edges
  *
  * @example
  * ```typescript
@@ -61,18 +77,73 @@ export const Path = ({
   const x4 = useGetDerivedX(3, scale, animationProgress);
   const y4 = useGetDerivedY(3, scale, animationProgress);
 
-  const animatedProps = useAnimatedProps(() => {
-    return {
-      points: `${x1.value},${y1.value} ${x2.value},${y2.value} ${x3.value},${y3.value} ${x4.value},${y4.value}`,
-    };
-  }, [x1, y1, x2, y2, x3, y3, x4, y4]);
+  const points = useDerivedValue(() => {
+    return `${x1.value},${y1.value} ${x2.value},${y2.value} ${x3.value},${y3.value} ${x4.value},${y4.value}`;
+  });
+
+  // Seeded from the plain LogoStartPoints constant (animationProgress's
+  // initial value is 0, i.e. the start points) rather than reading
+  // points.value here - reading a shared/derived value's .value during
+  // render is unsafe. useAnimatedReaction below overwrites this with the
+  // real animated value on mount, before the seed is ever visibly wrong.
+  const [fillPoints, setFillPoints] = useState(() =>
+    LogoStartPoints.map((p) => `${p.x * scale},${p.y * scale}`).join(' ')
+  );
+  useAnimatedReaction(
+    () => points.value,
+    (current) => {
+      runOnJS(setFillPoints)(current);
+    }
+  );
+
+  const edge1Props = useAnimatedProps(() => ({
+    x1: x1.value,
+    y1: y1.value,
+    x2: x2.value,
+    y2: y2.value,
+  }));
+  const edge2Props = useAnimatedProps(() => ({
+    x1: x2.value,
+    y1: y2.value,
+    x2: x3.value,
+    y2: y3.value,
+  }));
+  const edge3Props = useAnimatedProps(() => ({
+    x1: x3.value,
+    y1: y3.value,
+    x2: x4.value,
+    y2: y4.value,
+  }));
+  const edge4Props = useAnimatedProps(() => ({
+    x1: x4.value,
+    y1: y4.value,
+    x2: x1.value,
+    y2: y1.value,
+  }));
 
   return (
-    <AnimatedPolygon
-      animatedProps={animatedProps}
-      fill={background}
-      stroke={foreground}
-      strokeWidth={scaledStrokeWidth}
-    />
+    <>
+      <Polygon points={fillPoints} fill={background} />
+      <AnimatedLine
+        animatedProps={edge1Props}
+        stroke={foreground}
+        strokeWidth={scaledStrokeWidth}
+      />
+      <AnimatedLine
+        animatedProps={edge2Props}
+        stroke={foreground}
+        strokeWidth={scaledStrokeWidth}
+      />
+      <AnimatedLine
+        animatedProps={edge3Props}
+        stroke={foreground}
+        strokeWidth={scaledStrokeWidth}
+      />
+      <AnimatedLine
+        animatedProps={edge4Props}
+        stroke={foreground}
+        strokeWidth={scaledStrokeWidth}
+      />
+    </>
   );
 };
