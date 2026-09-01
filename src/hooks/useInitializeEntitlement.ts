@@ -1,9 +1,5 @@
 import { useEffect } from 'react';
-import { Platform } from 'react-native';
-import Constants from 'expo-constants';
-import Purchases from 'react-native-purchases';
-import { useEntitlementStore, applyCustomerInfo } from '@stores';
-import { EntitlementTier } from '@types';
+import { useEntitlementStore } from '@stores';
 
 /**
  * Return type for the useInitializeEntitlement hook.
@@ -12,13 +8,16 @@ import { EntitlementTier } from '@types';
 type UseInitializeEntitlement = boolean;
 
 /**
- * Hook for initializing the user's subscription tier from RevenueCat.
+ * Non-iOS implementation of useInitializeEntitlement (see
+ * useInitializeEntitlement.ios.ts for the real RevenueCat-backed one).
+ * Paid tiers are iOS-only for now - RevenueCat has no web purchase path,
+ * and Android hasn't been submitted to the Play Store yet - so every other
+ * platform resolves straight to Free, immediately.
  *
- * Paid tiers are iOS-only for now: RevenueCat has no web purchase path, and
- * Android hasn't been submitted to the Play Store yet. On any other platform,
- * or if no RevenueCat API key is configured (e.g. local development before a
- * RevenueCat project exists), this resolves straight to Free rather than
- * failing - the app must always be usable even with entitlements unavailable.
+ * Kept as a separate platform file (rather than an `if (Platform.OS ===
+ * 'ios')` branch in one shared file) so that 'react-native-purchases' is
+ * never imported into the web/Android bundle at all, not merely unused at
+ * runtime there.
  *
  * @returns UseInitializeEntitlement boolean indicating if the tier is ready
  *
@@ -28,35 +27,10 @@ type UseInitializeEntitlement = boolean;
  * ```
  */
 export const useInitializeEntitlement = (): UseInitializeEntitlement => {
-  const { setTier, setIsReady, isReady } = useEntitlementStore();
+  const { setIsReady, isReady } = useEntitlementStore();
 
   useEffect(() => {
-    const loadInitialData = async () => {
-      if (Platform.OS !== 'ios') {
-        setIsReady(true);
-        return;
-      }
-
-      const apiKey = Constants.expoConfig?.extra?.revenueCat?.iosApiKey;
-
-      if (!apiKey) {
-        setIsReady(true);
-        return;
-      }
-
-      try {
-        Purchases.configure({ apiKey });
-        const customerInfo = await Purchases.getCustomerInfo();
-        applyCustomerInfo(customerInfo);
-      } catch (error) {
-        console.error('Error loading entitlement', error);
-        setTier(EntitlementTier.Free);
-      } finally {
-        setIsReady(true);
-      }
-    };
-
-    loadInitialData();
+    setIsReady(true);
     // Only run on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

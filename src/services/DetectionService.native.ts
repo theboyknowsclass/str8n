@@ -342,11 +342,17 @@ export class DetectionService {
       return null;
     }
 
-    const largest = contourPoints.reduce((best, current) =>
-      polygonArea(current) > polygonArea(best) ? current : best
-    );
+    let largest = contourPoints[0];
+    let largestArea = polygonArea(largest);
+    for (let i = 1; i < contourPoints.length; i++) {
+      const area = polygonArea(contourPoints[i]);
+      if (area > largestArea) {
+        largest = contourPoints[i];
+        largestArea = area;
+      }
+    }
 
-    if (polygonArea(largest) < MIN_DETECTED_AREA_FRACTION * width * height) {
+    if (largestArea < MIN_DETECTED_AREA_FRACTION * width * height) {
       return null;
     }
 

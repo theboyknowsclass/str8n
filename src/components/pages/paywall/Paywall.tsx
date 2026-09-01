@@ -1,23 +1,17 @@
-import { Platform, StyleSheet } from 'react-native';
-import Constants from 'expo-constants';
-import RevenueCatUI from 'react-native-purchases-ui';
+import { StyleSheet } from 'react-native';
 import { ModalPageTemplate } from '@templates';
 import { Text } from '@atoms';
-import { applyCustomerInfo } from '@stores';
 import { useNavigation } from '@hooks';
 
 /**
- * Paywall page component that presents the app's subscription offering.
+ * Non-iOS implementation of the Paywall page (see Paywall.ios.tsx for the
+ * real RevenueCat-backed one). Paid tiers are iOS-only for now - RevenueCat
+ * has no web purchase path, and Android hasn't been submitted to the Play
+ * Store yet - so every other platform shows this simple message instead.
  *
- * On iOS, with a RevenueCat API key configured, this renders RevenueCat's
- * prebuilt full-screen paywall template directly (not wrapped in
- * ModalPageTemplate's own header/close bar - the paywall template already
- * provides its own close button and branding, and doubling that chrome would
- * look redundant). On any other platform, or if no API key is configured yet
- * (e.g. local development before a RevenueCat project exists - see
- * useInitializeEntitlement, which degrades the same way), this shows a
- * simple message instead rather than rendering a native paywall RevenueCat
- * was never configured to serve.
+ * Kept as a separate platform file (rather than a Platform.OS branch in one
+ * shared file) so that 'react-native-purchases-ui' is never imported into
+ * the web/Android bundle at all, not merely unused at runtime there.
  *
  * @returns JSX element containing the paywall
  *
@@ -29,39 +23,16 @@ import { useNavigation } from '@hooks';
 export const Paywall: React.FC = () => {
   const { dismiss } = useNavigation();
 
-  const apiKey = Constants.expoConfig?.extra?.revenueCat?.iosApiKey;
-  const isPaywallAvailable = Platform.OS === 'ios' && !!apiKey;
-
-  if (!isPaywallAvailable) {
-    return (
-      <ModalPageTemplate title="Upgrade" onClose={dismiss}>
-        <Text style={styles.unavailableText}>
-          Subscriptions are available on iOS for now.
-        </Text>
-      </ModalPageTemplate>
-    );
-  }
-
   return (
-    <RevenueCatUI.Paywall
-      style={styles.paywall}
-      onPurchaseCompleted={({ customerInfo }) => {
-        applyCustomerInfo(customerInfo);
-        dismiss();
-      }}
-      onRestoreCompleted={({ customerInfo }) => {
-        applyCustomerInfo(customerInfo);
-        dismiss();
-      }}
-      onDismiss={dismiss}
-    />
+    <ModalPageTemplate title="Upgrade" onClose={dismiss}>
+      <Text style={styles.unavailableText}>
+        Subscriptions are available on iOS for now.
+      </Text>
+    </ModalPageTemplate>
   );
 };
 
 const styles = StyleSheet.create({
-  paywall: {
-    flex: 1,
-  },
   unavailableText: {
     marginTop: 32,
     textAlign: 'center',
