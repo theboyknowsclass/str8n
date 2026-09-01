@@ -1,5 +1,5 @@
 import { Point } from '@types';
-import { orderPointsByCorner } from './transformUtils';
+import { orderPointsByCorner } from '@utils/transformUtils';
 
 /**
  * Minimum fraction of the total image area a detected quad/contour must

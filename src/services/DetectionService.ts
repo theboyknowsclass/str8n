@@ -59,6 +59,9 @@ export class DetectionService {
 
       const blurred = new cv.Mat();
       itemsToDelete.push(blurred);
+      // cv.Size, unlike cv.Mat, is a plain JS class in this library (see
+      // _hacks.d.ts) - not an EmscriptenEmbindInstance, so it has no
+      // .delete() and doesn't belong in itemsToDelete.
       cv.GaussianBlur(gray, blurred, new cv.Size(5, 5), 0);
 
       if (signal?.aborted) {
@@ -132,6 +135,9 @@ export class DetectionService {
 
     const kernel = cv.Mat.ones(3, 3, cv.CV_8U);
     itemsToDelete.push(kernel);
+    // cv.Point, unlike cv.Mat, is a plain JS class in this library (see
+    // _hacks.d.ts) - not an EmscriptenEmbindInstance, so it has no
+    // .delete() and doesn't belong in itemsToDelete.
     cv.dilate(edges, edges, kernel, new cv.Point(-1, -1), 2);
 
     return this.findQuadFromBinaryMask(edges, width, height, itemsToDelete);
@@ -177,6 +183,15 @@ export class DetectionService {
    * contours in a binary mask, tests the largest few by area, and accepts
    * the first one whose simplified (approxPolyDP) shape has exactly 4
    * vertices and covers a large-enough fraction of the image.
+   *
+   * Every contour Mat is deleted as soon as it's no longer needed (rather
+   * than deferring all cleanup to detectQuad's top-level itemsToDelete):
+   * contours outside the top MAX_CONTOURS_TO_TEST are freed immediately
+   * after sorting, and each of the top candidates is freed right after its
+   * approxPolyDP call, whether or not it turns out to be the accepted
+   * result. A noisy photo can produce hundreds of contours, and holding
+   * every one of their Mats alive until detectQuad finishes would mean
+   * real, avoidable WASM heap pressure for the whole detection pass.
    */
   private static findQuadFromBinaryMask(
     binaryMask: cv.Mat,
@@ -202,36 +217,45 @@ export class DetectionService {
     }
 
     const minArea = MIN_DETECTED_AREA_FRACTION * width * height;
-    // Fetch each contour exactly once - contours.get(i) allocates a Mat, and
-    // fetching the same index again later (e.g. once for its area, again for
-    // approxPolyDP) would needlessly double that allocation/cleanup cost.
     const contoursByArea: { contour: cv.Mat; area: number }[] = [];
     for (let i = 0; i < contourCount; i++) {
       const contour = contours.get(i);
-      itemsToDelete.push(contour);
       contoursByArea.push({ contour, area: cv.contourArea(contour) });
     }
-    const largestFirst = contoursByArea
-      .sort((a, b) => b.area - a.area)
-      .slice(0, MAX_CONTOURS_TO_TEST);
+    const sortedByAreaDescending = contoursByArea.sort(
+      (a, b) => b.area - a.area
+    );
+    const largestFirst = sortedByAreaDescending.slice(0, MAX_CONTOURS_TO_TEST);
 
-    for (const { contour, area } of largestFirst) {
-      if (area < minArea) {
-        continue;
-      }
-
-      const perimeter = cv.arcLength(contour, true);
-      const approx = new cv.Mat();
-      itemsToDelete.push(approx);
-      cv.approxPolyDP(contour, approx, 0.02 * perimeter, true);
-
-      const approxPoints = this.matToPoints(approx);
-      if (approxPoints.length === 4 && polygonArea(approxPoints) >= minArea) {
-        return approxPoints;
-      }
+    // Free everything outside the top N right away - these were only ever
+    // needed to compute their area for the sort above.
+    for (const { contour } of sortedByAreaDescending.slice(
+      MAX_CONTOURS_TO_TEST
+    )) {
+      contour.delete();
     }
 
-    return null;
+    try {
+      for (const { contour, area } of largestFirst) {
+        if (area < minArea) {
+          continue;
+        }
+
+        const perimeter = cv.arcLength(contour, true);
+        const approx = new cv.Mat();
+        itemsToDelete.push(approx);
+        cv.approxPolyDP(contour, approx, 0.02 * perimeter, true);
+
+        const approxPoints = this.matToPoints(approx);
+        if (approxPoints.length === 4 && polygonArea(approxPoints) >= minArea) {
+          return approxPoints;
+        }
+      }
+
+      return null;
+    } finally {
+      largestFirst.forEach(({ contour }) => contour.delete());
+    }
   }
 
   /**
@@ -271,12 +295,12 @@ export class DetectionService {
     let largestArea = 0;
     for (let i = 0; i < contourCount; i++) {
       const contour = contours.get(i);
-      itemsToDelete.push(contour);
       const area = cv.contourArea(contour);
       if (area > largestArea) {
         largestArea = area;
         largestPoints = this.matToPoints(contour);
       }
+      contour.delete();
     }
 
     if (
