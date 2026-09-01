@@ -30,12 +30,23 @@ export const MAX_CONTOURS_TO_TEST = 5;
  * @returns 4 corner points of the bounding box, in absolute pixel coordinates
  */
 export const boundingBoxToPoints = (points: Point[]): Point[] => {
-  const xs = points.map((p) => p.x);
-  const ys = points.map((p) => p.y);
-  const minX = Math.min(...xs);
-  const maxX = Math.max(...xs);
-  const minY = Math.min(...ys);
-  const maxY = Math.max(...ys);
+  if (points.length === 0) {
+    throw new Error('Cannot compute a bounding box of an empty point set');
+  }
+
+  // A single pass rather than Math.min/max(...points) - spreading a large
+  // contour's points (a real photo's noisiest contours can easily have
+  // thousands) risks exceeding JS engines' function-argument-count limits.
+  let minX = points[0].x;
+  let maxX = points[0].x;
+  let minY = points[0].y;
+  let maxY = points[0].y;
+  for (const { x, y } of points) {
+    if (x < minX) minX = x;
+    if (x > maxX) maxX = x;
+    if (y < minY) minY = y;
+    if (y > maxY) maxY = y;
+  }
 
   return [
     { x: minX, y: minY },
@@ -59,6 +70,16 @@ export const toOrderedRelativePoints = (
   imageWidth: number,
   imageHeight: number
 ): Point[] => {
+  if (imageWidth <= 0 || imageHeight <= 0) {
+    // e.g. ImageSource.dimensions still at DefaultSourceImage's 0x0 - dividing
+    // by these would silently produce Infinity/NaN points. Fail loudly so
+    // callers (DetectionService.detectQuad) fall back to initialPoints
+    // instead of committing garbage overlay points.
+    throw new Error(
+      `Cannot convert points to relative coordinates for a ${imageWidth}x${imageHeight} image`
+    );
+  }
+
   const relativePoints = points.map((p) => ({
     x: p.x / imageWidth,
     y: p.y / imageHeight,

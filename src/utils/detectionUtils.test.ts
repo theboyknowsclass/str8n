@@ -116,4 +116,22 @@ describe("Given the auto-detection pipeline's point-conversion utilities (raw co
       }
     );
   });
+
+  describe('when given inputs that would otherwise silently produce Infinity/NaN points', () => {
+    it('then boundingBoxToPoints fails fast on an empty point set instead of returning Infinity/-Infinity corners', () => {
+      expect(() => boundingBoxToPoints([])).toThrow();
+    });
+
+    it('then toOrderedRelativePoints fails fast on a zero-width/height image instead of dividing by zero', () => {
+      const points = [
+        { x: 0, y: 0 },
+        { x: 10, y: 0 },
+        { x: 10, y: 10 },
+        { x: 0, y: 10 },
+      ];
+
+      expect(() => toOrderedRelativePoints(points, 0, 100)).toThrow();
+      expect(() => toOrderedRelativePoints(points, 100, 0)).toThrow();
+    });
+  });
 });

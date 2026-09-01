@@ -36,7 +36,11 @@ export const SettingsNavigationRow: React.FC<SettingsNavigationRowProps> = ({
   } = useTheme();
 
   return (
-    <Pressable onPress={onPress}>
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={value ? `${title}, ${value}` : title}
+    >
       <View style={styles.row}>
         <Text color={primary} style={styles.title}>
           {title}

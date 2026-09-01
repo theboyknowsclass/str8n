@@ -204,7 +204,9 @@ export class DetectionService {
     const minArea = MIN_DETECTED_AREA_FRACTION * width * height;
     const areasByIndex: { index: number; area: number }[] = [];
     for (let i = 0; i < contourCount; i++) {
-      areasByIndex.push({ index: i, area: cv.contourArea(contours.get(i)) });
+      const contour = contours.get(i);
+      itemsToDelete.push(contour);
+      areasByIndex.push({ index: i, area: cv.contourArea(contour) });
     }
     const largestIndicesFirst = areasByIndex
       .sort((a, b) => b.area - a.area)
@@ -216,6 +218,7 @@ export class DetectionService {
       }
 
       const contour = contours.get(index);
+      itemsToDelete.push(contour);
       const perimeter = cv.arcLength(contour, true);
       const approx = new cv.Mat();
       itemsToDelete.push(approx);
@@ -266,10 +269,12 @@ export class DetectionService {
     let largestPoints: Point[] | null = null;
     let largestArea = 0;
     for (let i = 0; i < contourCount; i++) {
-      const area = cv.contourArea(contours.get(i));
+      const contour = contours.get(i);
+      itemsToDelete.push(contour);
+      const area = cv.contourArea(contour);
       if (area > largestArea) {
         largestArea = area;
-        largestPoints = this.matToPoints(contours.get(i));
+        largestPoints = this.matToPoints(contour);
       }
     }
 
