@@ -5,11 +5,21 @@ import Animated, {
   useAnimatedProps,
   useAnimatedReaction,
   useDerivedValue,
+  useSharedValue,
 } from 'react-native-reanimated';
 import { Line, Polygon } from 'react-native-svg';
 import { LogoStartPoints, useGetDerivedX, useGetDerivedY } from './useLogo';
 
 const AnimatedLine = Animated.createAnimatedComponent(Line);
+
+/**
+ * How often (in ms) the fill polygon's JS-state points are allowed to
+ * update. The animation loops forever while the logo is mounted, so without
+ * a throttle this would call runOnJS on every UI-thread frame indefinitely -
+ * real, unnecessary JS-thread/battery cost for a purely decorative fill.
+ * 100ms (10/sec) is imperceptible for this animation's slow, eased pace.
+ */
+const FILL_UPDATE_INTERVAL_MS = 100;
 
 /**
  * Props for the Path component.
@@ -42,9 +52,10 @@ type PathProps = {
  * are pushed through a plain React state update via useAnimatedReaction +
  * runOnJS instead of useAnimatedProps - a normal React re-render, not
  * reliant on the same native animated-props bridge that doesn't update a
- * points string reliably. This trades perfect 60fps UI-thread smoothness for
- * the fill specifically, which isn't noticeable at this animation's slow,
- * eased pace.
+ * points string reliably. Throttled to FILL_UPDATE_INTERVAL_MS rather than
+ * running on every UI-thread frame, since the animation loops forever while
+ * this is mounted and the fill's smoothness isn't noticeable at this
+ * animation's slow, eased pace anyway.
  *
  * @param props - PathProps containing styling and animation parameters
  * @returns JSX element containing the filled polygon and its animated edges
@@ -89,10 +100,16 @@ export const Path = ({
   const [fillPoints, setFillPoints] = useState(() =>
     LogoStartPoints.map((p) => `${p.x * scale},${p.y * scale}`).join(' ')
   );
+  const lastFillUpdate = useSharedValue(0);
   useAnimatedReaction(
     () => points.value,
     (current) => {
-      runOnJS(setFillPoints)(current);
+      'worklet';
+      const now = Date.now();
+      if (now - lastFillUpdate.value >= FILL_UPDATE_INTERVAL_MS) {
+        lastFillUpdate.value = now;
+        runOnJS(setFillPoints)(current);
+      }
     }
   );
 
