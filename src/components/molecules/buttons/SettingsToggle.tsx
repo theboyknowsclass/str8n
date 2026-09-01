@@ -65,11 +65,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 16,
     alignItems: 'center',
+    alignSelf: 'stretch',
+    width: '100%',
   },
   toggleText: {
-    flexShrink: 0,
+    flexShrink: 1,
+    flexWrap: 'wrap',
     textAlign: 'left',
     position: 'relative',
     top: -0.5,
+    maxWidth: '85%',
   },
 });
