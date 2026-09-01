@@ -39,12 +39,14 @@ export const EditControl: React.FC<EditControlProps> = ({ width, height }) => {
     minScale,
     maxScale,
     initialTranslate,
+    initialTopLeft,
   } = getEditControlParams(width, height, imageWidth, imageHeight);
 
   return (
     <PanZoomContextProvider
       initialScale={initialScale}
       initialTranslate={initialTranslate}
+      initialTopLeft={initialTopLeft}
       minScale={minScale}
       maxScale={maxScale}
       contentSize={imageWithBorderSize}

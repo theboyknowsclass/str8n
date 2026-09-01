@@ -3,11 +3,11 @@ import Animated, {
   SharedValue,
   useAnimatedStyle,
   useDerivedValue,
+  useSharedValue,
 } from 'react-native-reanimated';
 import { StyleSheet } from 'react-native';
 import { MovablePoint, Point } from '@types';
 import { usePanZoomContext } from '@contexts';
-import { useRef } from 'react';
 import { POINT_SIZE } from './constants';
 
 /**
@@ -45,10 +45,17 @@ export const PointGestureHandler: React.FC<PointGestureHandlerProps> = ({
 }) => {
   const { panGesture: parentPanGesture } = usePanZoomContext();
 
-  const savedPosition = useRef<Point>({
-    x: point.x.value,
-    y: point.y.value,
-  });
+  // Must be a Reanimated shared value, not a plain React ref: a plain
+  // `useRef().current` mutated inside one worklet (onStart) is not reliably
+  // visible when read from a different worklet (onUpdate) on the UI thread -
+  // this exact pattern was confirmed live (via debug logging) to cause a
+  // stale-value bug in PanZoomGestureHandler.tsx's pinch gesture, which used
+  // useRef for the same kind of "save position at gesture start" state.
+  // Seeded with a static placeholder rather than reading point.x.value/
+  // point.y.value here (unsafe during render) - the real current position is
+  // written into this shared value inside the pan gesture's onStart below,
+  // always before savedPosition.value is ever read in onUpdate.
+  const savedPosition = useSharedValue<Point>({ x: 0, y: 0 });
 
   const cx = useDerivedValue(() => {
     return point.x.value * scaledImageWidth.value;
@@ -75,7 +82,7 @@ export const PointGestureHandler: React.FC<PointGestureHandlerProps> = ({
     .onStart(() => {
       'worklet';
       point.isActive.value = true;
-      savedPosition.current = {
+      savedPosition.value = {
         x: point.x.value,
         y: point.y.value,
       };
@@ -84,9 +91,9 @@ export const PointGestureHandler: React.FC<PointGestureHandlerProps> = ({
       'worklet';
       // calculate new position in relative coordinates
       const newX =
-        savedPosition.current.x + e.translationX / scaledImageWidth.value;
+        savedPosition.value.x + e.translationX / scaledImageWidth.value;
       const newY =
-        savedPosition.current.y + e.translationY / scaledImageHeight.value;
+        savedPosition.value.y + e.translationY / scaledImageHeight.value;
 
       point.x.value = Math.max(0, Math.min(1, newX));
       point.y.value = Math.max(0, Math.min(1, newY));

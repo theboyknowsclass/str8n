@@ -51,7 +51,7 @@ export const SettingsToggle: React.FC<SettingsToggleProps> = ({
 
   return (
     <View style={styles.toggleContainer}>
-      <Switch onPress={onPress} value={value} />
+      <Switch onPress={onPress} value={value} isOn={isEnabled} />
       <Text color={primary} style={styles.toggleText}>
         {title}
       </Text>

@@ -95,7 +95,6 @@ export const AnimatedBlurBackground: React.FC<AnimatedBlurBackgroundProps> = ({
   return (
     <AnimatedBlurView
       animatedProps={animatedProps}
-      intensity={blurIntensity.value}
       tint={blurTint}
       style={styles.blurView}
       pointerEvents={pointerEvents}
