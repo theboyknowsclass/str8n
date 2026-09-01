@@ -31,4 +31,5 @@ export {
   EntitlementTier,
   ENTITLEMENT_IDENTIFIERS,
   ENTITLEMENT_TIER_LABELS,
+  getNextTierOfferingIdentifier,
 } from './EntitlementTier';

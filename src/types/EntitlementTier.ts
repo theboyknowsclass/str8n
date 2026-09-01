@@ -30,3 +30,29 @@ export const ENTITLEMENT_TIER_LABELS: Record<EntitlementTier, string> = {
   [EntitlementTier.Auto4Point]: 'Auto 4-Point',
   [EntitlementTier.AutoMultiPoint]: 'Auto Multi-Point',
 };
+
+/**
+ * Returns the RevenueCat Offering identifier for the next rung up the
+ * ladder from the given tier - i.e. what the paywall should present when a
+ * user at this tier opens it. Free -> Auto4Point's offering; anything else
+ * (already Auto4Point, or already at the top) -> AutoMultiPoint's offering,
+ * since that's the only tier left to upsell to (and RevenueCat's own
+ * paywall UI already handles an "already subscribed" state gracefully if
+ * the user is shown an offering for something they already own).
+ *
+ * Reuses the same string identifiers as ENTITLEMENT_IDENTIFIERS - Offerings
+ * and Entitlements are separate namespaces in RevenueCat, so there's no
+ * collision risk, and keeping the same identifier for a tier's entitlement
+ * and its offering avoids a third, easy-to-drift set of magic strings.
+ *
+ * @param currentTier - The user's current subscription tier
+ * @returns The RevenueCat Offering identifier to present the paywall with
+ */
+export const getNextTierOfferingIdentifier = (
+  currentTier: EntitlementTier
+): string => {
+  if (currentTier === EntitlementTier.Free) {
+    return ENTITLEMENT_IDENTIFIERS[EntitlementTier.Auto4Point];
+  }
+  return ENTITLEMENT_IDENTIFIERS[EntitlementTier.AutoMultiPoint];
+};

@@ -1,10 +1,13 @@
+import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
+import Purchases, { PurchasesOffering } from 'react-native-purchases';
 import RevenueCatUI from 'react-native-purchases-ui';
 import { ModalPageTemplate } from '@templates';
-import { Text } from '@atoms';
-import { applyCustomerInfo } from '@stores';
+import { LoadingSpinner, Text } from '@atoms';
+import { applyCustomerInfo, useEntitlementStore } from '@stores';
 import { useNavigation } from '@hooks';
+import { getNextTierOfferingIdentifier } from '@types';
 
 /**
  * iOS implementation of the Paywall page (see the generic Paywall.tsx for
@@ -29,8 +32,44 @@ import { useNavigation } from '@hooks';
  */
 export const Paywall: React.FC = () => {
   const { dismiss } = useNavigation();
+  const { tier } = useEntitlementStore();
 
   const apiKey = Constants.expoConfig?.extra?.revenueCat?.iosApiKey;
+
+  // Undefined (not yet loaded) vs null (loaded, but no matching offering
+  // found - e.g. not configured in RevenueCat yet) are distinct: undefined
+  // means "still fetching, don't render the paywall yet", null means "go
+  // ahead and render RevenueCatUI.Paywall with no offering prop", which
+  // falls back to whatever offering is marked Current in the dashboard.
+  const [offering, setOffering] = useState<
+    PurchasesOffering | null | undefined
+  >(undefined);
+
+  useEffect(() => {
+    if (!apiKey) {
+      return;
+    }
+
+    let isCancelled = false;
+    const targetIdentifier = getNextTierOfferingIdentifier(tier);
+
+    Purchases.getOfferings()
+      .then((offerings) => {
+        if (!isCancelled) {
+          setOffering(offerings.all[targetIdentifier] ?? null);
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading offerings for paywall', error);
+        if (!isCancelled) {
+          setOffering(null);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [apiKey, tier]);
 
   if (!apiKey) {
     return (
@@ -42,9 +81,18 @@ export const Paywall: React.FC = () => {
     );
   }
 
+  if (offering === undefined) {
+    return (
+      <ModalPageTemplate title="Upgrade" onClose={dismiss}>
+        <LoadingSpinner size={40} animating={true} />
+      </ModalPageTemplate>
+    );
+  }
+
   return (
     <RevenueCatUI.Paywall
       style={styles.paywall}
+      options={{ offering: offering ?? undefined }}
       onPurchaseCompleted={({ customerInfo }) => {
         applyCustomerInfo(customerInfo);
         dismiss();
