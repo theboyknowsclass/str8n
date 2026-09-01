@@ -145,21 +145,25 @@ export const Path = ({
         animatedProps={edge1Props}
         stroke={foreground}
         strokeWidth={scaledStrokeWidth}
+        strokeLinecap="round"
       />
       <AnimatedLine
         animatedProps={edge2Props}
         stroke={foreground}
         strokeWidth={scaledStrokeWidth}
+        strokeLinecap="round"
       />
       <AnimatedLine
         animatedProps={edge3Props}
         stroke={foreground}
         strokeWidth={scaledStrokeWidth}
+        strokeLinecap="round"
       />
       <AnimatedLine
         animatedProps={edge4Props}
         stroke={foreground}
         strokeWidth={scaledStrokeWidth}
+        strokeLinecap="round"
       />
     </>
   );
