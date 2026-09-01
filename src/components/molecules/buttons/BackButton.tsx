@@ -45,7 +45,11 @@ export const BackButton: React.FC<BackButtonProps> = ({ ...props }) => {
   // actual route pathname rather than the session store's currentPage field,
   // since that field isn't synchronized by goBack() (only by navigate()) and
   // can go stale after navigating back via the button itself.
-  const showBackButton = pathname !== '/' && canGoBack();
+  // src/app/index.tsx re-exports src/app/import.tsx's route component, so
+  // '/' and '/import' are both legitimate, separately-reachable pathnames
+  // for the same home screen - both need to count as "home" here.
+  const isHomeScreen = pathname === '/' || pathname === '/import';
+  const showBackButton = !isHomeScreen && canGoBack();
 
   return showBackButton ? (
     <IconButton
