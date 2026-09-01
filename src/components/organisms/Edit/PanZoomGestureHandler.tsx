@@ -3,6 +3,7 @@ import { View, Platform } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useDerivedValue } from 'react-native-reanimated';
 import { usePanZoomContext } from '@contexts';
+import { computeZoomAroundPointTranslate } from '@utils/panZoomTransformUtils';
 
 /**
  * Props for the PanZoomGestureHandler component.
@@ -155,21 +156,20 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
           const oldScale = savedScale.current;
           const newScale = updateScale(oldScale * eventScale);
 
-          // Update translate to keep the focal point (the pinch's starting
-          // midpoint) visually stationary on screen as scale changes, via
-          // the standard "zoom around a point" formula: the new translate
-          // is the old translate plus how far the focal point itself moves
-          // in content-space when scale changes from old to new.
-          // (The previous formula - newX = -focalX + (width/newScale)/2 -
-          // ignored the existing translate entirely and always recentered
-          // the view on the focal point instead of keeping it fixed, which
-          // is what produced the "wrong center"/"jumps to top-left" bug.)
-          const { x: focalX, y: focalY } = savedFocalPoint.current;
-          const { x: oldTranslateX, y: oldTranslateY } = savedTranslate.current;
-          const scaleDelta = 1 / newScale - 1 / oldScale;
-          const newX = focalX * scaleDelta + oldTranslateX;
-          const newY = focalY * scaleDelta + oldTranslateY;
-          updateTranslate(newX, newY);
+          // Keep the focal point (the pinch's starting midpoint) visually
+          // stationary on screen as scale changes, via the standard
+          // "zoom around a point" formula (see panZoomTransformUtils.ts for
+          // why this applies directly to the raw translate, even though
+          // what's actually drawn goes through a second, derived transform -
+          // the mount-time constants in that derivation cancel out
+          // algebraically for this particular calculation).
+          const newTranslate = computeZoomAroundPointTranslate(
+            savedFocalPoint.current,
+            savedTranslate.current,
+            oldScale,
+            newScale
+          );
+          updateTranslate(newTranslate.x, newTranslate.y);
         })
         .onEnd(() => {
           'worklet';
@@ -198,17 +198,19 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
     const focalX = e.clientX - rect.left;
     const focalY = e.clientY - rect.top;
 
-    // Same "zoom around a point" formula as the pinch gesture above, using
+    // Same zoom-around-a-point computation as the pinch gesture above, using
     // the mouse cursor position as the focal point.
     const oldScale = scale.value;
     const zoomFactor = e.deltaY > 0 ? 0.95 : 1.05;
     const newScale = updateScale(oldScale * zoomFactor);
 
-    const { x: oldTranslateX, y: oldTranslateY } = translate.value;
-    const scaleDelta = 1 / newScale - 1 / oldScale;
-    const newX = focalX * scaleDelta + oldTranslateX;
-    const newY = focalY * scaleDelta + oldTranslateY;
-    updateTranslate(newX, newY);
+    const newTranslate = computeZoomAroundPointTranslate(
+      { x: focalX, y: focalY },
+      translate.value,
+      oldScale,
+      newScale
+    );
+    updateTranslate(newTranslate.x, newTranslate.y);
   };
 
   // Assigned synchronously during render, not in an effect: PointGestureHandler

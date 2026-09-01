@@ -6,6 +6,7 @@ import { ImageView } from './Image/ImageView';
 import { ZoomView } from './Overlay/ZoomView';
 import { useImage } from '@shopify/react-native-skia';
 import { usePersistedSettingsStore } from '@stores';
+import { deriveSkiaTranslate } from '@utils/panZoomTransformUtils';
 
 /**
  * Props for the SelectionControl component.
@@ -39,7 +40,7 @@ export const SelectionControl: React.FC<SelectionControlProps> = ({
     initialScale,
     translate: panZoomTranslate,
     initialTranslate,
-    relativeScale,
+    initialTopLeft,
   } = usePanZoomContext();
 
   const { showZoomView } = usePersistedSettingsStore();
@@ -51,28 +52,22 @@ export const SelectionControl: React.FC<SelectionControlProps> = ({
 
   const image = useImage(uri);
 
-  const initialScaledImageDimensions = {
-    width: imageWidth * initialScale,
-    height: imageHeight * initialScale,
-  };
-
-  const initialTopLeft = {
-    x: (initialScaledImageDimensions.width - width) / 2,
-    y: (initialScaledImageDimensions.height - height) / 2,
-  };
+  const constants = { initialTranslate, initialTopLeft, initialScale };
 
   const translateX = useDerivedValue(() => {
-    const xDiff = panZoomTranslate.value.x - initialTranslate.x;
-    const translateX =
-      xDiff * panZoomScale.value - initialTopLeft.x * relativeScale.value;
-    return translateX;
+    return deriveSkiaTranslate(
+      panZoomTranslate.value,
+      panZoomScale.value,
+      constants
+    ).x;
   });
 
   const translateY = useDerivedValue(() => {
-    const yDiff = panZoomTranslate.value.y - initialTranslate.y;
-    const translateY =
-      yDiff * panZoomScale.value - initialTopLeft.y * relativeScale.value;
-    return translateY;
+    return deriveSkiaTranslate(
+      panZoomTranslate.value,
+      panZoomScale.value,
+      constants
+    ).y;
   });
 
   return (
