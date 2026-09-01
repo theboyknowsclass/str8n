@@ -222,8 +222,18 @@ export const PanZoomGestureHandler: React.FC<PanZoomGestureHandlerProps> = ({
   // something else, silently breaking blocksExternalGesture.
   contextPanGestureRef.current = panGesture;
 
-  // Combine both gestures
-  const composedGesture = Gesture.Exclusive(panGesture, pinchGesture);
+  // Simultaneous, not Exclusive: Exclusive makes every gesture after the
+  // first require the earlier ones to explicitly fail before it can even
+  // start recognizing (see requireToFail chaining in
+  // react-native-gesture-handler's GestureComposition.ts) - so pinchGesture
+  // would have to wait for panGesture to fail first. Since panGesture uses
+  // minDistance(0), it goes active on the very first touch point, before a
+  // second finger for a pinch can possibly be down yet, so pinchGesture
+  // could be starved or the two could fight over the same translate/scale
+  // values mid-gesture. maxPointers(1) on panGesture alone is what should
+  // keep it out of pinch's way - this is the standard RNGH pattern for
+  // combining a single-finger pan with a two-finger pinch.
+  const composedGesture = Gesture.Simultaneous(panGesture, pinchGesture);
 
   return (
     <View
