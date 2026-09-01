@@ -7,3 +7,4 @@ export { useShareImage } from './useShareImage';
 export { useAutoShowInstructions } from './useAutoShowInstructions';
 export { useDownloadImage } from './useDownloadImage';
 export { useNavigation } from './useNavigation';
+export { useAutoDetectCorners } from './useAutoDetectCorners';
