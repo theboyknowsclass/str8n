@@ -1,6 +1,7 @@
 import React from 'react';
 import { IconButton } from '@atoms';
 import { useNavigation } from '../../../hooks/useNavigation';
+import { useSessionStateStore } from '@stores';
 
 /**
  * Props for the BackButton component.
@@ -29,12 +30,19 @@ interface BackButtonProps {
  */
 export const BackButton: React.FC<BackButtonProps> = ({ ...props }) => {
   const { goBack, canGoBack } = useNavigation();
+  const { currentPage } = useSessionStateStore();
 
   const onBackPress = () => {
     goBack();
   };
 
-  const showBackButton = canGoBack();
+  // router.canGoBack() reflects expo-router's history stack, which can have
+  // entries behind the home screen (e.g. after navigate('import') pushes a
+  // fresh '/' on top of an existing 'edit' entry rather than popping back to
+  // it) - showing "back" there would return the user to a stale previous
+  // session's screen. The home/import page should never show a back button
+  // regardless of what the history stack looks like.
+  const showBackButton = currentPage !== 'import' && canGoBack();
 
   return showBackButton ? (
     <IconButton
