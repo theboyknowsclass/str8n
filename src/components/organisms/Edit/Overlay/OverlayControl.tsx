@@ -11,6 +11,7 @@ import { usePanZoomContext } from '@contexts';
 import { Point } from './Point';
 import { SelectionPolygon } from './SelectionPolygon';
 import { useEditControlContext } from '@contexts/EditControlContext';
+import { Corner } from '@types';
 
 /**
  * Props for the OverlayControl component.
@@ -112,6 +113,7 @@ export const OverlayControl: React.FC<OverlayControlProps> = ({
           <PointGestureHandler
             key={`Touchable Point ${i}`}
             point={p}
+            cornerIndex={i as Corner}
             scaledImageHeight={scaledImageHeight}
             scaledImageWidth={scaledImageWidth}
           />

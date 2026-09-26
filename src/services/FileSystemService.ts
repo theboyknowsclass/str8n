@@ -54,4 +54,41 @@ export class FileSystemService {
   static async deleteFile(filePath: string): Promise<void> {
     await FileSystem.deleteAsync(filePath);
   }
+
+  /**
+   * Copies an image into a permanent app-owned directory, returning its new
+   * URI. Used for calibration ground-truth samples: the image picker's own
+   * URI is often a temporary cache path (particularly on iOS) that isn't
+   * guaranteed to survive an app restart, so samples need their own stable
+   * copy to be usable in a later calibration sweep.
+   *
+   * On web there's no document directory to copy into at all (browser
+   * sandboxing) - the source URI is returned unchanged instead of throwing.
+   * On web the picker's URI is already a `blob:` URL, which is a perfectly
+   * usable reference for a same-browser-session calibration workflow (the
+   * actual use case this session found for web calibration: it just won't
+   * survive a page reload, unlike the real permanent copy native gets).
+   * @param sourceUri - The URI of the image to copy (e.g. from the picker)
+   * @param filename - The filename to give the copy (e.g. `${id}.jpg`)
+   * @returns The new, permanent URI of the copied image (or the original
+   * URI unchanged on web)
+   */
+  static async copyToPermanentStorage(
+    sourceUri: string,
+    filename: string
+  ): Promise<string> {
+    if (!FileSystem.documentDirectory) {
+      return sourceUri;
+    }
+
+    const directory = `${FileSystem.documentDirectory}calibration/`;
+    const directoryInfo = await FileSystem.getInfoAsync(directory);
+    if (!directoryInfo.exists) {
+      await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
+    }
+
+    const destinationUri = `${directory}${filename}`;
+    await FileSystem.copyAsync({ from: sourceUri, to: destinationUri });
+    return destinationUri;
+  }
 }

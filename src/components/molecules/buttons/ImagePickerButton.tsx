@@ -1,16 +1,18 @@
 import { IconButton } from '@atoms';
 import { ImagePickerService } from '@services';
-import { useSourceImageStore } from '@stores';
-import { useAutoDetectCorners, useNavigation } from '@hooks';
+import { useOverlayStore, useSourceImageStore } from '@stores';
+import { useNavigation } from '@hooks';
 
 /**
  * ImagePickerButton component that allows users to select images from their library.
  *
  * This component renders a button that opens the device's image picker when pressed.
- * It handles the image selection process, updates the source image store, sets the
- * overlay's initial corner points (automatically detected or the manual default,
- * depending on subscription tier - see useAutoDetectCorners), and navigates to the
- * edit page upon successful selection.
+ * It handles the image selection process, updates the source image store, resets the
+ * overlay to its default manual corners, and navigates to the edit page upon
+ * successful selection. Auto-detection is a separate, on-demand action from the
+ * Edit screen (see AutoDetectButton) rather than running automatically here - it
+ * involves a real CV processing delay, so picking an image should feel instant
+ * rather than making the user wait on it before they can even see their photo.
  *
  * @returns JSX element containing the image picker button
  *
@@ -21,7 +23,7 @@ import { useAutoDetectCorners, useNavigation } from '@hooks';
  */
 export const ImagePickerButton: React.FC = () => {
   const { isLoading, setLoading, setSourceImage } = useSourceImageStore();
-  const { detectCorners } = useAutoDetectCorners();
+  const { resetPoints } = useOverlayStore();
   const { navigate } = useNavigation();
 
   const onStartPress = async () => {
@@ -29,7 +31,7 @@ export const ImagePickerButton: React.FC = () => {
     try {
       const { success, error, data } = await ImagePickerService.selectImage();
       if (success && data) {
-        await detectCorners(data);
+        resetPoints();
         setSourceImage(data);
         navigate('edit');
         return;

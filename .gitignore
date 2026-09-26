@@ -39,3 +39,8 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 str8n.json
+
+# detection-calibration dataset (real photos + hand-placed ground truth -
+# see tools/calibration-dataset/README.md) - local dev data, not shipped
+# and not committed
+calibration-data/

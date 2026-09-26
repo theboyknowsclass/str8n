@@ -13,6 +13,7 @@ import {
 import { TransformService } from '@services';
 import { useRef, useCallback } from 'react';
 import { useNavigation } from './useNavigation';
+import { logDuration } from '@utils/benchmarkLog';
 
 /**
  * Return type for the useTransformImage hook.
@@ -88,12 +89,17 @@ export const useTransformImage = (): UseTransformImage => {
       const dstPoints = getPoints(largestRect);
 
       // Perform the actual image transformation
-      const transformedUri = await TransformService.transformImage(
-        sourceImage,
-        srcPoints,
-        dstPoints,
-        cropToOverlay,
-        abortControllerRef.current.signal
+      const signal = abortControllerRef.current.signal;
+      const transformedUri = await logDuration(
+        'transform (warpPerspective)',
+        () =>
+          TransformService.transformImage(
+            sourceImage,
+            srcPoints,
+            dstPoints,
+            cropToOverlay,
+            signal
+          )
       );
 
       if (abortControllerRef.current.signal.aborted) {

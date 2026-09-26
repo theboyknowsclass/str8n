@@ -5,7 +5,12 @@
 
 // Array of non-modal page names supported in the application
 // Using 'as const' to make the array readonly and enable literal type inference
-const nonModalPageNameArray = ['import', 'edit', 'export'] as const;
+const nonModalPageNameArray = [
+  'import',
+  'edit',
+  'export',
+  'batchCalibration',
+] as const;
 
 // Array of modal page names supported in the application
 // Using 'as const' to make the array readonly and enable literal type inference
@@ -15,6 +20,7 @@ const modalPageNameArray = [
   'settings',
   'about',
   'paywall',
+  'calibration',
 ] as const;
 
 // Set for O(1) lookup performance when checking if a string is a valid non-modal page name

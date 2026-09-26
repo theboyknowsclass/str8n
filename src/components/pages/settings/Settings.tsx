@@ -1,4 +1,8 @@
-import { SettingsToggle, SettingsNavigationRow } from '@molecules';
+import {
+  SettingsToggle,
+  SettingsSlider,
+  SettingsNavigationRow,
+} from '@molecules';
 import { ModalPageTemplate } from '@templates';
 import { usePersistedSettingsStore, useEntitlementStore } from '@stores';
 import { ENTITLEMENT_TIER_LABELS } from '@types';
@@ -27,6 +31,14 @@ export const Settings: React.FC = () => {
     setAlwaysShowInstructions,
     showZoomView,
     setShowZoomView,
+    cannySigma,
+    setCannySigma,
+    approxEpsilonFraction,
+    setApproxEpsilonFraction,
+    shadowRemovalEnabled,
+    setShadowRemovalEnabled,
+    lineSegmentDetectionEnabled,
+    setLineSegmentDetectionEnabled,
   } = usePersistedSettingsStore();
   const { tier } = useEntitlementStore();
   const { navigate } = useNavigation();
@@ -55,6 +67,44 @@ export const Settings: React.FC = () => {
             isEnabled={alwaysShowInstructions}
             onToggle={setAlwaysShowInstructions}
           />
+          {__DEV__ && (
+            <>
+              <SettingsSlider
+                title="Auto-detect: edge sensitivity"
+                value={cannySigma}
+                minimumValue={0.1}
+                maximumValue={0.6}
+                step={0.01}
+                onValueChange={setCannySigma}
+              />
+              <SettingsSlider
+                title="Auto-detect: corner simplification"
+                value={approxEpsilonFraction}
+                minimumValue={0.005}
+                maximumValue={0.05}
+                step={0.005}
+                onValueChange={setApproxEpsilonFraction}
+              />
+              <SettingsToggle
+                title="Auto-detect: remove shadows before detecting (experimental)"
+                isEnabled={shadowRemovalEnabled}
+                onToggle={setShadowRemovalEnabled}
+              />
+              <SettingsToggle
+                title="Auto-detect: use line-segment detection instead of contours (experimental)"
+                isEnabled={lineSegmentDetectionEnabled}
+                onToggle={setLineSegmentDetectionEnabled}
+              />
+              <SettingsNavigationRow
+                title="Detection calibration"
+                onPress={() => navigate('calibration')}
+              />
+              <SettingsNavigationRow
+                title="Batch calibration"
+                onPress={() => navigate('batchCalibration')}
+              />
+            </>
+          )}
         </View>
       </View>
     </ModalPageTemplate>

@@ -80,6 +80,15 @@ export class TransformService {
         new cv.Size(width, height)
       );
 
+      // src is only needed for warpPerspective above - freeing it now
+      // (rather than waiting for the top-level itemsToDelete cleanup) halves
+      // the peak memory footprint through the encode step below, which is
+      // otherwise the single most memory- and CPU-intensive part of a
+      // transform (a full-resolution PNG encode can itself be substantial
+      // for a modern phone photo).
+      src.delete();
+      itemsToDelete.splice(itemsToDelete.indexOf(src), 1);
+
       // Check for cancellation after transformation
       if (signal?.aborted) {
         throw new Error('AbortError');

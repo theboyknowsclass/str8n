@@ -24,6 +24,11 @@ export const useInitializeSettings = (): UseInitializeSettings => {
     setCropToOverlay,
     setMaintainExifMetadata,
     setAlwaysShowInstructions,
+    setCannySigma,
+    setApproxEpsilonFraction,
+    setLearnedThresholdModel,
+    setShadowRemovalEnabled,
+    setLineSegmentDetectionEnabled,
     setIsReady,
     isReady,
   } = usePersistedSettingsStore();
@@ -35,6 +40,23 @@ export const useInitializeSettings = (): UseInitializeSettings => {
         setCropToOverlay(storedSettings.cropToOverlay);
         setMaintainExifMetadata(storedSettings.maintainExifMetadata);
         setAlwaysShowInstructions(storedSettings.alwaysShowInstructions);
+        if (storedSettings.cannySigma !== undefined) {
+          setCannySigma(storedSettings.cannySigma);
+        }
+        if (storedSettings.approxEpsilonFraction !== undefined) {
+          setApproxEpsilonFraction(storedSettings.approxEpsilonFraction);
+        }
+        if (storedSettings.learnedThresholdModel) {
+          setLearnedThresholdModel(storedSettings.learnedThresholdModel);
+        }
+        if (storedSettings.shadowRemovalEnabled !== undefined) {
+          setShadowRemovalEnabled(storedSettings.shadowRemovalEnabled);
+        }
+        if (storedSettings.lineSegmentDetectionEnabled !== undefined) {
+          setLineSegmentDetectionEnabled(
+            storedSettings.lineSegmentDetectionEnabled
+          );
+        }
       }
       setIsReady(true);
     };

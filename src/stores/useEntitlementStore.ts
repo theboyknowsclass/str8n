@@ -27,8 +27,14 @@ type EntitlementState = {
  * if (tier >= EntitlementTier.Auto4Point) { ... }
  * ```
  */
+// TEMPORARY: default tier bumped to the top of the ladder so every
+// auto-detection feature is usable while RevenueCat/App Store Connect setup
+// is still in progress. Once real entitlements are live, applyCustomerInfo
+// still downgrades non-subscribers back to Free as normal - revert this
+// default to EntitlementTier.Free once the paywall is ready to actually
+// gate features again.
 export const useEntitlementStore = create<EntitlementState>()((set) => ({
-  tier: EntitlementTier.Free,
+  tier: EntitlementTier.AutoMultiPoint,
   isReady: false,
   setTier: (tier: EntitlementTier) => set({ tier }),
   setIsReady: (isReady: boolean) => set({ isReady }),

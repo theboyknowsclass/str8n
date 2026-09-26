@@ -8,3 +8,6 @@ export { useAutoShowInstructions } from './useAutoShowInstructions';
 export { useDownloadImage } from './useDownloadImage';
 export { useNavigation } from './useNavigation';
 export { useAutoDetectCorners } from './useAutoDetectCorners';
+export { useCalibrationSweep } from './useCalibrationSweep';
+export { useInitializeOpenCV } from './useInitializeOpenCV';
+export type { CalibrationSweepResult } from './useCalibrationSweep';

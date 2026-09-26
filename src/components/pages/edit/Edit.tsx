@@ -1,4 +1,4 @@
-import { TransformImageButton } from '@molecules';
+import { TransformImageButton, AutoDetectButton } from '@molecules';
 import { View, StyleSheet } from 'react-native';
 import { PageTemplate } from '@templates';
 import { InstructionsModal, EditControl } from '@organisms';
@@ -67,6 +67,7 @@ export const Edit: React.FC = () => {
           <InstructionsModal mode={InstructionMode.EDIT} />
         </PageTemplate.ModalContent>
         <PageTemplate.ActionItems>
+          <AutoDetectButton />
           <TransformImageButton />
         </PageTemplate.ActionItems>
         <EditContent />

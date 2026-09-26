@@ -1,6 +1,11 @@
 import { PersistedSettings } from '@types';
 import { create } from 'zustand';
-import { AsyncStorageService } from '@services';
+import { AsyncStorageService } from '@services/AsyncStorageService';
+import { ExportedTreeEnsemble } from '@services/CalibrationApiClient';
+import {
+  DEFAULT_CANNY_SIGMA,
+  DEFAULT_APPROX_EPSILON_FRACTION,
+} from '@utils/detectionUtils';
 
 /**
  * Persisted settings state interface that manages user preferences.
@@ -20,8 +25,55 @@ type PersistedSettingsState = PersistedSettings & {
   setMaintainExifMetadata: (maintainExifMetadata: boolean) => void;
   setAlwaysShowInstructions: (alwaysShowInstructions: boolean) => void;
   setShowZoomView: (showZoomView: boolean) => void;
+  setCannySigma: (cannySigma: number) => void;
+  setApproxEpsilonFraction: (approxEpsilonFraction: number) => void;
+  setLearnedThresholdModel: (
+    learnedThresholdModel: ExportedTreeEnsemble | null
+  ) => void;
+  setShadowRemovalEnabled: (shadowRemovalEnabled: boolean) => void;
+  setLineSegmentDetectionEnabled: (
+    lineSegmentDetectionEnabled: boolean
+  ) => void;
   isReady: boolean;
   setIsReady: (isReady: boolean) => void;
+};
+
+/**
+ * Merges a partial update into the current persisted settings, persists the
+ * full resulting settings object to AsyncStorage, and applies the update to
+ * the store. Shared by every setter below so adding a new persisted setting
+ * doesn't mean touching every existing setter's field list.
+ */
+const persistAndSet = (
+  get: () => PersistedSettingsState,
+  set: (partial: Partial<PersistedSettingsState>) => void,
+  update: Partial<PersistedSettings>
+): void => {
+  const {
+    cropToOverlay,
+    maintainExifMetadata,
+    alwaysShowInstructions,
+    showZoomView,
+    cannySigma,
+    approxEpsilonFraction,
+    learnedThresholdModel,
+    shadowRemovalEnabled,
+    lineSegmentDetectionEnabled,
+  } = get();
+  const newSettings: PersistedSettings = {
+    cropToOverlay,
+    maintainExifMetadata,
+    alwaysShowInstructions,
+    showZoomView,
+    cannySigma,
+    approxEpsilonFraction,
+    learnedThresholdModel,
+    shadowRemovalEnabled,
+    lineSegmentDetectionEnabled,
+    ...update,
+  };
+  AsyncStorageService.storeSettings(newSettings);
+  set(update);
 };
 
 /**
@@ -54,53 +106,30 @@ export const usePersistedSettingsStore = create<PersistedSettingsState>()(
     maintainExifMetadata: false,
     alwaysShowInstructions: true,
     showZoomView: true,
+    cannySigma: DEFAULT_CANNY_SIGMA,
+    approxEpsilonFraction: DEFAULT_APPROX_EPSILON_FRACTION,
+    shadowRemovalEnabled: false,
+    lineSegmentDetectionEnabled: false,
     isReady: false,
     setIsReady: (isReady: boolean) => set({ isReady }),
-    setCropToOverlay: (cropToOverlay: boolean) => {
-      const { maintainExifMetadata, alwaysShowInstructions, showZoomView } =
-        get();
-      const newSettings = {
-        cropToOverlay,
-        maintainExifMetadata,
-        alwaysShowInstructions,
-        showZoomView,
-      };
-      AsyncStorageService.storeSettings(newSettings);
-      set({ cropToOverlay });
-    },
-    setMaintainExifMetadata: (maintainExifMetadata: boolean) => {
-      const { cropToOverlay, alwaysShowInstructions, showZoomView } = get();
-      const newSettings = {
-        cropToOverlay,
-        alwaysShowInstructions,
-        showZoomView,
-        maintainExifMetadata,
-      };
-      AsyncStorageService.storeSettings(newSettings);
-      set({ maintainExifMetadata });
-    },
-    setAlwaysShowInstructions: (alwaysShowInstructions: boolean) => {
-      const { cropToOverlay, maintainExifMetadata, showZoomView } = get();
-      const newSettings = {
-        cropToOverlay,
-        maintainExifMetadata,
-        showZoomView,
-        alwaysShowInstructions,
-      };
-      AsyncStorageService.storeSettings(newSettings);
-      set({ alwaysShowInstructions });
-    },
-    setShowZoomView: (showZoomView: boolean) => {
-      const { cropToOverlay, maintainExifMetadata, alwaysShowInstructions } =
-        get();
-      const newSettings = {
-        cropToOverlay,
-        maintainExifMetadata,
-        alwaysShowInstructions,
-        showZoomView,
-      };
-      AsyncStorageService.storeSettings(newSettings);
-      set({ showZoomView });
-    },
+    setCropToOverlay: (cropToOverlay: boolean) =>
+      persistAndSet(get, set, { cropToOverlay }),
+    setMaintainExifMetadata: (maintainExifMetadata: boolean) =>
+      persistAndSet(get, set, { maintainExifMetadata }),
+    setAlwaysShowInstructions: (alwaysShowInstructions: boolean) =>
+      persistAndSet(get, set, { alwaysShowInstructions }),
+    setShowZoomView: (showZoomView: boolean) =>
+      persistAndSet(get, set, { showZoomView }),
+    setCannySigma: (cannySigma: number) =>
+      persistAndSet(get, set, { cannySigma }),
+    setApproxEpsilonFraction: (approxEpsilonFraction: number) =>
+      persistAndSet(get, set, { approxEpsilonFraction }),
+    setLearnedThresholdModel: (
+      learnedThresholdModel: ExportedTreeEnsemble | null
+    ) => persistAndSet(get, set, { learnedThresholdModel }),
+    setShadowRemovalEnabled: (shadowRemovalEnabled: boolean) =>
+      persistAndSet(get, set, { shadowRemovalEnabled }),
+    setLineSegmentDetectionEnabled: (lineSegmentDetectionEnabled: boolean) =>
+      persistAndSet(get, set, { lineSegmentDetectionEnabled }),
   })
 );

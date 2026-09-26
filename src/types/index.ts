@@ -33,3 +33,4 @@ export {
   ENTITLEMENT_TIER_LABELS,
   getNextTierOfferingIdentifier,
 } from './EntitlementTier';
+export { CalibrationSample } from './CalibrationSample';

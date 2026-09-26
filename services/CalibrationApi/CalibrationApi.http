@@ -1,0 +1,6 @@
+@CalibrationApi_HostAddress = http://localhost:5022
+
+GET {{CalibrationApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

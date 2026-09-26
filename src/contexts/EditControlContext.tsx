@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import { Dimensions, MovablePoint } from '@types';
 
 /**
@@ -47,7 +47,12 @@ export interface EditControlContextProviderProps extends EditControlContextType 
  */
 export const EditControlContextProvider: React.FC<
   EditControlContextProviderProps
-> = ({ children, ...value }) => {
+> = ({ children, uri, imageSize, selectionPoints }) => {
+  const value = useMemo(
+    () => ({ uri, imageSize, selectionPoints }),
+    [uri, imageSize, selectionPoints]
+  );
+
   return (
     <EditControlContext.Provider value={value}>
       {children}

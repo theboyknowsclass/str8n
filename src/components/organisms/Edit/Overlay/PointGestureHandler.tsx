@@ -1,23 +1,28 @@
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   SharedValue,
+  runOnJS,
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
 } from 'react-native-reanimated';
 import { StyleSheet } from 'react-native';
-import { MovablePoint, Point } from '@types';
+import { Corner, MovablePoint, Point } from '@types';
 import { usePanZoomContext } from '@contexts';
+import { useOverlayStore } from '@stores';
 import { POINT_SIZE } from './constants';
 
 /**
  * Props for the PointGestureHandler component.
  * @property point - The MovablePoint object to manipulate
+ * @property cornerIndex - Which corner this point represents, so its final
+ * dragged position can be written back into useOverlayStore (see onEnd)
  * @property scaledImageHeight - Shared animated value for the scaled image height
  * @property scaledImageWidth - Shared animated value for the scaled image width
  */
 type PointGestureHandlerProps = {
   point: MovablePoint;
+  cornerIndex: Corner;
   scaledImageHeight: SharedValue<number>;
   scaledImageWidth: SharedValue<number>;
 };
@@ -40,10 +45,12 @@ type PointGestureHandlerProps = {
  */
 export const PointGestureHandler: React.FC<PointGestureHandlerProps> = ({
   point,
+  cornerIndex,
   scaledImageHeight,
   scaledImageWidth,
 }) => {
   const { panGesture: parentPanGesture } = usePanZoomContext();
+  const updatePoint = useOverlayStore((state) => state.updatePoint);
 
   // Must be a Reanimated shared value, not a plain React ref: a plain
   // `useRef().current` mutated inside one worklet (onStart) is not reliably
@@ -103,6 +110,22 @@ export const PointGestureHandler: React.FC<PointGestureHandlerProps> = ({
     .onEnd(() => {
       'worklet';
       point.isActive.value = false;
+      // Dragging only ever mutates this shared value directly (see the
+      // module docs above) - useOverlayStore is never touched during the
+      // gesture itself. Without this, the store silently goes stale the
+      // moment a point is dragged: it keeps whatever value it had before,
+      // even though the screen now shows something different. That stale
+      // store value can then defeat a later setPoints() call whose target
+      // happens to reference-match what the store already (incorrectly)
+      // believes it holds - e.g. auto-detect failing twice in a row both
+      // resolve to the exact same initialPoints reference, so the second
+      // failure looks like a no-op and the dragged point never resets.
+      // Writing the final position back here keeps the store as a true,
+      // always-current source of truth for exactly this reason.
+      runOnJS(updatePoint)(cornerIndex, {
+        x: point.x.value,
+        y: point.y.value,
+      });
     })
     .blocksExternalGesture(parentPanGesture.current!);
 

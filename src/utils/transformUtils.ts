@@ -1,4 +1,6 @@
-import { Point } from '@types';
+// Imports Point directly from its own file (relative - see
+// detectionUtils.ts's identical note for why "@types/Point" doesn't work).
+import { Point } from '../types/Point';
 
 /**
  * Orders an array of points according to the Corner enum.

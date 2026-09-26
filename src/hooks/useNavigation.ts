@@ -98,6 +98,12 @@ export const useNavigation = (): UseNavigation => {
       case 'paywall':
         router.push('/paywall');
         break;
+      case 'calibration':
+        router.push('/calibration');
+        break;
+      case 'batchCalibration':
+        router.push('/batch-calibration');
+        break;
       default:
         router.push('/');
     }

@@ -14,6 +14,7 @@ const materialIconNameArray = [
   'zoom-in',
   'zoom-out',
   'photo-library',
+  'auto-fix-high',
 ] as const;
 
 // Set for O(1) lookup performance when checking if a string is a valid Material Icon
