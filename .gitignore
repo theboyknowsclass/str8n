@@ -44,3 +44,10 @@ str8n.json
 # see tools/calibration-dataset/README.md) - local dev data, not shipped
 # and not committed
 calibration-data/
+
+# static web build output served locally for testing
+dist_serve/
+
+# Claude Code local session state (launch configs with machine-specific
+# paths, scheduler lock files)
+.claude/
