@@ -48,6 +48,7 @@ calibration-data/
 # static web build output served locally for testing
 dist_serve/
 
-# Claude Code local session state (launch configs with machine-specific
-# paths, scheduler lock files)
-.claude/
+# Claude Code local session state - .claude/launch.json is shared project
+# config and stays tracked; these are per-machine/per-session
+.claude/scheduled_tasks.lock
+.claude/settings.local.json
